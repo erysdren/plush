@@ -69,7 +69,7 @@ pl_Obj *plRead3DSObj(char *fn, pl_Mat *m) {
 
 static pl_Float _pl3DSReadFloat(FILE *f) {
   pl_uInt32 *i;
-  pl_IEEEFloat32 c;
+  pl_Float c;
   i = (pl_uInt32 *) &c;
   *i = _pl3DSReadDWord(f);
   return ((pl_Float) c);
