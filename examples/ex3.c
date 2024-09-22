@@ -37,14 +37,14 @@ int main() { // Main
 #endif
   exSetGraphics(); // Set graphics
  
-  TheFrameBuffer = (char *) malloc(320*200); // Alloc framebuffer
+  TheFrameBuffer = (char *) malloc(W*H); // Alloc framebuffer
   if (!TheFrameBuffer) { 
     exSetText(); 
     printf("Out of memory!\n");
     exit(1);
   }
   // Alloc z-buffer
-  TheZBuffer = (pl_ZBuffer *) malloc(320*200*sizeof(pl_ZBuffer));
+  TheZBuffer = (pl_ZBuffer *) malloc(W*H*sizeof(pl_ZBuffer));
 
   CubeMat = plMatCreate();    // Create the material for the cube
   CubeMat->NumGradients = 100; // Have it use 100 colors
@@ -96,9 +96,9 @@ int main() { // Main
 
   TheTorus->Xp = -70.0; // Shift the torus to the left a bit
 
-  TheCamera = plCamCreate(320, // Screen width
-                          200, // Screen height
-                          320*3.0/(200*4.0), // Aspect ratio
+  TheCamera = plCamCreate(W, // Screen width
+                          H, // Screen height
+                          W*3.0/(H*4.0), // Aspect ratio
                           90.0, // Field of view
                           TheFrameBuffer, // Framebuffer
                           TheZBuffer // ZBuffer
@@ -127,15 +127,15 @@ int main() { // Main
                1.0); // falloff, not used for vector lights
 
                                       // clear zbuffer for next frame
-    memset(TheZBuffer,0,320*200*sizeof(pl_ZBuffer));
-    memset(TheFrameBuffer,0,320*200); // clear framebuffer for next frame
+    memset(TheZBuffer,0,W*H*sizeof(pl_ZBuffer));
+    memset(TheFrameBuffer,0,W*H); // clear framebuffer for next frame
     plRenderBegin(TheCamera);        // Start rendering with the camera
     plRenderLight(TheLight);         // Render our light
     plRenderObj(TheCube);            // Render our cube
     plRenderObj(TheTorus);           // Render our torus
     plRenderEnd();                   // Finish rendering
     exWaitVSync();                   // Sync with retrace
-    memcpy(exGraphMem,TheFrameBuffer,320*200); // dump to screen
+    memcpy(exGraphMem,TheFrameBuffer,W*H); // dump to screen
   }
   free(TheFrameBuffer); // Free up memory
   free(TheZBuffer);

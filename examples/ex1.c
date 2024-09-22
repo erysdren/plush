@@ -18,7 +18,7 @@ pl_Obj *TheCube;      // Our cube object
 pl_Mat *CubeMat;      // The material for the cube
 pl_Mat *AllMaterials[2]; // Used for creating palette
 pl_Cam *TheCamera; // Our camera
-char TheFrameBuffer[320*200]; // Our framebuffer to render to
+char TheFrameBuffer[W*H]; // Our framebuffer to render to
 char ThePalette[768];
 
 int main() { // Main
@@ -49,9 +49,9 @@ int main() { // Main
  
   TheCube = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
 
-  TheCamera = plCamCreate(320, // Screen width
-                          200, // Screen height
-                          320*3.0/(200*4.0), // Aspect ratio
+  TheCamera = plCamCreate(W, // Screen width
+                          H, // Screen height
+                          W*3.0/(H*4.0), // Aspect ratio
                           90.0, // Field of view
                           TheFrameBuffer, // Framebuffer
                           NULL // ZBuffer (none)
@@ -68,13 +68,13 @@ int main() { // Main
     TheCube->Xa += 1.0; // Rotate by 1 degree on each axis
     TheCube->Ya += 1.0;
     TheCube->Za += 1.0;
-    memset(TheFrameBuffer,0,320*200); // clear framebuffer for next frame
+    memset(TheFrameBuffer,0,W*H); // clear framebuffer for next frame
     plRenderBegin(TheCamera);        // Start rendering with the camera
     plRenderLight(TheLight);         // Render our light
     plRenderObj(TheCube);            // Render our object
     plRenderEnd();                   // Finish rendering
     exWaitVSync();                   // Sync with retrace
-    memcpy(exGraphMem,TheFrameBuffer,320*200); // dump to screen
+    memcpy(exGraphMem,TheFrameBuffer,W*H); // dump to screen
   }
   exSetText(); // Restore text mode
   return 0;          // Quit

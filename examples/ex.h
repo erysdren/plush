@@ -3,6 +3,14 @@
 
 #include "SDL.h"
 
+#ifndef W
+#define W (640)
+#endif
+
+#ifndef H
+#define H (480)
+#endif
+
 static char *exGraphMem;
 static SDL_Window *exWindow;
 static SDL_Surface *exWindowSurface;
@@ -54,11 +62,11 @@ static void exSetGraphics(void)
 {
 	SDL_Init(SDL_INIT_VIDEO);
 
-	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 320, 200, SDL_WINDOW_SHOWN);
+	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_SHOWN);
 
 	exWindowSurface = SDL_GetWindowSurface(exWindow);
 
-	exSurface = SDL_CreateRGBSurfaceWithFormat(0, 320, 200, 8, SDL_PIXELFORMAT_INDEX8);
+	exSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 8, SDL_PIXELFORMAT_INDEX8);
 
 	exGraphMem = exSurface->pixels;
 }
