@@ -29,8 +29,10 @@ int main() { // Main
          "  SPACE: toggle perspective correction\n"
          "  ESC: quit\n"
          " Hit any key to begin\n");
+#if 0
   while (!exGetKey()); // Wait for key
   while (exGetKey());  // Make sure no other keys are in the queue
+#endif
   
 #if defined(DJGPP) || defined(__WATCOMC__)
    // Put the fpu in a low precision, no exception state

@@ -10,7 +10,21 @@ static SDL_Surface *exSurface;
 
 static int exGetKey(void)
 {
-	return SDL_QuitRequested();
+	SDL_Event event;
+
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type)
+		{
+			case SDL_QUIT:
+				exit(0);
+
+			case SDL_KEYDOWN:
+				return event.key.keysym.sym;
+		}
+	}
+
+	return 0;
 }
 
 static void exWaitVSync(void)
