@@ -6,6 +6,8 @@ project(Plush
 	VERSION 1.2.0
 )
 
+# sources
+
 set(PLUSH_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/source/cam.c
 	${CMAKE_CURRENT_SOURCE_DIR}/source/clip.c
@@ -35,9 +37,41 @@ set(PLUSH_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/source/plush.h
 )
 
-add_library(plush STATIC ${PLUSH_SOURCES})
+# library
 
+add_library(plush STATIC ${PLUSH_SOURCES})
 target_include_directories(plush PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/source)
+
+find_library(MATH m)
+if(MATH)
+	target_link_libraries(plush PUBLIC ${MATH})
+endif()
+
+# examples
+
+find_package(SDL2)
+
+if(SDL2_FOUND)
+
+	add_executable(ex1 ${CMAKE_CURRENT_SOURCE_DIR}/examples/ex1.c)
+	target_link_libraries(ex1 PUBLIC plush ${SDL2_LIBRARIES})
+	target_include_directories(ex1 PUBLIC ${SDL2_INCLUDE_DIRS})
+
+	add_executable(ex2 ${CMAKE_CURRENT_SOURCE_DIR}/examples/ex2.c)
+	target_link_libraries(ex2 PUBLIC plush ${SDL2_LIBRARIES})
+	target_include_directories(ex2 PUBLIC ${SDL2_INCLUDE_DIRS})
+
+	add_executable(ex3 ${CMAKE_CURRENT_SOURCE_DIR}/examples/ex3.c)
+	target_link_libraries(ex3 PUBLIC plush ${SDL2_LIBRARIES})
+	target_include_directories(ex3 PUBLIC ${SDL2_INCLUDE_DIRS})
+
+	add_executable(ex4 ${CMAKE_CURRENT_SOURCE_DIR}/examples/ex4.c)
+	target_link_libraries(ex4 PUBLIC plush ${SDL2_LIBRARIES})
+	target_include_directories(ex4 PUBLIC ${SDL2_INCLUDE_DIRS})
+
+endif()
+
+# install
 
 include(GNUInstallDirs)
 configure_file(${PROJECT_SOURCE_DIR}/cmake/plush.pc.in ${PROJECT_BINARY_DIR}/plush.pc @ONLY)
