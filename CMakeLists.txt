@@ -42,6 +42,10 @@ set(PLUSH_HEADERS
 add_library(plush STATIC ${PLUSH_SOURCES})
 target_include_directories(plush PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/source)
 
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+	target_compile_options(plush PRIVATE -Wall -Wextra)
+endif()
+
 find_library(MATH m)
 if(MATH)
 	target_link_libraries(plush PUBLIC ${MATH})

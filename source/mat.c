@@ -208,13 +208,13 @@ static void _plGenerateTextureEnvPalette(pl_Mat *m) {
         }
       break;
       case PL_TEXENV_MAX:
-      break;
         for (whichindex = 0; whichindex < m->Texture->NumColors; whichindex++) {
           *pal++ = plMax(texpal[0],envpal[0]);
           *pal++ = plMax(texpal[1],envpal[1]);
           *pal++ = plMax(texpal[2],envpal[2]);
           texpal+=3;
         }
+      break;
       default: // add
         for (whichindex = 0; whichindex < m->Texture->NumColors; whichindex++) {
           c = (pl_sInt) (*texpal++) + (pl_sInt) envpal[0]; *pal++ = plMax(0,plMin(255,c));

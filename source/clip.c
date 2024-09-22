@@ -110,7 +110,7 @@ void plClipSetFrustum(pl_Cam *cam) {
 
 
 void plClipRenderFace(pl_Face *face) {
-  pl_uInt k, a, w, numVerts, q;
+  pl_uInt k, a, w, numVerts;
   double tmp, tmp2;
   pl_Face newface;
 
@@ -124,7 +124,6 @@ void plClipRenderFace(pl_Face *face) {
   }
 
   numVerts = 3;
-  q = 0;
   a = (m_clipPlanes[0][3] < 0.0 ? 0 : 1);
   while (a < NUM_CLIP_PLANES && numVerts > 2)
   {
