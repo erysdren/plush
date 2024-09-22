@@ -2,6 +2,8 @@
 
 A neat, portable, realtime 3D rendering library originally created between 1996 and 2000 by Justin Frankel and Nullsoft, Inc.
 
+Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
+
 ## Features
 
 - Rasterization:
