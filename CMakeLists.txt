@@ -69,6 +69,12 @@ if(SDL2_FOUND)
 	target_link_libraries(ex4 PUBLIC plush ${SDL2_LIBRARIES})
 	target_include_directories(ex4 PUBLIC ${SDL2_INCLUDE_DIRS})
 
+	# copy texture files
+
+	foreach(file texture1.pcx)
+			configure_file(${CMAKE_CURRENT_SOURCE_DIR}/examples/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
+	endforeach()
+
 endif()
 
 # install
