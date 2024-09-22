@@ -73,6 +73,15 @@ if(SDL2_FOUND)
 	target_link_libraries(ex4 PUBLIC plush ${SDL2_LIBRARIES})
 	target_include_directories(ex4 PUBLIC ${SDL2_INCLUDE_DIRS})
 
+	# compiler specific options
+
+	if(CMAKE_C_COMPILER_ID STREQUAL "TinyCC")
+		target_compile_definitions(ex1 PUBLIC SDL_DISABLE_IMMINTRIN_H)
+		target_compile_definitions(ex2 PUBLIC SDL_DISABLE_IMMINTRIN_H)
+		target_compile_definitions(ex3 PUBLIC SDL_DISABLE_IMMINTRIN_H)
+		target_compile_definitions(ex4 PUBLIC SDL_DISABLE_IMMINTRIN_H)
+	endif()
+
 	# copy texture files
 
 	foreach(file texture1.pcx)
