@@ -15,6 +15,17 @@ SortIncludes: Never
 AlignEscapedNewlines: DontAlign
 ColumnLimit: 80
 Cpp11BracedListStyle: false
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: false
+  AfterCaseLabel: true
+  AfterClass: false
+  AfterStruct: false
+  BeforeElse: true
+  BeforeWhile: false
+  AfterExternBlock: false
+  SplitEmptyFunction: true
+  SplitEmptyNamespace: true
+  AfterControlStatement: Always
 AlignArrayOfStructures: None
 ---
