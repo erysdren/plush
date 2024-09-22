@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.30)
-project(Plush LANGUAGES C VERSION 1.2.0)
+project(Plush
+	DESCRIPTION "A neat, portable, realtime 3D rendering library."
+	HOMEPAGE_URL "https://github.com/erysdren/plush"
+	LANGUAGES C
+	VERSION 1.2.0
+)
 
 add_library(plush STATIC
 	${CMAKE_CURRENT_SOURCE_DIR}/source/cam.c
@@ -26,5 +31,7 @@ add_library(plush STATIC
 target_include_directories(plush PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/source)
 
 include(GNUInstallDirs)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/plush.pc.in ${PROJECT_BINARY_DIR}/plush.pc @ONLY)
 install(TARGETS plush DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/source/plush.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plush.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
