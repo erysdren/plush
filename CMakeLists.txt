@@ -6,7 +6,7 @@ project(Plush
 	VERSION 1.2.0
 )
 
-add_library(plush STATIC
+set(PLUSH_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/source/cam.c
 	${CMAKE_CURRENT_SOURCE_DIR}/source/clip.c
 	${CMAKE_CURRENT_SOURCE_DIR}/source/light.c
@@ -28,10 +28,19 @@ add_library(plush STATIC
 	${CMAKE_CURRENT_SOURCE_DIR}/source/text.c
 )
 
+set(PLUSH_HEADERS
+	${CMAKE_CURRENT_SOURCE_DIR}/source/pl_conf.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/pl_defs.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/pl_types.h
+	${CMAKE_CURRENT_SOURCE_DIR}/source/plush.h
+)
+
+add_library(plush STATIC ${PLUSH_SOURCES})
+
 target_include_directories(plush PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/source)
 
 include(GNUInstallDirs)
 configure_file(${PROJECT_SOURCE_DIR}/cmake/plush.pc.in ${PROJECT_BINARY_DIR}/plush.pc @ONLY)
 install(TARGETS plush DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/source/plush.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${PLUSH_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/plush)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plush.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
