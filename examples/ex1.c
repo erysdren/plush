@@ -44,7 +44,7 @@ int main() { // Main
   plMatMapToPal(CubeMat,ThePalette,0,255); // Map the material to our palette
 
   // Convert std 8 bit/chan palette to vga's 6 bit/chan palette
-  for (i = 0; i < 768; i ++) ThePalette[i] >>= 2;
+  // for (i = 0; i < 768; i ++) ThePalette[i] >>= 2;
   exSetPalette(ThePalette); // Set the palette
  
   TheCube = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
