@@ -36,6 +36,8 @@ Copyright (C) 1996-1998, Justin Frankel
 
 Copyright (C) 1998-2000, Nullsoft, Inc.
 
+Copyright (C) 2024, erysdren (it/she/they)
+
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
