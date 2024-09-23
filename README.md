@@ -6,6 +6,13 @@ This version has been updated with some minor modernization tweaks, including th
 
 Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 
+## Todo
+
+- Fix some 64-bit correctness in the `.3DS` format loader
+- Add more format loaders
+- Allow library user to override what I/O functions it uses (rather than libc)
+- Run clang-format on the code
+
 ## Features
 
 - Rasterization:
