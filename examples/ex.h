@@ -11,14 +11,32 @@
 #define H (480)
 #endif
 
-static char *exGraphMem;
-static SDL_Window *exWindow;
-static SDL_Surface *exWindowSurface;
-static SDL_Surface *exSurface;
+static char *exGraphMem = NULL;
+static SDL_Window *exWindow = NULL;
+static SDL_Surface *exWindowSurface = NULL;
+static SDL_Surface *exSurface = NULL;
+static int exMouseButtons = 0;
+static int exMouseX = 0;
+static int exMouseY = 0;
+static int exMouseDeltaX = 0;
+static int exMouseDeltaY = 0;
+
+static int exClockPerSecond(void)
+{
+	return 1000;
+}
+
+static int exClock(void)
+{
+	return (int)SDL_GetTicks();
+}
 
 static int exGetKey(void)
 {
 	SDL_Event event;
+	int lastkey = 0;
+
+	exMouseDeltaX = exMouseDeltaY = 0;
 
 	while (SDL_PollEvent(&event))
 	{
@@ -27,12 +45,34 @@ static int exGetKey(void)
 			case SDL_QUIT:
 				exit(0);
 
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_LEFT)
+					exMouseButtons |= 1;
+				if (event.button.button == SDL_BUTTON_RIGHT)
+					exMouseButtons |= 2;
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				if (event.button.button == SDL_BUTTON_LEFT)
+					exMouseButtons &= ~1;
+				if (event.button.button == SDL_BUTTON_RIGHT)
+					exMouseButtons &= ~2;
+				break;
+
+			case SDL_MOUSEMOTION:
+				exMouseX = event.motion.x;
+				exMouseY = event.motion.y;
+				exMouseDeltaX = event.motion.xrel;
+				exMouseDeltaY = event.motion.yrel;
+				break;
+
 			case SDL_KEYDOWN:
-				return event.key.keysym.sym;
+				lastkey = event.key.keysym.sym;
+				break;
 		}
 	}
 
-	return 0;
+	return lastkey;
 }
 
 static void exWaitVSync(void)
