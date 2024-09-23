@@ -7,6 +7,10 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include "plush.h"
 
+char plVersionString[] = "Plush 3D Version 1.2.0";
+char plCopyrightString[] =
+"Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.";
+
 pl_uChar plText_DefaultFont[256*16] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
   0, 0, 60, 66, 129, 231, 165, 153, 129, 153, 66, 60, 0, 0, 0, 0, 

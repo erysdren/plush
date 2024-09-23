@@ -44,6 +44,8 @@
 extern "C" {
 #endif
 
+extern char plVersionString[];      /* Version string */
+extern char plCopyrightString[];    /* Copyright string */
 extern pl_uChar plText_DefaultFont[256*16]; /* Default 8x16 font for plText* */
 extern pl_uInt32 plRender_TriStats[4]; /* Three different triangle counts from 
                                           the last plRender() block:
