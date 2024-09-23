@@ -6,6 +6,10 @@ project(Plush
 	VERSION 1.2.0
 )
 
+# options
+
+option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
+
 # sources
 
 set(PLUSH_SOURCES
@@ -53,26 +57,34 @@ endif()
 
 # examples
 
-find_package(SDL2)
+if(PLUSH_BUILD_EXAMPLES)
 
-if(SDL2_FOUND)
+	find_package(SDL2)
 
-	# build examples
+	if(SDL2_FOUND)
 
-	foreach(example ex1 ex2 ex3 ex4 fly model)
-		add_executable(${example} ${CMAKE_CURRENT_SOURCE_DIR}/examples/${example}.c)
-		target_link_libraries(${example} PUBLIC plush ${SDL2_LIBRARIES})
-		target_include_directories(${example} PUBLIC ${SDL2_INCLUDE_DIRS})
-		if(CMAKE_C_COMPILER_ID STREQUAL "TinyCC")
-			target_compile_definitions(${example} PUBLIC SDL_DISABLE_IMMINTRIN_H)
-		endif()
-	endforeach()
+		# build examples
 
-	# copy texture files
+		foreach(example ex1 ex2 ex3 ex4 fly model)
+			add_executable(${example} ${CMAKE_CURRENT_SOURCE_DIR}/examples/${example}.c)
+			target_link_libraries(${example} PUBLIC plush ${SDL2_LIBRARIES})
+			target_include_directories(${example} PUBLIC ${SDL2_INCLUDE_DIRS})
+			if(CMAKE_C_COMPILER_ID STREQUAL "TinyCC")
+				target_compile_definitions(${example} PUBLIC SDL_DISABLE_IMMINTRIN_H)
+			endif()
+		endforeach()
 
-	foreach(file fork.3ds ground.pcx sky.pcx sky2.pcx texture1.pcx)
-		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/examples/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
-	endforeach()
+		# copy texture files
+
+		foreach(file fork.3ds ground.pcx sky.pcx sky2.pcx texture1.pcx)
+			configure_file(${CMAKE_CURRENT_SOURCE_DIR}/examples/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
+		endforeach()
+
+	else()
+
+		message(WARNING "SDL2 not found, cannot build Plush examples")
+
+	endif()
 
 endif()
 
