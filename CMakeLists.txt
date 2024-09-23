@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.28)
 project(Plush
 	DESCRIPTION "A neat, portable, realtime 3D rendering library."
 	HOMEPAGE_URL "https://github.com/erysdren/plush"
@@ -45,10 +45,6 @@ set(PLUSH_HEADERS
 
 add_library(plush STATIC ${PLUSH_SOURCES})
 target_include_directories(plush PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/source)
-
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-	target_compile_options(plush PRIVATE -Wall -Wextra)
-endif()
 
 find_library(MATH m)
 if(MATH)
