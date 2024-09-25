@@ -87,7 +87,31 @@ endif()
 # install
 
 include(GNUInstallDirs)
-configure_file(${PROJECT_SOURCE_DIR}/cmake/plush.pc.in ${PROJECT_BINARY_DIR}/plush.pc @ONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/plush.pc.in ${CMAKE_CURRENT_BINARY_DIR}/plush.pc @ONLY)
+
 install(TARGETS plush DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${PLUSH_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/plush)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plush.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/PlushConfig.cmake
+	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/plush
+	NO_SET_AND_CHECK_MACRO
+	NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+write_basic_package_version_file(
+	"${CMAKE_CURRENT_BINARY_DIR}/PlushConfigVersion.cmake"
+	VERSION "${PROJECT_VERSION}"
+	COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+	${CMAKE_CURRENT_BINARY_DIR}/PlushConfig.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/PlushConfigVersion.cmake
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/plush
+)
