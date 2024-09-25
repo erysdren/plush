@@ -13,6 +13,8 @@
 
 static char *exGraphMem = NULL;
 static SDL_Window *exWindow = NULL;
+static SDL_Renderer *exRenderer = NULL;
+static SDL_Texture *exTexture = NULL;
 static SDL_Surface *exWindowSurface = NULL;
 static SDL_Surface *exSurface = NULL;
 static int exMouseButtons = 0;
@@ -77,9 +79,11 @@ static int exGetKey(void)
 
 static void exWaitVSync(void)
 {
-	SDL_Delay(10);
 	SDL_BlitSurface(exSurface, NULL, exWindowSurface, NULL);
-	SDL_UpdateWindowSurface(exWindow);
+	SDL_UpdateTexture(exTexture, NULL, exWindowSurface->pixels, exWindowSurface->pitch);
+	SDL_RenderClear(exRenderer);
+	SDL_RenderCopy(exRenderer, exTexture, NULL, NULL);
+	SDL_RenderPresent(exRenderer);
 }
 
 static void exSetPalette(char *palette)
@@ -100,20 +104,33 @@ static void exSetPalette(char *palette)
 
 static void exSetGraphics(void)
 {
+	Uint32 format;
+
 	SDL_Init(SDL_INIT_VIDEO);
 
-	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_SHOWN);
+	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
-	exWindowSurface = SDL_GetWindowSurface(exWindow);
+	exRenderer = SDL_CreateRenderer(exWindow, -1, SDL_RENDERER_PRESENTVSYNC);
 
-	exSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 8, SDL_PIXELFORMAT_INDEX8);
+	SDL_RenderSetLogicalSize(exRenderer, W, H);
+
+	format = SDL_GetWindowPixelFormat(exWindow);
+
+	exTexture = SDL_CreateTexture(exRenderer, format, SDL_TEXTUREACCESS_STREAMING, W, H);
+
+	exWindowSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 0, format);
+
+	exSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 0, SDL_PIXELFORMAT_INDEX8);
 
 	exGraphMem = exSurface->pixels;
 }
 
 static void exSetText(void)
 {
+	SDL_FreeSurface(exWindowSurface);
 	SDL_FreeSurface(exSurface);
+	SDL_DestroyTexture(exTexture);
+	SDL_DestroyRenderer(exRenderer);
 	SDL_DestroyWindow(exWindow);
 	SDL_Quit();
 }
