@@ -61,7 +61,7 @@ if(PLUSH_BUILD_EXAMPLES)
 
 		# build examples
 
-		foreach(example ex1 ex2 ex3 ex4 fly model)
+		foreach(example eggbug ex1 ex2 ex3 ex4 fly model)
 			add_executable(${example} ${CMAKE_CURRENT_SOURCE_DIR}/examples/${example}.c)
 			target_link_libraries(${example} PUBLIC plush ${SDL2_LIBRARIES})
 			target_include_directories(${example} PUBLIC ${SDL2_INCLUDE_DIRS})
@@ -72,7 +72,7 @@ if(PLUSH_BUILD_EXAMPLES)
 
 		# copy texture files
 
-		foreach(file fork.3ds ground.pcx sky.pcx sky2.pcx texture1.pcx)
+		foreach(file eggbug.3ds eggbug.pcx fork.3ds ground.pcx sky.pcx sky2.pcx texture1.pcx)
 			configure_file(${CMAKE_CURRENT_SOURCE_DIR}/examples/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
 		endforeach()
 
