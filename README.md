@@ -13,6 +13,10 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 - Allow library user to override what I/O functions it uses (rather than libc)
 - Run clang-format on the code
 
+## Notes
+
+- [Eggbug model created by Xenon Fossil](https://xenonfossil.itch.io/low-poly-eggbug)
+
 ## Features
 
 - Rasterization:
