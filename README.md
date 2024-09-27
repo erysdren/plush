@@ -1,5 +1,9 @@
 ![Plush 3D v1.2.0](/.github/plush.png)
 
+|   |   |   |
+|---|---|---|
+| ![](.github/screenshot1.png) | ![](.github/screenshot2.png) | ![](.github/screenshot3.png) | ![](.github/screenshot4.png) |
+
 A neat, portable, realtime 3D rendering library originally created between 1996 and 2000 by Justin Frankel and Nullsoft, Inc.
 
 This version has been updated with some minor modernization tweaks, including the use of `stdint.h` and packaging through CMake and pkg-config. The original examples have also been ported to SDL2.
