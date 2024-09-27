@@ -17,8 +17,23 @@ uint8_t framebuffer[W * H];
 pl_ZBuffer zbuffer[W * H];
 uint8_t palette[768];
 
+#define NUM_EGGBUGS (16)
+struct {
+	pl_Float speed;
+	pl_Obj *model;
+} eggbugs[NUM_EGGBUGS];
+
+static int rangerandom(int min, int max)
+{
+	return rand() % (max + 1 - min) + min;
+}
+
 int main(int argc, char **argv)
 {
+	int now, then;
+	float dt;
+	int i;
+
 	/* setup graphics mode */
 	exSetGraphics();
 
@@ -34,27 +49,47 @@ int main(int argc, char **argv)
 
 	/* create palette */
 	plMatMakeOptPal(palette, 1, 255, &material, 1);
-	palette[0] = 0;
-	palette[1] = 128;
-	palette[2] = 128;
+	palette[0] = 32;
+	palette[1] = 32;
+	palette[2] = 32;
 	plMatMapToPal(material, palette, 0, 255);
 
 	exSetPalette(palette);
 
-	/* load eggbug model */
-	model = plRead3DSObj("eggbug.3ds", material);
-
 	/* create camera */
 	camera = plCamCreate(W, H, W * 3.0 / (H * 4.0), 90.0, framebuffer, zbuffer);
-	camera->Y = 8;
-	camera->Z = -128;
+	camera->Pitch = -45;
+	camera->Pan = 45;
+	camera->X = 256;
+	camera->Y = 384;
+	camera->Z = -256;
+
+	/* seed random timer */
+	srand(time(NULL));
+
+	/* setup eggbugs */
+	for (i = 0; i < NUM_EGGBUGS; i++)
+	{
+		eggbugs[i].model = plRead3DSObj("eggbug.3ds", material);
+		eggbugs[i].model->Xa = 90;
+		eggbugs[i].model->Ya = -90;
+		eggbugs[i].model->Xp = rangerandom(-128, 128);
+		eggbugs[i].model->Yp = rangerandom(-128, 128);
+		eggbugs[i].model->Zp = rangerandom(-128, 128) + 256;
+		eggbugs[i].speed = rangerandom(16, 64);
+	}
 
 	/* main loop */
+	then = exClock();
 	while (!exGetKey())
 	{
-		/* rotate model */
-		model->Xa = 90;
-		model->Ya += 1.5;
+		now = exClock();
+		dt = (float)(now - then) / (float)exClockPerSecond();
+		then = now;
+
+		/* move eggbugs */
+		for (i = 0; i < NUM_EGGBUGS; i++)
+			eggbugs[i].model->Zp -= eggbugs[i].speed * dt;
 
 		/* clear back buffer */
 		memset(zbuffer, 0, sizeof(zbuffer));
@@ -62,7 +97,11 @@ int main(int argc, char **argv)
 
 		/* render frame */
 		plRenderBegin(camera);
-		plRenderObj(model);
+
+		/* render eggbugs */
+		for (i = 0; i < NUM_EGGBUGS; i++)
+			plRenderObj(eggbugs[i].model);
+
 		plRenderEnd();
 
 		/* wait for vsync, then copy to screen */
@@ -71,8 +110,9 @@ int main(int argc, char **argv)
 	}
 
 	/* clean up */
+	for (i = 0; i < NUM_EGGBUGS; i++)
+		plObjDelete(eggbugs[i].model);
 	plCamDelete(camera);
-	plObjDelete(model);
 	plMatDelete(material);
 
 	/* shut down video */
