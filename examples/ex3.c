@@ -29,7 +29,7 @@ char *TheFrameBuffer; // Our framebuffer to render to
 pl_ZBuffer *TheZBuffer;   // Our zbuffer
 char ThePalette[768];
 
-int main() { // Main
+int main(int argc, char **argv) { // Main
   int i;
 #if defined(DJGPP) || defined(__WATCOMC__)
    // Put the fpu in a low precision, no exception state

@@ -22,7 +22,7 @@ pl_Cam *TheCamera; // Our camera
 char TheFrameBuffer[W*H]; // Our framebuffer to render to
 char ThePalette[768];
 
-int main() { // Main
+int main(int argc, char **argv) { // Main
   int i, done;
   // Show user controls
   printf("Controls:\n"

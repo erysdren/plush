@@ -21,7 +21,7 @@ pl_Cam *TheCamera; // Our camera
 char TheFrameBuffer[W*H]; // Our framebuffer to render to
 char ThePalette[768];
 
-int main() { // Main
+int main(int argc, char **argv) { // Main
   int i;
 #if defined(DJGPP) || defined(__WATCOMC__)
    // Put the fpu in a low precision, no exception state

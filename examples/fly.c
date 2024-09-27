@@ -23,7 +23,7 @@ void setup_materials(pl_Mat **mat, unsigned char *pal);
 pl_Obj *setup_landscape(pl_Mat *m, pl_Mat *sm, pl_Mat *sm2);
 
                        /* Main!!! */
-void main() { 
+int main(int argc, char **argv) {
   char lastmessage[80] = "Fly 3.0"; // last message used for status line
   int draw_sky = 1;                 // do we draw the sky?
   int wait_vsync = 1;               // do we wait for vsync?
@@ -190,6 +190,8 @@ void main() {
   printf("This has been a Plush demo app.\n"
          "Visit the Plush 3D homepage at: \n" 
          "  http://nullsoft.home.ml.org/plush/\n\n");
+
+  return 0;
 }
 
 void setup_materials(pl_Mat **mat, unsigned char *pal) {
