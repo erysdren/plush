@@ -20,9 +20,9 @@ pl_Obj *TheCube;      // Our cube object
 pl_Mat *CubeMat;      // The material for the cube
 pl_Mat *AllMaterials[2]; // Used for creating palette
 pl_Cam *TheCamera; // Our camera
-char *TheFrameBuffer; // Our framebuffer to render to
+pl_uChar *TheFrameBuffer; // Our framebuffer to render to
 pl_ZBuffer *TheZBuffer;   // Our zbuffer
-char ThePalette[768];
+pl_uChar ThePalette[768];
 
 int main(int argc, char **argv) { // Main
   int i;
@@ -32,7 +32,7 @@ int main(int argc, char **argv) { // Main
 #endif
   exSetGraphics(); // Set graphics
  
-  TheFrameBuffer = (char *) malloc(W*H); // Alloc framebuffer
+  TheFrameBuffer = (pl_uChar *) malloc(W*H); // Alloc framebuffer
   if (!TheFrameBuffer) { 
     exSetText(); 
     printf("Out of memory!\n");

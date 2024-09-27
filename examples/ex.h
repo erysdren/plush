@@ -11,7 +11,7 @@
 #define H (480)
 #endif
 
-static char *exGraphMem = NULL;
+static uint8_t *exGraphMem = NULL;
 static SDL_Window *exWindow = NULL;
 static SDL_Renderer *exRenderer = NULL;
 static SDL_Texture *exTexture = NULL;
@@ -86,7 +86,7 @@ static void exWaitVSync(void)
 	SDL_RenderPresent(exRenderer);
 }
 
-static void exSetPalette(char *palette)
+static void exSetPalette(uint8_t palette[768])
 {
 	int i;
 	SDL_Color colors[256];
@@ -122,7 +122,7 @@ static void exSetGraphics(void)
 
 	exSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 0, SDL_PIXELFORMAT_INDEX8);
 
-	exGraphMem = exSurface->pixels;
+	exGraphMem = (uint8_t *)exSurface->pixels;
 }
 
 static void exSetText(void)

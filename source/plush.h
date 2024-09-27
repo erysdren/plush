@@ -681,7 +681,7 @@ void plTextPutChar(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
     nothing
 */
 void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, pl_sChar *string);
+                  pl_uChar color, const char *string);
 
 /*
   plTextPrintf() is printf() for graphics
@@ -699,7 +699,7 @@ void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
     nothing
 */
 void plTextPrintf(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, pl_sChar *format, ...);
+                  pl_uChar color, const char *format, ...);
 
 /******************************************************************************
 ** Built-in Rasterizers

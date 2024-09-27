@@ -19,8 +19,8 @@ pl_Obj *TheCube;      // Our cube object
 pl_Mat *CubeMat;      // The material for the cube
 pl_Mat *AllMaterials[2]; // Used for creating palette
 pl_Cam *TheCamera; // Our camera
-char TheFrameBuffer[W*H]; // Our framebuffer to render to
-char ThePalette[768];
+pl_uChar TheFrameBuffer[W*H]; // Our framebuffer to render to
+pl_uChar ThePalette[768];
 
 int main(int argc, char **argv) { // Main
   int i, done;

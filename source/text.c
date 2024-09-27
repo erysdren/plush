@@ -77,7 +77,7 @@ void plTextPutChar(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
 }
 
 void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, pl_sChar *string) {
+                  pl_uChar color, const char *string) {
   pl_sInt xx = x;
   while (*string) {
     switch (*string) {
@@ -95,9 +95,9 @@ void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
 }
 
 void plTextPrintf(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, pl_sChar *format, ...) {
+                  pl_uChar color, const char *format, ...) {
   va_list arglist;
-  pl_sChar str[256];
+  char str[256];
   va_start(arglist, format);
   vsprintf((char *)str, (char *) format,arglist);
   va_end(arglist);
