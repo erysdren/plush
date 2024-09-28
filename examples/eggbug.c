@@ -17,7 +17,7 @@ uint8_t framebuffer[W * H];
 pl_ZBuffer zbuffer[W * H];
 uint8_t palette[768];
 
-#define NUM_EGGBUGS (16)
+#define NUM_EGGBUGS (32)
 struct {
 	pl_Float speed;
 	pl_Obj *model;
@@ -73,9 +73,9 @@ int main(int argc, char **argv)
 		eggbugs[i].model = plRead3DSObj("eggbug.3ds", material);
 		eggbugs[i].model->Xa = 90;
 		eggbugs[i].model->Ya = -90;
-		eggbugs[i].model->Xp = rangerandom(-128, 128);
-		eggbugs[i].model->Yp = rangerandom(-128, 128);
-		eggbugs[i].model->Zp = rangerandom(-128, 128) + 256;
+		eggbugs[i].model->Xp = rangerandom(-256, 256);
+		eggbugs[i].model->Yp = rangerandom(-256, 256);
+		eggbugs[i].model->Zp = rangerandom(-256, 256) + 512;
 		eggbugs[i].speed = rangerandom(16, 64);
 	}
 
@@ -89,7 +89,18 @@ int main(int argc, char **argv)
 
 		/* move eggbugs */
 		for (i = 0; i < NUM_EGGBUGS; i++)
+		{
 			eggbugs[i].model->Zp -= eggbugs[i].speed * dt;
+
+			/* reset if needed */
+			if (eggbugs[i].model->Zp < -512)
+			{
+				eggbugs[i].model->Xp = rangerandom(-256, 256);
+				eggbugs[i].model->Yp = rangerandom(-256, 256);
+				eggbugs[i].model->Zp = rangerandom(-256, 256) + 512;
+				eggbugs[i].speed = rangerandom(32, 128);
+			}
+		}
 
 		/* clear back buffer */
 		memset(zbuffer, 0, sizeof(zbuffer));
