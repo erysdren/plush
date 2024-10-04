@@ -7,12 +7,15 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include "plush.h"
 
-static pl_uInt _plHiBit(pl_uInt16);
-static pl_uInt _plOptimizeImage(pl_uChar *, pl_uChar *, pl_uInt32);
+/* texture.c */
+pl_uInt _plHiBit(pl_uInt16 x);
+pl_uInt _plOptimizeImage(pl_uChar *pal, pl_uChar *data, pl_uInt32 len);
+void _plRescaleImage(pl_uChar *in, pl_uChar *out, pl_uInt inx,
+                            pl_uInt iny, pl_uInt outx, pl_uInt outy);
+
+/* read_pcx.c */
 static pl_sInt _plReadPCX(char *filename, pl_uInt16 *width, pl_uInt16 *height, 
                           pl_uChar **pal, pl_uChar **data);
-static void _plRescaleImage(pl_uChar *in, pl_uChar *out, pl_uInt inx, 
-                            pl_uInt iny, pl_uInt outx, pl_uInt outy);
 
 pl_Texture *plReadPCXTex(char *fn, pl_Bool rescale, pl_Bool optimize) {
   pl_uChar *data, *pal;
@@ -52,45 +55,6 @@ pl_Texture *plReadPCXTex(char *fn, pl_Bool rescale, pl_Bool optimize) {
   t->Data = data;
   t->PaletteData = pal;
   return t;
-}
-
-
-static pl_uInt _plHiBit(pl_uInt16 x) {
-  pl_uInt i = 16, mask = 1<<15;
-  while (mask) {
-    if (x & mask) return i;
-    mask >>= 1; i--;
-  }
-  return 0;
-}
-
-static pl_uInt _plOptimizeImage(pl_uChar *pal, pl_uChar *data, pl_uInt32 len) {
-  pl_uChar colors[256], *dd = data;
-  pl_uChar remap[256];
-  pl_sInt32 lastused, firstunused;
-  pl_uInt32 x;
-  memset(colors,0,256);
-  for (x = 0; x < len; x ++) colors[(pl_uInt) *dd++] = 1;
-  lastused = -1;
-  for (x = 0; x < 256; x ++) remap[x] = (pl_uChar)x;
-  lastused = 255;
-  firstunused = 0;
-  for (;;) {  
-    while (firstunused < 256 && colors[firstunused]) firstunused++;
-    if (firstunused > 255) break;
-    while (lastused >= 0 && !colors[lastused]) lastused--;
-    if (lastused < 0) break;
-	if (lastused <= firstunused) break;
-    pal[firstunused*3] = pal[lastused*3];
-    pal[firstunused*3+1] = pal[lastused*3+1];
-    pal[firstunused*3+2] = pal[lastused*3+2];
-    colors[lastused] = 0;
-    colors[firstunused] = 1;
-	  remap[lastused] = (pl_uChar) firstunused;
-  }
-  x = len;
-  while (x--) *data++ = remap[(pl_uInt) *data];
-  return (lastused+1);
 }
 
 static pl_sInt _plReadPCX(char *filename, pl_uInt16 *width, pl_uInt16 *height,
@@ -140,23 +104,4 @@ static pl_sInt _plReadPCX(char *filename, pl_uInt16 *width, pl_uInt16 *height,
   fread(*pal,3,256,fp);
   fclose(fp);
   return 0;
-}
-
-static void _plRescaleImage(pl_uChar *in, pl_uChar *out, pl_uInt inx, 
-                            pl_uInt iny, pl_uInt outx, pl_uInt outy) {
-  pl_uInt x;
-  pl_uInt32 X, dX, dY, Y;
-  dX = (inx<<16) / outx;
-  dY = (iny<<16) / outy;
-  Y = 0;
-  do {
-    pl_uChar *ptr = in + inx*(Y>>16);
-    X = 0;
-    Y += dY;
-    x = outx;
-    do {
-      *out++ = ptr[X>>16];
-      X += dX;
-    } while (--x); 
-  } while (--outy);
 }

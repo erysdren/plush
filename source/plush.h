@@ -302,7 +302,23 @@ pl_Light *plLightSet(pl_Light *light, pl_uChar mode, pl_Float x, pl_Float y,
 */
 void plLightDelete(pl_Light *l);
 
-/* PUT ME SOMEWHERE */
+/******************************************************************************
+** Texture Handling Routines (texture.c)
+******************************************************************************/
+
+/*
+  plTexCreate() creates a texture with the provided pixel and palette data
+  Parameters:
+    w: the width of the image data in pixels
+    h: the height of the image data in pixels
+    p: pointer to a tightly packed pixel array (w * h bytes in size)
+    nc: number of colors in the palette
+    c: palette data (nc * 3 bytes in size)
+  Returns:
+    a pointer to a new texture.
+*/
+pl_Texture *plTexCreate(pl_uInt w, pl_uInt h, pl_uChar *p, pl_uInt nc, pl_uChar *c);
+
 /*
 ** plTexDelete() frees all memory associated with "t"
 */

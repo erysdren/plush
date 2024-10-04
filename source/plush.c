@@ -269,12 +269,3 @@ pl_uChar plText_DefaultFont[256*16] = {
   0, 0, 0, 0, 126, 126, 126, 126, 126, 126, 126, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
-
-/* Can't find another place to put this... */
-void plTexDelete(pl_Texture *t) {
-  if (t) {
-    if (t->Data) free(t->Data);
-    if (t->PaletteData) free(t->PaletteData);
-    free(t);
-  }
-}

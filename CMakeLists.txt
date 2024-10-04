@@ -32,6 +32,7 @@ set(PLUSH_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/source/render.c
 	${CMAKE_CURRENT_SOURCE_DIR}/source/spline.c
 	${CMAKE_CURRENT_SOURCE_DIR}/source/text.c
+	${CMAKE_CURRENT_SOURCE_DIR}/source/texture.c
 )
 
 set(PLUSH_HEADERS
@@ -61,7 +62,7 @@ if(PLUSH_BUILD_EXAMPLES)
 
 		# build examples
 
-		foreach(example eggbug ex1 ex2 ex3 ex4 fly model)
+		foreach(example eggbug ex1 ex2 ex3 ex4 fly model texture)
 			add_executable(${example} ${CMAKE_CURRENT_SOURCE_DIR}/examples/${example}.c)
 			target_link_libraries(${example} PUBLIC plush ${SDL2_LIBRARIES})
 			target_include_directories(${example} PUBLIC ${SDL2_INCLUDE_DIRS})
