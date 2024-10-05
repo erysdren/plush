@@ -27,6 +27,8 @@ typedef struct _pl_Texture {
 /* 
 ** Material type. Create materials with plMatCreate().
 */
+typedef struct _pl_Face pl_Face;
+typedef struct _pl_Cam pl_Cam;
 typedef struct _pl_Mat {
   pl_sInt Ambient[3];          /* RGB of surface (0-255 is a good range) */
   pl_sInt Diffuse[3];          /* RGB of diffuse (0-255 is a good range) */
@@ -52,7 +54,8 @@ typedef struct _pl_Mat {
   pl_uInt16 *_AddTable;        /* Shading/Translucent/etc table */
   pl_uChar *_ReMapTable;       /* Table to remap colors to palette */
   pl_uChar *_RequestedColors;  /* _ColorsUsed colors, desired colors */
-  void (*_PutFace)();          /* Function that renders the triangle with this
+  void (*_PutFace)(pl_Cam *, pl_Face *);
+                               /* Function that renders the triangle with this
                                   material */
 } pl_Mat;
 
