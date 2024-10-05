@@ -46,6 +46,17 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 - Easy to use, cross-platform API
 - Architecture that makes it simple to add new rasterizers
 
+## Portability
+
+Plush is designed to be highly portable. It has been tested to work with the
+following compilers:
+
+- GCC 14.2.1
+- Clang 18.1.8
+- TinyCC 0.9.28rc
+- cproc #f66a6613
+- Open Watcom 1.9
+
 ## License
 
 Copyright (C) 1996-1998, Justin Frankel
