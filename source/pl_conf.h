@@ -36,8 +36,8 @@ typedef uint16_t pl_uInt16;  /* unsigned 16 bit integer */
 typedef signed int pl_sInt;            /* signed optimal integer */
 typedef unsigned int pl_uInt;          /* unsigned optimal integer */
 typedef int pl_Bool;                   /* boolean */
-typedef unsigned char pl_uChar;        /* unsigned 8 bit integer */
-typedef signed char pl_sChar;          /* signed 8 bit integer */
+typedef uint8_t pl_uChar;        /* unsigned 8 bit integer */
+typedef int8_t pl_sChar;          /* signed 8 bit integer */
 
 #ifdef __cplusplus
 }
