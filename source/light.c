@@ -35,7 +35,7 @@ pl_Light *plLightSet(pl_Light *light, pl_uChar mode, pl_Float x, pl_Float y,
 
 pl_Light *plLightCreate() {
   pl_Light *l;
-  l = malloc(sizeof(pl_Light));
+  l = (pl_Light *)malloc(sizeof(pl_Light));
   if (!l) return 0;
   memset(l,0,sizeof(pl_Light));
   return (l);

@@ -31,6 +31,9 @@
 #ifndef _PLUSH_H_
 #define _PLUSH_H_
 
+#include <stdint.h>
+#include <stddef.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

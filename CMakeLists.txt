@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(Plush
 	DESCRIPTION "A neat, portable, realtime 3D rendering library."
 	HOMEPAGE_URL "https://github.com/erysdren/plush"
-	LANGUAGES C
+	LANGUAGES C CXX
 	VERSION 1.2.0
 )
 
@@ -41,6 +41,8 @@ set(PLUSH_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/source/pl_types.h
 	${CMAKE_CURRENT_SOURCE_DIR}/source/plush.h
 )
+
+set_source_files_properties(${PLUSH_SOURCES} PROPERTIES LANGUAGE CXX )
 
 # library
 

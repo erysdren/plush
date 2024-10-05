@@ -34,7 +34,7 @@ void plCamSetTarget(pl_Cam *c, pl_Float x, pl_Float y, pl_Float z) {
 pl_Cam *plCamCreate(pl_uInt sw, pl_uInt sh, pl_Float ar, pl_Float fov,
                     pl_uChar *fb, pl_ZBuffer *zb) {
   pl_Cam *c;
-  c = malloc(sizeof(pl_Cam));
+  c = (pl_Cam *)malloc(sizeof(pl_Cam));
   if (!c) return 0;
   memset(c,0,sizeof(pl_Cam));
   c->Fov = fov;

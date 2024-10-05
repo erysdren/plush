@@ -11,8 +11,6 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-
 /* Maximum children per object */
 #define PL_MAX_CHILDREN (16)
 
