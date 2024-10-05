@@ -17,6 +17,7 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 - Add more format loaders
 - Allow library user to override what I/O functions it uses (rather than libc)
 - Run clang-format on the code
+- Modify the code so it can compile as C++
 
 ## Notes
 
