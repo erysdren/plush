@@ -1,2 +1,4 @@
-untracked/
-cmake-build*/
+/untracked/
+/cmake-build*/
+/.cache/
+/build/

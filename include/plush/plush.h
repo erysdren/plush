@@ -36,9 +36,9 @@
 #include <string.h>
 #include <math.h>
 
-#include "pl_conf.h"
-#include "pl_defs.h"
-#include "pl_types.h"
+#include <plush/pl_conf.h>
+#include <plush/pl_defs.h>
+#include <plush/pl_types.h>
 
 #ifdef __cplusplus
 extern "C" {
