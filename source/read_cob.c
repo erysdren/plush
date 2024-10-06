@@ -9,7 +9,7 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #define PL_COB_MAX_LINELENGTH 1024
 
-pl_Obj *plReadCOBObj(char *fn, pl_Mat *mat) {
+pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
   FILE *fp = fopen(fn,"rt");
   long int p1,m1,p2,m2,p3,m3;
   char temp_string[PL_COB_MAX_LINELENGTH];

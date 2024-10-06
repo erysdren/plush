@@ -24,7 +24,7 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include "plush.h"
 
-pl_Obj *plReadJAWObj(char *filename, pl_Mat *m) {
+pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
   FILE *jawfile;
   pl_Obj *obj;
   pl_uInt32 i;

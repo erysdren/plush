@@ -14,10 +14,10 @@ void _plRescaleImage(pl_uChar *in, pl_uChar *out, pl_uInt inx,
                             pl_uInt iny, pl_uInt outx, pl_uInt outy);
 
 /* read_pcx.c */
-static pl_sInt _plReadPCX(char *filename, pl_uInt16 *width, pl_uInt16 *height, 
+static pl_sInt _plReadPCX(const char *filename, pl_uInt16 *width, pl_uInt16 *height,
                           pl_uChar **pal, pl_uChar **data);
 
-pl_Texture *plReadPCXTex(char *fn, pl_Bool rescale, pl_Bool optimize) {
+pl_Texture *plReadPCXTex(const char *fn, pl_Bool rescale, pl_Bool optimize) {
   pl_uChar *data, *pal;
   pl_uInt16 x, y;
   pl_Texture *t;
@@ -57,7 +57,7 @@ pl_Texture *plReadPCXTex(char *fn, pl_Bool rescale, pl_Bool optimize) {
   return t;
 }
 
-static pl_sInt _plReadPCX(char *filename, pl_uInt16 *width, pl_uInt16 *height,
+static pl_sInt _plReadPCX(const char *filename, pl_uInt16 *width, pl_uInt16 *height,
                             pl_uChar **pal, pl_uChar **data) {
   pl_uInt16 sx, sy, ex, ey;
   FILE *fp = fopen(filename,"rb");

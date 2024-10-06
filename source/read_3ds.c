@@ -51,7 +51,7 @@ static _pl_3DSChunk _pl3DSChunkNames[] = {
     {0x0011,_pl3DSRGBBReader},
 };
 
-pl_Obj *plRead3DSObj(char *fn, pl_Mat *m) {
+pl_Obj *plRead3DSObj(const char *fn, pl_Mat *m) {
   FILE *f;
   pl_uInt32 p;
   _m = m;
@@ -125,9 +125,9 @@ static void _pl3DSTriMeshReader(FILE *f, pl_uInt32 p) {
   i = obj->NumFaces;
   face = obj->Faces;
   while (i--) {
-    face->Vertices[0] = obj->Vertices + (pl_uInt32) face->Vertices[0];
-    face->Vertices[1] = obj->Vertices + (pl_uInt32) face->Vertices[1];
-    face->Vertices[2] = obj->Vertices + (pl_uInt32) face->Vertices[2];
+    face->Vertices[0] = obj->Vertices + (ptrdiff_t) face->Vertices[0];
+    face->Vertices[1] = obj->Vertices + (ptrdiff_t) face->Vertices[1];
+    face->Vertices[2] = obj->Vertices + (ptrdiff_t) face->Vertices[2];
     face->MappingU[0] = face->Vertices[0]->xformedx;
     face->MappingV[0] = face->Vertices[0]->xformedy;
     face->MappingU[1] = face->Vertices[1]->xformedx;
@@ -176,9 +176,9 @@ static void _pl3DSFaceListReader(FILE *f, pl_uInt32 p) {
     c[2] = _pl3DSReadWord(f);
     flags = _pl3DSReadWord(f);
     if (feof(f)) return;
-    face->Vertices[0] = (pl_Vertex *) (c[0]&0x0000FFFF);
-    face->Vertices[1] = (pl_Vertex *) (c[1]&0x0000FFFF);
-    face->Vertices[2] = (pl_Vertex *) (c[2]&0x0000FFFF);
+    face->Vertices[0] = (pl_Vertex *) ((ptrdiff_t)c[0]);
+    face->Vertices[1] = (pl_Vertex *) ((ptrdiff_t)c[1]);
+    face->Vertices[2] = (pl_Vertex *) ((ptrdiff_t)c[2]);
     face->Material = _m;
     face++;
   }

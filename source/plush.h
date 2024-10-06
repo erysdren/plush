@@ -31,6 +31,8 @@
 #ifndef _PLUSH_H_
 #define _PLUSH_H_
 
+#include <stdint.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -511,7 +513,7 @@ pl_Obj *plMakeTorus(pl_Float r1, pl_Float r2, pl_uInt divrot,
       3) the third object is the second's first child
       4) etc
 */
-pl_Obj *plRead3DSObj(char *fn, pl_Mat *m);
+pl_Obj *plRead3DSObj(const char *fn, pl_Mat *m);
 
 /*
   plReadCOBObj() reads an ascii .COB object
@@ -526,7 +528,7 @@ pl_Obj *plRead3DSObj(char *fn, pl_Mat *m);
     Polygons with lots of sides are not always tesselated correctly. Just
       use the "Tesselate" button from within truespace to improve the results.
 */
-pl_Obj *plReadCOBObj(char *fn, pl_Mat *mat);
+pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat);
 
 /*
   plReadJAWObj() reads a .JAW object.
@@ -539,7 +541,7 @@ pl_Obj *plReadCOBObj(char *fn, pl_Mat *mat);
     For information on the .JAW format, please see the jaw3D homepage,
       http://www.tc.umn.edu/nlhome/g346/kari0022/jaw3d/
 */
-pl_Obj *plReadJAWObj(char *fn, pl_Mat *m);
+pl_Obj *plReadJAWObj(const char *fn, pl_Mat *m);
 
 /*
   plReadPCXTex() reads a 8bpp PCX texture
@@ -554,7 +556,7 @@ pl_Obj *plReadJAWObj(char *fn, pl_Mat *m);
       be optimized, and the texture might be scaled up so that it's dimensions
       will be a nice power of two.
 */
-pl_Texture *plReadPCXTex(char *fn, pl_Bool rescale, pl_Bool optimize);
+pl_Texture *plReadPCXTex(const char *fn, pl_Bool rescale, pl_Bool optimize);
 
 /******************************************************************************
 ** Math Code (math.c)
