@@ -17,7 +17,6 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 - Add more format loaders
 - Allow library user to override what I/O functions it uses (rather than libc)
 - Run clang-format on the code
-- Modify the code so it can compile as C++
 
 ## Notes
 
@@ -52,7 +51,8 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 Plush is designed to be highly portable. It has been tested to work with the
 following compilers:
 
-- GCC 14.2.1
+- gcc 14.2.1
+- g++ 14.2.1
 - Clang 18.1.8
 - TinyCC 0.9.28rc
 - cproc #f66a6613
