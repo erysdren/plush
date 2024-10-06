@@ -160,7 +160,7 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
     XL1 = (X1+(1<<19))>>20;
     Xlen = ((X2+(1<<19))>>20) - XL1;
     if (Xlen > 0) {
-      register pl_Float t;
+      pl_Float t;
       pZL = ZL = Z1;
       UL = U1;
       VL = V1;
@@ -387,7 +387,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
     XL1 = (X1+(1<<19))>>20;
     Xlen = ((X2+(1<<19))>>20) - XL1;
     if (Xlen > 0) {
-      register pl_Float t;
+      pl_Float t;
       CL = C1;
       pZL = ZL = Z1;
       UL = U1;

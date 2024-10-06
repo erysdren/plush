@@ -26,7 +26,7 @@ typedef struct {
       ((( x1 )*( x2 ))+(( y1 )*( y2 ))+(( z1 )*( z2 )))
 
 #define MACRO_plNormalizeVector(x,y,z) { \
-  register double length; \
+  double length; \
   length = ( x )*( x )+( y )*( y )+( z )*( z ); \
   if (length > 0.0000000001) { \
     pl_Float l = (pl_Float) sqrt(length); \
@@ -198,7 +198,7 @@ static void _RenderObj(pl_Obj *obj, pl_Float *bmatrix, pl_Float *bnmatrix) {
           face->eMappingV[2] = 32768 - (pl_sInt32) (face->Vertices[2]->xformedny*32768.0);
         } 
         if (face->Material->_st &(PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE)) {
-          register pl_uChar a;
+          pl_uChar a;
           for (a = 0; a < 3; a ++) {
             tmp = face->vsLighting[a];
             if (face->Material->_st & PL_SHADE_GOURAUD) {
