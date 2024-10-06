@@ -11,8 +11,6 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-
 /* Maximum children per object */
 #define PL_MAX_CHILDREN (16)
 
@@ -33,8 +31,8 @@ typedef int32_t pl_sInt32;     /* signed 32 bit integer */
 typedef uint32_t pl_uInt32;   /* unsigned 32 bit integer */
 typedef int16_t pl_sInt16;    /* signed 16 bit integer */
 typedef uint16_t pl_uInt16;  /* unsigned 16 bit integer */
-typedef signed int pl_sInt;            /* signed optimal integer */
-typedef unsigned int pl_uInt;          /* unsigned optimal integer */
+typedef int32_t pl_sInt;            /* signed optimal integer */
+typedef uint32_t pl_uInt;          /* unsigned optimal integer */
 typedef int pl_Bool;                   /* boolean */
 typedef uint8_t pl_uChar;        /* unsigned 8 bit integer */
 typedef int8_t pl_sChar;          /* signed 8 bit integer */
