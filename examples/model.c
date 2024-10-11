@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <plush.h> 
+#include <plush/plush.h>
 
 #include "ex.h" 
 

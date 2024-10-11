@@ -5,7 +5,7 @@ ASCII COB Object Reader
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 #define PL_COB_MAX_LINELENGTH 1024
 

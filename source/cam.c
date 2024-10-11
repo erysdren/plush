@@ -5,7 +5,7 @@ Camera Control
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 void plCamDelete(pl_Cam *c) {
   if (c) free(c);

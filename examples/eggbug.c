@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <plush.h> 
+#include <plush/plush.h>
 
-#include "ex.h" 
+#include "ex.h"
 
 pl_Obj *model;
 pl_Mat *material;

@@ -5,7 +5,7 @@ Object control
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 pl_Obj *plObjScale(pl_Obj *o, pl_Float s) {
   pl_uInt32 i = o->NumVertices;

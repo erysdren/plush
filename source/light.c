@@ -5,7 +5,7 @@ Light Control
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 pl_Light *plLightSet(pl_Light *light, pl_uChar mode, pl_Float x, pl_Float y,
                      pl_Float z, pl_Float intensity, pl_Float halfDist) {

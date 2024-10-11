@@ -5,7 +5,7 @@ Math and Matrix Control
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 void plMatrixRotate(pl_Float matrix[], pl_uChar m, pl_Float Deg) {
   pl_uChar m1, m2;

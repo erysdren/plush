@@ -5,7 +5,7 @@ read_3ds.c
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 typedef struct {
     pl_uInt16 id;

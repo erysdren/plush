@@ -5,7 +5,7 @@ n-th Dimensional Spline Interpolator
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 void plSplineGetPoint(pl_Spline *s, pl_Float frame, pl_Float *out) {
   pl_sInt32 i, i_1, i0, i1, i2;

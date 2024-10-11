@@ -5,7 +5,7 @@ Texture routines
 Copyright (c) 2024, erysdren (it/she/they)
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 pl_uInt _plHiBit(pl_uInt16 x) {
   pl_uInt i = 16, mask = 1<<15;

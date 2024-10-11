@@ -5,7 +5,7 @@ Text code and data (8xX bitmapped)
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 #include <stdarg.h>
 
 static pl_uChar font_height = 16;

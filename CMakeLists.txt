@@ -44,9 +44,16 @@ set(PLUSH_HEADERS
 
 # library
 
-add_library(plush STATIC ${PLUSH_SOURCES})
-target_include_directories(plush PUBLIC ${PROJECT_SOURCE_DIR}/source)
-
+add_library(plush STATIC)
+add_library(plush::plush ALIAS plush)
+target_sources(plush PRIVATE ${PLUSH_SOURCES})
+target_include_directories(plush
+	PUBLIC
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>
+	PRIVATE
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
+)
 find_library(MATH m)
 if(MATH)
 	target_link_libraries(plush PUBLIC ${MATH})
@@ -88,31 +95,38 @@ endif()
 # install
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/plush.pc.in ${PROJECT_BINARY_DIR}/plush.pc @ONLY)
 
-install(TARGETS plush DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${PLUSH_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/plush)
-install(FILES ${PROJECT_BINARY_DIR}/plush.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
+write_basic_package_version_file(${PROJECT_BINARY_DIR}/plush-config-version.cmake COMPATIBILITY AnyNewerVersion)
 
-include(CMakePackageConfigHelpers)
-
-configure_package_config_file(
-	${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in
-	${PROJECT_BINARY_DIR}/PlushConfig.cmake
-	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/plush
-	NO_SET_AND_CHECK_MACRO
-	NO_CHECK_REQUIRED_COMPONENTS_MACRO
+install(
+	FILES ${PROJECT_BINARY_DIR}/plush.pc
+	DESTINATION lib/pkgconfig
 )
 
-write_basic_package_version_file(
-	"${PROJECT_BINARY_DIR}/PlushConfigVersion.cmake"
-	VERSION "${PROJECT_VERSION}"
-	COMPATIBILITY AnyNewerVersion
+install(
+	TARGETS plush
+	EXPORT plush-targets
+	INCLUDES DESTINATION include
 )
 
-install(FILES
-	${PROJECT_BINARY_DIR}/PlushConfig.cmake
-	${PROJECT_BINARY_DIR}/PlushConfigVersion.cmake
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/plush
+install(
+	EXPORT plush-targets
+	DESTINATION lib/cmake
+	NAMESPACE plush::
+	FILE plush-config.cmake
+)
+
+install(
+	FILES ${PROJECT_BINARY_DIR}/plush-config-version.cmake
+	DESTINATION lib/cmake
+)
+
+install(
+	DIRECTORY
+	"${PROJECT_SOURCE_DIR}/include/"
+	TYPE INCLUDE
+	FILES_MATCHING PATTERN "*.h"
 )

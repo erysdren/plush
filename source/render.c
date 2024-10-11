@@ -5,7 +5,7 @@ Rendering code: this includes transformation, lighting, etc
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 typedef struct {
   pl_Float zd;

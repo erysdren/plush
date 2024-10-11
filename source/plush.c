@@ -5,7 +5,7 @@ Misc code and data
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 char plVersionString[] = "Plush 3D Version 1.2.0";
 char plCopyrightString[] =

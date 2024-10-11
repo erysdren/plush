@@ -11,7 +11,7 @@ Copyright (c) 1996-2000, Justin Frankel
    though.
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 
 pl_Obj *plMakeTorus(pl_Float r1, pl_Float r2, pl_uInt divrot, pl_uInt divrad, 
                     pl_Mat *m) {

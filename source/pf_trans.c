@@ -5,7 +5,7 @@ Solid Translucent Rasterizers
 Copyright (c) 1996-2000, Justin Frankel
 ******************************************************************************/
 
-#include "plush.h"
+#include <plush/plush.h>
 #include "putface.h"
 
 void plPF_TransF(pl_Cam *cam, pl_Face *TriFace) {
