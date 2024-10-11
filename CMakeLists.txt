@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(Plush
+project(plush
 	DESCRIPTION "A neat, portable, realtime 3D rendering library."
 	HOMEPAGE_URL "https://github.com/erysdren/plush"
 	LANGUAGES C
