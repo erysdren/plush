@@ -11,6 +11,10 @@
 extern "C" {
 #endif
 
+/* true and false */
+#define PL_TRUE (1)
+#define PL_FALSE (0)
+
 /* pi! */
 #define PL_PI 3.14159265359
 
