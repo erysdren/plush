@@ -10,9 +10,13 @@ project(plush
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
 
-# sources
+# library
 
-set(PLUSH_SOURCES
+add_library(plush STATIC)
+
+add_library(plush::plush ALIAS plush)
+
+target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/cam.c
 	${PROJECT_SOURCE_DIR}/source/clip.c
 	${PROJECT_SOURCE_DIR}/source/light.c
@@ -35,18 +39,6 @@ set(PLUSH_SOURCES
 	${PROJECT_SOURCE_DIR}/source/texture.c
 )
 
-set(PLUSH_HEADERS
-	${PROJECT_SOURCE_DIR}/source/pl_conf.h
-	${PROJECT_SOURCE_DIR}/source/pl_defs.h
-	${PROJECT_SOURCE_DIR}/source/pl_types.h
-	${PROJECT_SOURCE_DIR}/source/plush.h
-)
-
-# library
-
-add_library(plush STATIC)
-add_library(plush::plush ALIAS plush)
-target_sources(plush PRIVATE ${PLUSH_SOURCES})
 target_include_directories(plush
 	PUBLIC
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -54,6 +46,7 @@ target_include_directories(plush
 	PRIVATE
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
 )
+
 find_library(MATH m)
 if(MATH)
 	target_link_libraries(plush PUBLIC ${MATH})
@@ -98,7 +91,6 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/plush.pc.in ${PROJECT_BINARY_DIR}/plush.pc @ONLY)
-
 write_basic_package_version_file(${PROJECT_BINARY_DIR}/plush-config-version.cmake COMPATIBILITY AnyNewerVersion)
 
 install(
