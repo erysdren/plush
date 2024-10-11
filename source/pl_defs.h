@@ -16,7 +16,11 @@ extern "C" {
 #define PL_FALSE (0)
 
 /* pi! */
+#ifdef M_PI
+#define PL_PI M_PI
+#else
 #define PL_PI 3.14159265359
+#endif
 
 /* Utility min() and max() functions */
 #define plMin(x,y) (( ( x ) > ( y ) ? ( y ) : ( x )))
