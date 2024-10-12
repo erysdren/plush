@@ -3,11 +3,11 @@
 
 #include "SDL.h"
 
-#ifndef W
+#ifdef __PSP__
+#define W (480)
+#define H (272)
+#else
 #define W (640)
-#endif
-
-#ifndef H
 #define H (480)
 #endif
 
