@@ -69,6 +69,16 @@ if(PLUSH_BUILD_EXAMPLES)
 			if(CMAKE_C_COMPILER_ID STREQUAL "TinyCC")
 				target_compile_definitions(${example} PUBLIC SDL_DISABLE_IMMINTRIN_H)
 			endif()
+			if(PSP)
+				create_pbp_file(
+					TARGET ${example}
+					ICON_PATH NULL
+					BACKGROUND_PATH NULL
+					PREVIEW_PATH NULL
+					TITLE ${PROJECT_NAME}-${example}
+					VERSION ${PROJECT_VERSION}
+				)
+			endif()
 		endforeach()
 
 		# copy texture files
