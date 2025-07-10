@@ -1,2 +1,3 @@
-untracked/
+untracked*/
 cmake-build*/
+build*/
