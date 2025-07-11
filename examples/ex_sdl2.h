@@ -116,7 +116,7 @@ static void exSetGraphics(void)
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
 
 	exRenderer = SDL_CreateRenderer(exWindow, -1, SDL_RENDERER_PRESENTVSYNC);
 
@@ -131,6 +131,8 @@ static void exSetGraphics(void)
 	exSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 0, SDL_PIXELFORMAT_INDEX8);
 
 	exGraphMem = (uint8_t *)exSurface->pixels;
+
+	SDL_ShowWindow(exWindow);
 }
 
 static void exSetText(void)
