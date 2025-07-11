@@ -8,6 +8,10 @@
 
 #include <plush/plush.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include "ex.h" 
 
 #include "texture1.h"
@@ -18,6 +22,27 @@ pl_Mat *material;
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
 uint8_t palette[768];
+
+static void main_loop(void)
+{
+	/* rotate model */
+	model->Xa += 1.0;
+	model->Ya += 1.0;
+	model->Za += 1.0;
+
+	/* clear back buffer */
+	memset(framebuffer, 0, W * H);
+
+	/* render frame */
+	plRenderBegin(camera);
+	plRenderLight(light);
+	plRenderObj(model);
+	plRenderEnd();
+
+	/* wait for vsync, then copy to screen */
+	exWaitVSync();
+	memcpy(exGraphMem, framebuffer, W * H);
+}
 
 int main(int argc, char **argv)
 {
@@ -50,26 +75,12 @@ int main(int argc, char **argv)
 	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
 
 	/* main loop */
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(main_loop, 0, true);
+#else
 	while (!exGetKey())
-	{
-		/* rotate model */
-		model->Xa += 1.0;
-		model->Ya += 1.0;
-		model->Za += 1.0;
-
-		/* clear back buffer */
-		memset(framebuffer, 0, W * H);
-
-		/* render frame */
-		plRenderBegin(camera);
-		plRenderLight(light);
-		plRenderObj(model);
-		plRenderEnd();
-
-		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, W * H);
-	}
+		main_loop();
+#endif
 
 	/* clean up */
 	plCamDelete(camera);
