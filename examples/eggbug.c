@@ -8,6 +8,10 @@
 
 #include <plush/plush.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include "ex.h"
 
 pl_Obj *model;
@@ -28,10 +32,54 @@ static int rangerandom(int min, int max)
 	return rand() % (max + 1 - min) + min;
 }
 
+static void main_loop(void)
+{
+	int i, now;
+	float dt;
+	static int then = 0;
+
+	if (then == 0)
+		then = exClock();
+
+	now = exClock();
+	dt = (float)(now - then) / (float)exClockPerSecond();
+	then = now;
+
+	/* move eggbugs */
+	for (i = 0; i < NUM_EGGBUGS; i++)
+	{
+		eggbugs[i].model->Zp -= eggbugs[i].speed * dt;
+
+		/* reset if needed */
+		if (eggbugs[i].model->Zp < -512)
+		{
+			eggbugs[i].model->Xp = rangerandom(-256, 256);
+			eggbugs[i].model->Yp = rangerandom(-256, 256);
+			eggbugs[i].model->Zp = rangerandom(-256, 256) + 512;
+			eggbugs[i].speed = rangerandom(32, 128);
+		}
+	}
+
+	/* clear back buffer */
+	memset(zbuffer, 0, sizeof(zbuffer));
+	memset(framebuffer, 0, sizeof(framebuffer));
+
+	/* render frame */
+	plRenderBegin(camera);
+
+	/* render eggbugs */
+	for (i = 0; i < NUM_EGGBUGS; i++)
+		plRenderObj(eggbugs[i].model);
+
+	plRenderEnd();
+
+	/* wait for vsync, then copy to screen */
+	exWaitVSync();
+	memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
+}
+
 int main(int argc, char **argv)
 {
-	int now, then;
-	float dt;
 	int i;
 
 	/* setup graphics mode */
@@ -80,45 +128,12 @@ int main(int argc, char **argv)
 	}
 
 	/* main loop */
-	then = exClock();
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(main_loop, 0, true);
+#else
 	while (!exGetKey())
-	{
-		now = exClock();
-		dt = (float)(now - then) / (float)exClockPerSecond();
-		then = now;
-
-		/* move eggbugs */
-		for (i = 0; i < NUM_EGGBUGS; i++)
-		{
-			eggbugs[i].model->Zp -= eggbugs[i].speed * dt;
-
-			/* reset if needed */
-			if (eggbugs[i].model->Zp < -512)
-			{
-				eggbugs[i].model->Xp = rangerandom(-256, 256);
-				eggbugs[i].model->Yp = rangerandom(-256, 256);
-				eggbugs[i].model->Zp = rangerandom(-256, 256) + 512;
-				eggbugs[i].speed = rangerandom(32, 128);
-			}
-		}
-
-		/* clear back buffer */
-		memset(zbuffer, 0, sizeof(zbuffer));
-		memset(framebuffer, 0, sizeof(framebuffer));
-
-		/* render frame */
-		plRenderBegin(camera);
-
-		/* render eggbugs */
-		for (i = 0; i < NUM_EGGBUGS; i++)
-			plRenderObj(eggbugs[i].model);
-
-		plRenderEnd();
-
-		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
-	}
+		main_loop();
+#endif
 
 	/* clean up */
 	for (i = 0; i < NUM_EGGBUGS; i++)
