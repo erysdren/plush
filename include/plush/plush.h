@@ -68,7 +68,7 @@ extern uint32_t plRender_TriStats[4]; /* Three different triangle counts from
   Returns:
     a pointer to the material on success, 0 on failure 
 */
-pl_Mat *plMatCreate();
+pl_Mat *plMatCreate(void);
 
 /*
   plMatDelete() deletes a material that was created with plMatCreate().
@@ -278,7 +278,7 @@ int32_t plClipNeeded(pl_Face *face);
   Returns:
     a pointer to the light
 */
-pl_Light *plLightCreate();
+pl_Light *plLightCreate(void);
 
 /*
   plLightSet() sets up a light allocated with plLightCreate()
@@ -412,7 +412,7 @@ void plRenderObj(pl_Obj *obj);
    Returns: 
      nothing
 */
-void plRenderEnd();
+void plRenderEnd(void);
 
 /******************************************************************************
 ** Object Primitives Code (make.c)

@@ -257,7 +257,7 @@ void plRenderObj(pl_Obj *obj) {
   _RenderObj(obj,0,0);
 }
 
-void plRenderEnd() {
+void plRenderEnd(void) {
   _faceInfo *f;
   if (_cam->Sort > 0) _hsort(_faces,_numfaces,0);
   else if (_cam->Sort < 0) _hsort(_faces,_numfaces,1);

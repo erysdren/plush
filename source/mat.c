@@ -17,7 +17,7 @@ static void  _plGenerateTransparentPalette(pl_Mat *);
 static void _plSetMaterialPutFace(pl_Mat *m);
 static void _plMatSetupTransparent(pl_Mat *m, uint8_t *pal);
 
-pl_Mat *plMatCreate() {
+pl_Mat *plMatCreate(void) {
   pl_Mat *m; 
   m = (pl_Mat *) malloc(sizeof(pl_Mat));
   if (!m) return 0;

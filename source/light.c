@@ -33,7 +33,7 @@ pl_Light *plLightSet(pl_Light *light, uint8_t mode, float x, float y,
   return light;
 }
 
-pl_Light *plLightCreate() {
+pl_Light *plLightCreate(void) {
   pl_Light *l;
   l = (pl_Light *)malloc(sizeof(pl_Light));
   if (!l) return 0;
