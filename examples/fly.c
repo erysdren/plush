@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
          "  v: toggle vsync (default off)\n\n");
 
   exSetGraphics();  // intialize graphics
-  framebuffer = (uint8_t *) malloc(W*H); // allocate framebuffer
+  framebuffer = (uint8_t *) plMalloc(W*H); // allocate framebuffer
       // create camera
   cam = plCamCreate(W, // width
                     H, // height
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
   // set text mode
   exSetText();
   // clean up
-  free(framebuffer); 
+  plFree(framebuffer);
   plObjDelete(land);
   plObjDelete(sky);
   plObjDelete(sky2);

@@ -66,10 +66,10 @@ void _plRescaleImage(uint8_t *in, uint8_t *out, uint32_t inw,
 
 pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t *c)
 {
-	pl_Texture *t = (pl_Texture *)malloc(sizeof(pl_Texture));
+	pl_Texture *t = (pl_Texture *)plMalloc(sizeof(pl_Texture));
 
 	/* create copy of palette data */
-	t->PaletteData = (uint8_t *)malloc(nc * 3);
+	t->PaletteData = (uint8_t *)plMalloc(nc * 3);
 	memcpy(t->PaletteData, c, nc * 3);
 
 	/* rescale image */
@@ -85,7 +85,7 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 		nh = t->Height;
 		if ((1 << t->Height) != h) nh++;
 
-		t->Data = (uint8_t *)malloc((1 << nw) * (1 << nh));
+		t->Data = (uint8_t *)plMalloc((1 << nw) * (1 << nh));
 
 		_plRescaleImage(p, t->Data, w, h, 1 << nw, 1 << nh);
 
@@ -97,7 +97,7 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 	else
 	{
 		/* create copy of pixel data */
-		t->Data = (uint8_t *)malloc(w * h);
+		t->Data = (uint8_t *)plMalloc(w * h);
 		memcpy(t->Data, p, w * h);
 	}
 
@@ -113,8 +113,8 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 
 void plTexDelete(pl_Texture *t) {
   if (t) {
-    if (t->Data) free(t->Data);
-    if (t->PaletteData) free(t->PaletteData);
-    free(t);
+    if (t->Data) plFree(t->Data);
+    if (t->PaletteData) plFree(t->PaletteData);
+    plFree(t);
   }
 }

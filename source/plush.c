@@ -269,3 +269,26 @@ uint8_t plText_DefaultFont[256*16] = {
   0, 0, 0, 0, 126, 126, 126, 126, 126, 126, 126, 0, 0, 0, 0, 0, 
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
+// putting these here so they can be easily modified to suit your needs
+// --erysdren
+
+void *plMalloc(size_t sz)
+{
+	return malloc(sz);
+}
+
+void plFree(void *ptr)
+{
+	free(ptr);
+}
+
+void *plRealloc(void *ptr, size_t sz)
+{
+	return realloc(ptr, sz);
+}
+
+void *plCalloc(size_t n, size_t sz)
+{
+	return calloc(n, sz);
+}

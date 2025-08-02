@@ -58,6 +58,15 @@ extern uint32_t plRender_TriStats[4]; /* Three different triangle counts from
                                        */
 
 /******************************************************************************
+** Memory Functions (plush.c)
+******************************************************************************/
+
+void *plMalloc(size_t sz);
+void plFree(void *ptr);
+void *plRealloc(void *ptr, size_t sz);
+void *plCalloc(size_t n, size_t sz);
+
+/******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/
 

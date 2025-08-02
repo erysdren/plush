@@ -22,7 +22,7 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
   uint16_t x, y;
   pl_Texture *t;
   if (_plReadPCX(fn,&x,&y,&pal,&data) < 0) return 0;
-  t = (pl_Texture *) malloc(sizeof(pl_Texture));
+  t = (pl_Texture *) plMalloc(sizeof(pl_Texture));
   if (!t) return 0;
   t->Width = _plHiBit(x);
   t->Height = _plHiBit(y);
@@ -32,15 +32,15 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
     if ((1 << t->Width) != x) nx++;
     ny = t->Height;
     if ((1 << t->Height) != y) ny++;
-    newdata = (uint8_t *) malloc((1<<nx)*(1<<ny));
+    newdata = (uint8_t *) plMalloc((1<<nx)*(1<<ny));
     if (!newdata) {
-      free(t);
-      free(data);
-      free(pal);
+      plFree(t);
+      plFree(data);
+      plFree(pal);
       return 0;
     }
     _plRescaleImage(data,newdata,x,y,1<<nx,1<<ny);
-    free(data);
+    plFree(data);
     data = newdata;
     t->Width = nx;
     t->Height = ny;
@@ -75,7 +75,7 @@ static int32_t _plReadPCX(const char *filename, uint16_t *width, uint16_t *heigh
   *height = ey - sy + 1;
   fseek(fp,128,SEEK_SET);
   if (feof(fp)) { fclose(fp); return -4; }
-  *data = (uint8_t *) malloc((*width) * (*height));
+  *data = (uint8_t *) plMalloc((*width) * (*height));
   if (!*data) { fclose(fp); return -128; }
   sx = *height;
   data2 = *data;
@@ -96,11 +96,11 @@ static int32_t _plReadPCX(const char *filename, uint16_t *width, uint16_t *heigh
       }
     } while (xpos < *width);
   } while (--sx);
-  if (feof(fp)) { fclose(fp); free(*data); return -5; }
+  if (feof(fp)) { fclose(fp); plFree(*data); return -5; }
   fseek(fp,-769,SEEK_END);
-  if (fgetc(fp) != 12) { fclose(fp); free(*data); return -6; }
-  *pal = (uint8_t *) malloc(768);
-  if (!*pal) { fclose(fp); free(*data); return -7; }
+  if (fgetc(fp) != 12) { fclose(fp); plFree(*data); return -6; }
+  *pal = (uint8_t *) plMalloc(768);
+  if (!*pal) { fclose(fp); plFree(*data); return -7; }
   fread(*pal,3,256,fp);
   fclose(fp);
   return 0;

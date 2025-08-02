@@ -8,7 +8,7 @@ Copyright (c) 1996-2000, Justin Frankel
 #include <plush/plush.h>
 
 void plCamDelete(pl_Cam *c) {
-  if (c) free(c);
+  if (c) plFree(c);
 }
 
 void plCamSetTarget(pl_Cam *c, float x, float y, float z) {
@@ -34,7 +34,7 @@ void plCamSetTarget(pl_Cam *c, float x, float y, float z) {
 pl_Cam *plCamCreate(uint32_t sw, uint32_t sh, float ar, float fov,
                     uint8_t *fb, float *zb) {
   pl_Cam *c;
-  c = (pl_Cam *)malloc(sizeof(pl_Cam));
+  c = (pl_Cam *)plMalloc(sizeof(pl_Cam));
   if (!c) return 0;
   memset(c,0,sizeof(pl_Cam));
   c->Fov = fov;

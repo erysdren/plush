@@ -151,7 +151,7 @@ static void _pl3DSVertListReader(FILE *f, uint32_t p) {
   pl_Vertex *v;
   nv = _pl3DSReadWord(f);
   obj->NumVertices = nv;
-  v = obj->Vertices = (pl_Vertex *) calloc(sizeof(pl_Vertex)*nv,1);
+  v = obj->Vertices = (pl_Vertex *) plCalloc(sizeof(pl_Vertex)*nv,1);
   while (nv--) {
     v->x = _pl3DSReadFloat(f);
     v->y = _pl3DSReadFloat(f);
@@ -169,7 +169,7 @@ static void _pl3DSFaceListReader(FILE *f, uint32_t p) {
 
   nv = _pl3DSReadWord(f);
   obj->NumFaces = nv;
-  face = obj->Faces = (pl_Face *) calloc(sizeof(pl_Face)*nv,1);
+  face = obj->Faces = (pl_Face *) plCalloc(sizeof(pl_Face)*nv,1);
   while (nv--) {
     c[0] = _pl3DSReadWord(f);
     c[1] = _pl3DSReadWord(f);

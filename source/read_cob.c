@@ -98,13 +98,13 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
   } while (!feof(fp) && memcmp("Texture Vertices",temp_string,16));
   if (!feof(fp)) {
     MappingVertices = (int32_t *) 
-      malloc(sizeof(int32_t) * numMappingVertices * 2);
+      plMalloc(sizeof(int32_t) * numMappingVertices * 2);
     if (MappingVertices) {
       for (x = 0; x < numMappingVertices; x ++) {
         float p1, p2;
         fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
         if (feof(fp) || sscanf(temp_string,"%f %f", &p1, &p2) != 2) {
-          free(MappingVertices); plObjDelete(obj); fclose(fp); return 0;
+          plFree(MappingVertices); plObjDelete(obj); fclose(fp); return 0;
         }
         MappingVertices[x*2] = (int32_t) (p1*65536.0);
         MappingVertices[x*2+1] = (int32_t) (p2*65536.0);
@@ -116,7 +116,7 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
   } while (!feof(fp) && memcmp("Faces",temp_string,5));
   if (feof(fp)) { 
-    if (MappingVertices) free(MappingVertices); 
+    if (MappingVertices) plFree(MappingVertices); 
     plObjDelete(obj); fclose(fp); return 0; 
   }
   for (x = 0; x < numFaces; x ++) {
@@ -126,7 +126,7 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
     if (i == 3) {
       if (feof(fp) || sscanf(temp_string,"<%ld,%ld> <%ld,%ld> <%ld,%ld>",
                              &p3,&m3,&p2,&m2,&p1,&m1) != 6) {
-        if (MappingVertices) free(MappingVertices); 
+        if (MappingVertices) plFree(MappingVertices); 
         plObjDelete(obj); fclose(fp); return 0; 
       }
       obj->Faces[x].Vertices[0] = obj->Vertices + p1; 
@@ -144,7 +144,7 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
     } else {
       long int p[16],m[16];
       if (feof(fp)) {
-        if (MappingVertices) free(MappingVertices); 
+        if (MappingVertices) plFree(MappingVertices); 
         plObjDelete(obj); fclose(fp); return 0; 
       }
       sscanf(temp_string,
@@ -175,7 +175,7 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
     }
   }
   obj->BackfaceCull = 1;
-  if (MappingVertices) free(MappingVertices);
+  if (MappingVertices) plFree(MappingVertices);
   plObjCalcNormals(obj);
   fclose(fp);
   return obj;

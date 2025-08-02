@@ -32,14 +32,14 @@ int main(int argc, char **argv) { // Main
 #endif
   exSetGraphics(); // Set graphics
  
-  TheFrameBuffer = (uint8_t *) malloc(W*H); // Alloc framebuffer
+  TheFrameBuffer = (uint8_t *) plMalloc(W*H); // Alloc framebuffer
   if (!TheFrameBuffer) { 
     exSetText(); 
     printf("Out of memory!\n");
     exit(1);
   }
   // Alloc z-buffer
-  TheZBuffer = (float *) malloc(W*H*sizeof(float));
+  TheZBuffer = (float *) plMalloc(W*H*sizeof(float));
 
   CubeMat = plMatCreate();    // Create the material for the cube
   CubeMat->NumGradients = 100; // Have it use 100 colors

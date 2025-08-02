@@ -60,27 +60,27 @@ void plObjDelete(pl_Obj *o) {
   if (o) {
     for (i = 0; i < PL_MAX_CHILDREN; i ++) 
       if (o->Children[i]) plObjDelete(o->Children[i]);
-    if (o->Vertices) free(o->Vertices);
-    if (o->Faces) free(o->Faces);
-    free(o);
+    if (o->Vertices) plFree(o->Vertices);
+    if (o->Faces) plFree(o->Faces);
+    plFree(o);
   }
 }
 
 pl_Obj *plObjCreate(uint32_t nv, uint32_t nf) {
   pl_Obj *o;
-  if (!(o = (pl_Obj *) malloc(sizeof(pl_Obj)))) return 0;
+  if (!(o = (pl_Obj *) plMalloc(sizeof(pl_Obj)))) return 0;
   memset(o,0,sizeof(pl_Obj));
   o->GenMatrix = 1;
   o->BackfaceCull = 1;
   o->NumVertices = nv;
   o->NumFaces = nf;
-  if (nv && !(o->Vertices=(pl_Vertex *) malloc(sizeof(pl_Vertex)*nv))) {
-    free(o);
+  if (nv && !(o->Vertices=(pl_Vertex *) plMalloc(sizeof(pl_Vertex)*nv))) {
+    plFree(o);
     return 0;
   }
-  if (nf && !(o->Faces = (pl_Face *) malloc(sizeof(pl_Face)*nf))) {
-    free(o->Vertices);
-    free(o); 
+  if (nf && !(o->Faces = (pl_Face *) plMalloc(sizeof(pl_Face)*nf))) {
+    plFree(o->Vertices);
+    plFree(o); 
     return 0;
   }
   memset(o->Vertices,0,sizeof(pl_Vertex)*nv);
