@@ -13,14 +13,14 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
-pl_Obj *plMakeTorus(pl_Float r1, pl_Float r2, pl_uInt divrot, pl_uInt divrad, 
+pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad, 
                     pl_Mat *m) {
   pl_Obj *o;
   pl_Vertex *v;
   pl_Face *f;
-  pl_uInt x, y;
+  uint32_t x, y;
   double ravg, rt, a, da, al, dal;
-  pl_sInt32 U,V,dU,dV;
+  int32_t U,V,dU,dV;
   if (divrot < 3) divrot = 3;
   if (divrad < 3) divrad = 3;
   ravg = (r1+r2)*0.5;
@@ -34,9 +34,9 @@ pl_Obj *plMakeTorus(pl_Float r1, pl_Float r2, pl_uInt divrot, pl_uInt divrad,
     al = 0.0;
     dal = 2*PL_PI/divrad;
     for (x = 0; x < divrad; x ++) {
-      v->x = (pl_Float) (cos((double) a)*(ravg + cos((double) al)*rt));
-      v->z = (pl_Float) (sin((double) a)*(ravg + cos((double) al)*rt));
-      v->y = (pl_Float) (sin((double) al)*rt);
+      v->x = (float) (cos((double) a)*(ravg + cos((double) al)*rt));
+      v->z = (float) (sin((double) a)*(ravg + cos((double) al)*rt));
+      v->y = (float) (sin((double) al)*rt);
       v++;
       al += dal;
     }
@@ -80,13 +80,13 @@ pl_Obj *plMakeTorus(pl_Float r1, pl_Float r2, pl_uInt divrot, pl_uInt divrad,
   return (o);
 }
 
-pl_Obj *plMakeSphere(pl_Float r, pl_uInt divr, pl_uInt divh, pl_Mat *m) {
+pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
   pl_Obj *o;
   pl_Vertex *v;
   pl_Face *f;
-  pl_uInt x, y;
+  uint32_t x, y;
   double a, da, yp, ya, yda, yf;
-  pl_sInt32 U,V,dU,dV;
+  int32_t U,V,dU,dV;
   if (divh < 3) divh = 3;
   if (divr < 3) divr = 3;
   o = plObjCreate(2+(divh-2)*(divr),2*divr+(divh-3)*divr*2);
@@ -103,9 +103,9 @@ pl_Obj *plMakeSphere(pl_Float r, pl_uInt divr, pl_uInt divh, pl_Mat *m) {
     yf = sin((double) ya)*r;
     a = 0.0;
     for (x = 0; x < divr; x ++) {
-      v->y = (pl_Float) yp;
-      v->x = (pl_Float) (cos((double) a)*yf);
-      v->z = (pl_Float) (sin((double) a)*yf);
+      v->y = (float) yp;
+      v->x = (float) (cos((double) a)*yf);
+      v->z = (float) (sin((double) a)*yf);
       v++;
       a += da;
     }
@@ -180,12 +180,12 @@ pl_Obj *plMakeSphere(pl_Float r, pl_uInt divr, pl_uInt divh, pl_Mat *m) {
   return (o);
 }
 
-pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop, 
-                       pl_Bool capbottom, pl_Mat *m) {
+pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop, 
+                       bool capbottom, pl_Mat *m) {
   pl_Obj *o;
   pl_Vertex *v, *topverts, *bottomverts, *topcapvert=0, *bottomcapvert=0;
   pl_Face *f;
-  pl_uInt32 i;
+  uint32_t i;
   double a, da;
   if (divr < 3) divr = 3;
   o = plObjCreate(divr*2+((divr==3)?0:(captop?1:0)+(capbottom?1:0)),
@@ -198,10 +198,10 @@ pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop,
   topverts = v;
   for (i = 0; i < divr; i ++) {
     v->y = h/2.0f; 
-    v->x = (pl_Float) (r*cos((double) a)); 
-    v->z = (pl_Float)(r*sin(a));
-    v->xformedx = (pl_Float) (32768.0 + (32768.0*cos((double) a))); // temp
-    v->xformedy = (pl_Float) (32768.0 + (32768.0*sin((double) a))); // use xf
+    v->x = (float) (r*cos((double) a)); 
+    v->z = (float)(r*sin(a));
+    v->xformedx = (float) (32768.0 + (32768.0*cos((double) a))); // temp
+    v->xformedy = (float) (32768.0 + (32768.0*sin((double) a))); // use xf
     v++; 
     a += da;
   }
@@ -209,10 +209,10 @@ pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop,
   a = 0.0;
   for (i = 0; i < divr; i ++) {
     v->y = -h/2.0f; 
-    v->x = (pl_Float) (r*cos((double) a)); 
-    v->z = (pl_Float) (r*sin(a));
-    v->xformedx = (pl_Float) (32768.0 + (32768.0*cos((double) a)));
-    v->xformedy = (pl_Float) (32768.0 + (32768.0*sin((double) a)));
+    v->x = (float) (r*cos((double) a)); 
+    v->z = (float) (r*sin(a));
+    v->xformedx = (float) (32768.0 + (32768.0*cos((double) a)));
+    v->xformedy = (float) (32768.0 + (32768.0*sin((double) a)));
     v++; a += da;
   }
   if (captop && divr != 3) {
@@ -249,22 +249,22 @@ pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop,
       f->Vertices[0] = topverts + 0;
       f->Vertices[1] = topverts + 2;
       f->Vertices[2] = topverts + 1;
-      f->MappingU[0] = (pl_sInt32) topverts[0].xformedx;
-      f->MappingV[0] = (pl_sInt32) topverts[0].xformedy;
-      f->MappingU[1] = (pl_sInt32) topverts[1].xformedx;
-      f->MappingV[1] = (pl_sInt32) topverts[1].xformedy;
-      f->MappingU[2] = (pl_sInt32) topverts[2].xformedx;
-      f->MappingV[2] = (pl_sInt32) topverts[2].xformedy;
+      f->MappingU[0] = (int32_t) topverts[0].xformedx;
+      f->MappingV[0] = (int32_t) topverts[0].xformedy;
+      f->MappingU[1] = (int32_t) topverts[1].xformedx;
+      f->MappingV[1] = (int32_t) topverts[1].xformedy;
+      f->MappingU[2] = (int32_t) topverts[2].xformedx;
+      f->MappingV[2] = (int32_t) topverts[2].xformedy;
       f->Material = m; f++;
     } else {
       for (i = 0; i < divr; i ++) {
         f->Vertices[0] = topverts + (i == divr-1 ? 0 : i + 1);
         f->Vertices[1] = topverts + i;
         f->Vertices[2] = topcapvert;
-        f->MappingU[0] = (pl_sInt32) topverts[(i==divr-1?0:i+1)].xformedx;
-        f->MappingV[0] = (pl_sInt32) topverts[(i==divr-1?0:i+1)].xformedy;
-        f->MappingU[1] = (pl_sInt32) topverts[i].xformedx;
-        f->MappingV[1] = (pl_sInt32) topverts[i].xformedy;
+        f->MappingU[0] = (int32_t) topverts[(i==divr-1?0:i+1)].xformedx;
+        f->MappingV[0] = (int32_t) topverts[(i==divr-1?0:i+1)].xformedy;
+        f->MappingU[1] = (int32_t) topverts[i].xformedx;
+        f->MappingV[1] = (int32_t) topverts[i].xformedy;
         f->MappingU[2] = f->MappingV[2] = 32768;
         f->Material = m; f++;
       }
@@ -275,22 +275,22 @@ pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop,
       f->Vertices[0] = bottomverts + 0;
       f->Vertices[1] = bottomverts + 1;
       f->Vertices[2] = bottomverts + 2;
-      f->MappingU[0] = (pl_sInt32) bottomverts[0].xformedx;
-      f->MappingV[0] = (pl_sInt32) bottomverts[0].xformedy;
-      f->MappingU[1] = (pl_sInt32) bottomverts[1].xformedx;
-      f->MappingV[1] = (pl_sInt32) bottomverts[1].xformedy;
-      f->MappingU[2] = (pl_sInt32) bottomverts[2].xformedx;
-      f->MappingV[2] = (pl_sInt32) bottomverts[2].xformedy;
+      f->MappingU[0] = (int32_t) bottomverts[0].xformedx;
+      f->MappingV[0] = (int32_t) bottomverts[0].xformedy;
+      f->MappingU[1] = (int32_t) bottomverts[1].xformedx;
+      f->MappingV[1] = (int32_t) bottomverts[1].xformedy;
+      f->MappingU[2] = (int32_t) bottomverts[2].xformedx;
+      f->MappingV[2] = (int32_t) bottomverts[2].xformedy;
       f->Material = m; f++;
     } else {
       for (i = 0; i < divr; i ++) {
         f->Vertices[0] = bottomverts + i;
         f->Vertices[1] = bottomverts + (i == divr-1 ? 0 : i + 1);
         f->Vertices[2] = bottomcapvert;
-        f->MappingU[0] = (pl_sInt32) bottomverts[i].xformedx;
-        f->MappingV[0] = (pl_sInt32) bottomverts[i].xformedy;
-        f->MappingU[1] = (pl_sInt32) bottomverts[(i==divr-1?0:i+1)].xformedx;
-        f->MappingV[1] = (pl_sInt32) bottomverts[(i==divr-1?0:i+1)].xformedy;
+        f->MappingU[0] = (int32_t) bottomverts[i].xformedx;
+        f->MappingV[0] = (int32_t) bottomverts[i].xformedy;
+        f->MappingU[1] = (int32_t) bottomverts[(i==divr-1?0:i+1)].xformedx;
+        f->MappingV[1] = (int32_t) bottomverts[(i==divr-1?0:i+1)].xformedy;
         f->MappingU[2] = f->MappingV[2] = 32768;
         f->Material = m; f++;
       }
@@ -300,12 +300,12 @@ pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop,
   return (o);
 }
 
-pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div,
-                   pl_Bool cap, pl_Mat *m) {
+pl_Obj *plMakeCone(float r, float h, uint32_t div,
+                   bool cap, pl_Mat *m) {
   pl_Obj *o;
   pl_Vertex *v;
   pl_Face *f;
-  pl_uInt32 i;
+  uint32_t i;
   double a, da;
   if (div < 3) div = 3;
   o = plObjCreate(div + (div == 3 ? 1 : (cap ? 2 : 1)),
@@ -320,18 +320,18 @@ pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div,
   da = (2.0*PL_PI)/div;
   for (i = 1; i <= div; i ++) {
     v->y = h/-2.0f;
-    v->x = (pl_Float) (r*cos((double) a));
-    v->z = (pl_Float) (r*sin((double) a));
-    v->xformedx = (pl_Float) (32768.0 + (cos((double) a)*32768.0));
-    v->xformedy = (pl_Float) (32768.0 + (sin((double) a)*32768.0));
+    v->x = (float) (r*cos((double) a));
+    v->z = (float) (r*sin((double) a));
+    v->xformedx = (float) (32768.0 + (cos((double) a)*32768.0));
+    v->xformedy = (float) (32768.0 + (sin((double) a)*32768.0));
     a += da;
     v++;
   }
   if (cap && div != 3) {
     v->y = h / -2.0f; 
     v->x = v->z = 0.0f;
-    v->xformedx = (pl_Float) (1<<15);
-    v->xformedy = (pl_Float) (1<<15);
+    v->xformedx = (float) (1<<15);
+    v->xformedy = (float) (1<<15);
     v++;
   }
   f = o->Faces;
@@ -339,12 +339,12 @@ pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div,
     f->Vertices[0] = o->Vertices;
     f->Vertices[1] = o->Vertices + (i == div ? 1 : i + 1);
     f->Vertices[2] = o->Vertices + i;
-    f->MappingU[0] = (pl_sInt32) o->Vertices[0].xformedx;
-    f->MappingV[0] = (pl_sInt32) o->Vertices[0].xformedy;
-    f->MappingU[1] = (pl_sInt32) o->Vertices[(i==div?1:i+1)].xformedx;
-    f->MappingV[1] = (pl_sInt32) o->Vertices[(i==div?1:i+1)].xformedy;
-    f->MappingU[2] = (pl_sInt32) o->Vertices[i].xformedx;
-    f->MappingV[2] = (pl_sInt32) o->Vertices[i].xformedy;
+    f->MappingU[0] = (int32_t) o->Vertices[0].xformedx;
+    f->MappingV[0] = (int32_t) o->Vertices[0].xformedy;
+    f->MappingU[1] = (int32_t) o->Vertices[(i==div?1:i+1)].xformedx;
+    f->MappingV[1] = (int32_t) o->Vertices[(i==div?1:i+1)].xformedy;
+    f->MappingU[2] = (int32_t) o->Vertices[i].xformedx;
+    f->MappingV[2] = (int32_t) o->Vertices[i].xformedy;
     f->Material = m;
     f++;
   }
@@ -353,12 +353,12 @@ pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div,
       f->Vertices[0] = o->Vertices + 1;
       f->Vertices[1] = o->Vertices + 2;
       f->Vertices[2] = o->Vertices + 3;
-      f->MappingU[0] = (pl_sInt32) o->Vertices[1].xformedx;
-      f->MappingV[0] = (pl_sInt32) o->Vertices[1].xformedy;
-      f->MappingU[1] = (pl_sInt32) o->Vertices[2].xformedx;
-      f->MappingV[1] = (pl_sInt32) o->Vertices[2].xformedy;
-      f->MappingU[2] = (pl_sInt32) o->Vertices[3].xformedx;
-      f->MappingV[2] = (pl_sInt32) o->Vertices[3].xformedy;
+      f->MappingU[0] = (int32_t) o->Vertices[1].xformedx;
+      f->MappingV[0] = (int32_t) o->Vertices[1].xformedy;
+      f->MappingU[1] = (int32_t) o->Vertices[2].xformedx;
+      f->MappingV[1] = (int32_t) o->Vertices[2].xformedy;
+      f->MappingU[2] = (int32_t) o->Vertices[3].xformedx;
+      f->MappingV[2] = (int32_t) o->Vertices[3].xformedy;
       f->Material = m;
       f++;
     } else {
@@ -366,12 +366,12 @@ pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div,
         f->Vertices[0] = o->Vertices + div + 1;
         f->Vertices[1] = o->Vertices + i;
         f->Vertices[2] = o->Vertices + (i==div ? 1 : i+1);
-        f->MappingU[0] = (pl_sInt32) o->Vertices[div+1].xformedx;
-        f->MappingV[0] = (pl_sInt32) o->Vertices[div+1].xformedy;
-        f->MappingU[1] = (pl_sInt32) o->Vertices[i].xformedx;
-        f->MappingV[1] = (pl_sInt32) o->Vertices[i].xformedy;
-        f->MappingU[2] = (pl_sInt32) o->Vertices[i==div?1:i+1].xformedx;
-        f->MappingV[2] = (pl_sInt32) o->Vertices[i==div?1:i+1].xformedy;
+        f->MappingU[0] = (int32_t) o->Vertices[div+1].xformedx;
+        f->MappingV[0] = (int32_t) o->Vertices[div+1].xformedy;
+        f->MappingU[1] = (int32_t) o->Vertices[i].xformedx;
+        f->MappingV[1] = (int32_t) o->Vertices[i].xformedy;
+        f->MappingU[2] = (int32_t) o->Vertices[i==div?1:i+1].xformedx;
+        f->MappingV[2] = (int32_t) o->Vertices[i==div?1:i+1].xformedy;
         f->Material = m;
         f++;
       }
@@ -381,11 +381,11 @@ pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div,
   return (o);
 }
 
-static pl_uChar verts[6*6] = { 
+static uint8_t verts[6*6] = { 
   0,4,1, 1,4,5, 0,1,2, 3,2,1, 2,3,6, 3,7,6,
   6,7,4, 4,7,5, 1,7,3, 7,1,5, 2,6,0, 4,0,6
 };
-static pl_uChar map[24*2*3] = {
+static uint8_t map[24*2*3] = {
   1,0, 1,1, 0,0, 0,0, 1,1, 0,1,
   0,0, 1,0, 0,1, 1,1, 0,1, 1,0,
   0,0, 1,0, 0,1, 1,0, 1,1, 0,1,
@@ -395,13 +395,13 @@ static pl_uChar map[24*2*3] = {
 };
 
 
-pl_Obj *plMakeBox(pl_Float w, pl_Float d, pl_Float h, pl_Mat *m) {
-  pl_uChar *mm = map;
-  pl_uChar *vv = verts;
+pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m) {
+  uint8_t *mm = map;
+  uint8_t *vv = verts;
   pl_Obj *o;
   pl_Vertex *v;
   pl_Face *f;
-  pl_uInt x;
+  uint32_t x;
   o = plObjCreate(8,12);
   if (!o) return 0;
   v = o->Vertices;
@@ -418,12 +418,12 @@ pl_Obj *plMakeBox(pl_Float w, pl_Float d, pl_Float h, pl_Mat *m) {
     f->Vertices[0] = o->Vertices + *vv++;
     f->Vertices[1] = o->Vertices + *vv++;
     f->Vertices[2] = o->Vertices + *vv++;
-    f->MappingU[0] = (pl_sInt32) ((double)*mm++ * 65535.0);
-    f->MappingV[0] = (pl_sInt32) ((double)*mm++ * 65535.0);
-    f->MappingU[1] = (pl_sInt32) ((double)*mm++ * 65535.0);
-    f->MappingV[1] = (pl_sInt32) ((double)*mm++ * 65535.0);
-    f->MappingU[2] = (pl_sInt32) ((double)*mm++ * 65535.0);
-    f->MappingV[2] = (pl_sInt32) ((double)*mm++ * 65535.0);
+    f->MappingU[0] = (int32_t) ((double)*mm++ * 65535.0);
+    f->MappingV[0] = (int32_t) ((double)*mm++ * 65535.0);
+    f->MappingU[1] = (int32_t) ((double)*mm++ * 65535.0);
+    f->MappingV[1] = (int32_t) ((double)*mm++ * 65535.0);
+    f->MappingU[2] = (int32_t) ((double)*mm++ * 65535.0);
+    f->MappingV[2] = (int32_t) ((double)*mm++ * 65535.0);
     f->Material = m;
     f++;
   }
@@ -432,11 +432,11 @@ pl_Obj *plMakeBox(pl_Float w, pl_Float d, pl_Float h, pl_Mat *m) {
   return (o);
 }
 
-pl_Obj *plMakePlane(pl_Float w, pl_Float d, pl_uInt res, pl_Mat *m) {
+pl_Obj *plMakePlane(float w, float d, uint32_t res, pl_Mat *m) {
   pl_Obj *o;
   pl_Vertex *v;
   pl_Face *f;
-  pl_uInt x, y;
+  uint32_t x, y;
   o = plObjCreate((res+1)*(res+1),res*res*2);
   if (!o) return 0;
   v = o->Vertices;

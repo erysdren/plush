@@ -18,7 +18,7 @@ float mouse_sens = 2048.0/32768.0;
 
                     /* Misc functions */
  // Sets up the materials
-void setup_materials(pl_Mat **mat, pl_uChar *pal);
+void setup_materials(pl_Mat **mat, uint8_t *pal);
  // Sets up the landscape and skies
 pl_Obj *setup_landscape(pl_Mat *m, pl_Mat *sm, pl_Mat *sm2);
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
   int i;
   int c;
 
-  pl_uChar *framebuffer;            // our doublebuffer
+  uint8_t *framebuffer;            // our doublebuffer
   pl_Mat *mat[3+1];                 // our materials, we have 1 extra for null
                                     // termination for plMatMakeOptPal2()
   pl_Cam *cam;                      // our camera
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
   pl_Obj *sky, *sky2;               // the two skies
   int done = 0;
 
-  pl_uChar pal[768];                    // our palette
+  uint8_t pal[768];                    // our palette
 
   srand(0);                         // initialize rng
 
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
          "  v: toggle vsync (default off)\n\n");
 
   exSetGraphics();  // intialize graphics
-  framebuffer = (pl_uChar *) malloc(W*H); // allocate framebuffer
+  framebuffer = (uint8_t *) malloc(W*H); // allocate framebuffer
       // create camera
   cam = plCamCreate(W, // width
                     H, // height
@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void setup_materials(pl_Mat **mat, pl_uChar *pal) {
+void setup_materials(pl_Mat **mat, uint8_t *pal) {
   int i;
   // create our 3 materials, make the fourth null so that plMatMakeOptPal2() 
   // knows where to stop

@@ -48,8 +48,8 @@ extern "C" {
 
 extern char plVersionString[];      /* Version string */
 extern char plCopyrightString[];    /* Copyright string */
-extern pl_uChar plText_DefaultFont[256*16]; /* Default 8x16 font for plText* */
-extern pl_uInt32 plRender_TriStats[4]; /* Three different triangle counts from 
+extern uint8_t plText_DefaultFont[256*16]; /* Default 8x16 font for plText* */
+extern uint32_t plRender_TriStats[4]; /* Three different triangle counts from 
                                           the last plRender() block:
                                           0: initial tris
                                           1: tris after culling
@@ -105,7 +105,7 @@ void plMatInit(pl_Mat *m);
     Mapping a material with > 2000 colors can take up to a second or two. 
       Be careful, and go easy on plMat.NumGradients ;)
 */
-void plMatMapToPal(pl_Mat *m, pl_uChar *pal, pl_sInt pstart, pl_sInt pend);
+void plMatMapToPal(pl_Mat *m, uint8_t *pal, int32_t pstart, int32_t pend);
 
 
 /*
@@ -120,8 +120,8 @@ void plMatMapToPal(pl_Mat *m, pl_uChar *pal, pl_sInt pstart, pl_sInt pend);
   Returns:
     nothing
 */
-void plMatMakeOptPal(pl_uChar *p, pl_sInt pstart, 
-                     pl_sInt pend, pl_Mat **materials, pl_sInt nmats);
+void plMatMakeOptPal(uint8_t *p, int32_t pstart, 
+                     int32_t pend, pl_Mat **materials, int32_t nmats);
 
 
 /******************************************************************************
@@ -136,7 +136,7 @@ void plMatMakeOptPal(pl_uChar *p, pl_sInt pstart,
   Returns:
     a pointer to the object on success, 0 on failure
 */
-pl_Obj *plObjCreate(pl_uInt32 np, pl_uInt32 nf);
+pl_Obj *plObjCreate(uint32_t np, uint32_t nf);
 
 /*
   plObjDelete() frees an object and all of it's subobjects
@@ -168,7 +168,7 @@ pl_Obj *plObjClone(pl_Obj *o);
   Notes: This scales it slowly, by going through each vertex and scaling it's 
     position. Avoid doing this in realtime.
 */
-pl_Obj *plObjScale(pl_Obj *o, pl_Float s);
+pl_Obj *plObjScale(pl_Obj *o, float s);
 
 /*
   plObjStretch() stretches an object, and all of it's subobjects
@@ -179,7 +179,7 @@ pl_Obj *plObjScale(pl_Obj *o, pl_Float s);
     a pointer to o. 
   Notes: same as plObjScale(). Note that the normals are preserved.
 */
-pl_Obj *plObjStretch(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z);
+pl_Obj *plObjStretch(pl_Obj *o, float x, float y, float z);
 
 /*
    plObjTranslate() translates an object
@@ -190,7 +190,7 @@ pl_Obj *plObjStretch(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z);
      a pointer to o
    Notes: same has plObjScale().
 */
-pl_Obj *plObjTranslate(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z);
+pl_Obj *plObjTranslate(pl_Obj *o, float x, float y, float z);
 
 /*
   plObjFlipNormals() flips all vertex and face normals of and object
@@ -215,7 +215,7 @@ pl_Obj *plObjFlipNormals(pl_Obj *o);
   Returns:
     nothing
 */
-void plObjSetMat(pl_Obj *o, pl_Mat *m, pl_Bool th);
+void plObjSetMat(pl_Obj *o, pl_Mat *m, bool th);
 
 /*
    plObjCalcNormals() calculates all face and vertex normals for an object
@@ -265,7 +265,7 @@ void plClipRenderFace(pl_Face *face);
     1: the face is intersecting the frustum, splitting and drawing necessary
   Notes: this is used internally by plRender*(), so be careful. Kinda slow too.
 */
-pl_sInt plClipNeeded(pl_Face *face);
+int32_t plClipNeeded(pl_Face *face);
 
 /******************************************************************************
 ** Light Handling Routines (light.c)
@@ -292,8 +292,8 @@ pl_Light *plLightCreate();
   Returns: 
     a pointer to light.
 */
-pl_Light *plLightSet(pl_Light *light, pl_uChar mode, pl_Float x, pl_Float y, 
-                     pl_Float z, pl_Float intensity, pl_Float halfDist);
+pl_Light *plLightSet(pl_Light *light, uint8_t mode, float x, float y, 
+                     float z, float intensity, float halfDist);
 
 /*
   plLightDelete() frees a light allocated with plLightCreate().
@@ -319,7 +319,7 @@ void plLightDelete(pl_Light *l);
   Returns:
     a pointer to a new texture.
 */
-pl_Texture *plTexCreate(pl_uInt w, pl_uInt h, pl_uChar *p, pl_uInt nc, pl_uChar *c);
+pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t *c);
 
 /*
 ** plTexDelete() frees all memory associated with "t"
@@ -343,8 +343,8 @@ void plTexDelete(pl_Texture *t);
   Returns:
     a pointer to the newly allocated camera
 */
-pl_Cam *plCamCreate(pl_uInt sw, pl_uInt sh, pl_Float ar, pl_Float fov,
-                    pl_uChar *fb, pl_ZBuffer *zb);
+pl_Cam *plCamCreate(uint32_t sw, uint32_t sh, float ar, float fov,
+                    uint8_t *fb, float *zb);
 
 /*
   plCamSetTarget() sets the target of a camera allocated with plCamCreate().
@@ -356,7 +356,7 @@ pl_Cam *plCamCreate(pl_uInt sw, pl_uInt sh, pl_Float ar, pl_Float fov,
   Notes:
     Sets the pitch and pan of the camera. Does not touch the roll.
 */
-void plCamSetTarget(pl_Cam *c, pl_Float x, pl_Float y, pl_Float z);
+void plCamSetTarget(pl_Cam *c, float x, float y, float z);
 
 /*
    plCamDelete() frees all memory associated with a camera excluding 
@@ -428,7 +428,7 @@ void plRenderEnd();
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakePlane(pl_Float w, pl_Float d, pl_uInt res, pl_Mat *m);
+pl_Obj *plMakePlane(float w, float d, uint32_t res, pl_Mat *m);
 
 /*
   plMakeBox() makes a box centered at the origin
@@ -439,7 +439,7 @@ pl_Obj *plMakePlane(pl_Float w, pl_Float d, pl_uInt res, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeBox(pl_Float w, pl_Float d, pl_Float h, pl_Mat *m);
+pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m);
 
 /* 
   plMakeCone() makes a cone centered at the origin
@@ -452,7 +452,7 @@ pl_Obj *plMakeBox(pl_Float w, pl_Float d, pl_Float h, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div, pl_Bool cap, pl_Mat *m);
+pl_Obj *plMakeCone(float r, float h, uint32_t div, bool cap, pl_Mat *m);
 
 /*
   plMakeCylinder() makes a cylinder centered at the origin
@@ -466,8 +466,8 @@ pl_Obj *plMakeCone(pl_Float r, pl_Float h, pl_uInt div, pl_Bool cap, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop, 
-                       pl_Bool capbottom, pl_Mat *m);
+pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop, 
+                       bool capbottom, pl_Mat *m);
 
 /*
   plMakeSphere() makes a sphere centered at the origin.
@@ -479,7 +479,7 @@ pl_Obj *plMakeCylinder(pl_Float r, pl_Float h, pl_uInt divr, pl_Bool captop,
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeSphere(pl_Float r, pl_uInt divr, pl_uInt divh, pl_Mat *m);
+pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m);
 
 /*
   plMakeTorus() makes a torus centered at the origin
@@ -492,8 +492,8 @@ pl_Obj *plMakeSphere(pl_Float r, pl_uInt divr, pl_uInt divh, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeTorus(pl_Float r1, pl_Float r2, pl_uInt divrot, 
-                    pl_uInt divrad, pl_Mat *m);
+pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, 
+                    uint32_t divrad, pl_Mat *m);
 
 /******************************************************************************
 ** File Readers (read_*.c)
@@ -556,7 +556,7 @@ pl_Obj *plReadJAWObj(const char *fn, pl_Mat *m);
       be optimized, and the texture might be scaled up so that it's dimensions
       will be a nice power of two.
 */
-pl_Texture *plReadPCXTex(const char *fn, pl_Bool rescale, pl_Bool optimize);
+pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 
 /******************************************************************************
 ** Math Code (math.c)
@@ -565,13 +565,13 @@ pl_Texture *plReadPCXTex(const char *fn, pl_Bool rescale, pl_Bool optimize);
 /*
   plMatrixRotate() generates a rotation matrix
   Parameters:
-    matrix: an array of 16 pl_Floats that is a 4x4 matrix
+    matrix: an array of 16 floats that is a 4x4 matrix
     m: the axis to rotate around, 1=X, 2=Y, 3=Z.
     Deg: the angle in degrees to rotate
   Returns: 
     nothing
 */
-void plMatrixRotate(pl_Float matrix[], pl_uChar m, pl_Float Deg);
+void plMatrixRotate(float matrix[], uint8_t m, float Deg);
 
 /*
   plMatrixTranslate() generates a translation matrix
@@ -581,7 +581,7 @@ void plMatrixRotate(pl_Float matrix[], pl_uChar m, pl_Float Deg);
   Returns:
     nothing
 */
-void plMatrixTranslate(pl_Float m[], pl_Float x, pl_Float y, pl_Float z);
+void plMatrixTranslate(float m[], float x, float y, float z);
 
 /* 
   plMatrixMultiply() multiplies two matrices
@@ -593,7 +593,7 @@ void plMatrixTranslate(pl_Float m[], pl_Float x, pl_Float y, pl_Float z);
   Notes: 
     this is the same as dest = dest*src (since the order *does* matter);
 */
-void plMatrixMultiply(pl_Float *dest, pl_Float src[]);
+void plMatrixMultiply(float *dest, float src[]);
 
 /*
    plMatrixApply() applies a matrix.
@@ -606,8 +606,8 @@ void plMatrixMultiply(pl_Float *dest, pl_Float src[]);
   Notes: 
     applies the matrix to the 3d point to produce the transformed 3d point
 */
-void plMatrixApply(pl_Float *m, pl_Float x, pl_Float y, pl_Float z, 
-                   pl_Float *outx, pl_Float *outy, pl_Float *outz);
+void plMatrixApply(float *m, float x, float y, float z, 
+                   float *outx, float *outy, float *outz);
 
 /*
   plNormalizeVector() makes a vector a unit vector
@@ -616,7 +616,7 @@ void plMatrixApply(pl_Float *m, pl_Float x, pl_Float y, pl_Float z,
   Returns:
     nothing
 */
-void plNormalizeVector(pl_Float *x, pl_Float *y, pl_Float *z);
+void plNormalizeVector(float *x, float *y, float *z);
 
 /*
   plDotProduct() returns the dot product of two vectors
@@ -626,8 +626,8 @@ void plNormalizeVector(pl_Float *x, pl_Float *y, pl_Float *z);
   Returns:
     the dot product of the two vectors
 */
-pl_Float plDotProduct(pl_Float x1, pl_Float y1, pl_Float z1,
-                      pl_Float x2, pl_Float y2, pl_Float z2);
+float plDotProduct(float x1, float y1, float z1,
+                      float x2, float y2, float z2);
 
 /******************************************************************************
 ** Spline Interpolation (spline.c)
@@ -653,7 +653,7 @@ void plSplineInit(pl_Spline *s);
   Returns:
     nothing
 */
-void plSplineGetPoint(pl_Spline *s, pl_Float frame, pl_Float *out);
+void plSplineGetPoint(pl_Spline *s, float frame, float *out);
 
 /******************************************************************************
 ** 8xX  Bitmapped Text
@@ -667,7 +667,7 @@ void plSplineGetPoint(pl_Spline *s, pl_Float frame, pl_Float *out);
       nothing
 */
 
-void plTextSetFont(pl_uChar *font, pl_uChar height);
+void plTextSetFont(uint8_t *font, uint8_t height);
 
 /*
   plTextPutChar() puts a character to a camera
@@ -682,8 +682,8 @@ void plTextSetFont(pl_uChar *font, pl_uChar height);
     nothing
 */
 
-void plTextPutChar(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                   pl_uChar color, pl_uChar c);
+void plTextPutChar(pl_Cam *cam, int32_t x, int32_t y, float z,
+                   uint8_t color, uint8_t c);
 
 /*
   plTextPutString() puts an array of characters to a camera
@@ -698,8 +698,8 @@ void plTextPutChar(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
   Returns:
     nothing
 */
-void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, const char *string);
+void plTextPutStr(pl_Cam *cam, int32_t x, int32_t y, float z,
+                  uint8_t color, const char *string);
 
 /*
   plTextPrintf() is printf() for graphics
@@ -716,8 +716,8 @@ void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
   Returns:
     nothing
 */
-void plTextPrintf(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, const char *format, ...);
+void plTextPrintf(pl_Cam *cam, int32_t x, int32_t y, float z,
+                  uint8_t color, const char *format, ...);
 
 /******************************************************************************
 ** Built-in Rasterizers

@@ -7,13 +7,13 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
-void plSplineGetPoint(pl_Spline *s, pl_Float frame, pl_Float *out) {
-  pl_sInt32 i, i_1, i0, i1, i2;
-  pl_Float time1,time2,time3;
-  pl_Float t1,t2,t3,t4,u1,u2,u3,u4,v1,v2,v3;
-  pl_Float a,b,c,d;
+void plSplineGetPoint(pl_Spline *s, float frame, float *out) {
+  int32_t i, i_1, i0, i1, i2;
+  float time1,time2,time3;
+  float t1,t2,t3,t4,u1,u2,u3,u4,v1,v2,v3;
+  float a,b,c,d;
 
-  pl_Float *keys = s->keys;
+  float *keys = s->keys;
 
   a = (1-s->tens)*(1+s->cont)*(1+s->bias);
   b = (1-s->tens)*(1-s->cont)*(1-s->bias);
@@ -26,14 +26,14 @@ void plSplineGetPoint(pl_Spline *s, pl_Float frame, pl_Float *out) {
   v3 = b/2.0; 
   t4 = d/2.0; u4 = -t4;
 
-  i0 = (pl_uInt) frame;
+  i0 = (uint32_t) frame;
   i_1 = i0 - 1;
   while (i_1 < 0) i_1 += s->numKeys;
   i1 = i0 + 1;
   while (i1 >= s->numKeys) i1 -= s->numKeys;
   i2 = i0 + 2;
   while (i2 >= s->numKeys) i2 -= s->numKeys;
-  time1 = frame - (pl_Float) ((pl_uInt) frame);
+  time1 = frame - (float) ((uint32_t) frame);
   time2 = time1*time1;
   time3 = time2*time1;
   i0 *= s->keyWidth;

@@ -18,12 +18,12 @@ pl_Obj *model;
 pl_Mat *material;
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
-pl_ZBuffer zbuffer[W * H];
+float zbuffer[W * H];
 uint8_t palette[768];
 
 #define NUM_EGGBUGS (32)
 struct {
-	pl_Float speed;
+	float speed;
 	pl_Obj *model;
 } eggbugs[NUM_EGGBUGS];
 

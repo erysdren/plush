@@ -7,8 +7,8 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
-pl_Obj *plObjScale(pl_Obj *o, pl_Float s) {
-  pl_uInt32 i = o->NumVertices;
+pl_Obj *plObjScale(pl_Obj *o, float s) {
+  uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   while (i--) {
     v->x *= s; v->y *= s; v->z *= s; v++;
@@ -18,8 +18,8 @@ pl_Obj *plObjScale(pl_Obj *o, pl_Float s) {
   return o;
 }
 
-pl_Obj *plObjStretch(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z) {
-  pl_uInt32 i = o->NumVertices;
+pl_Obj *plObjStretch(pl_Obj *o, float x, float y, float z) {
+  uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   while (i--) {
     v->x *= x; v->y *= y; v->z *= z; v++;
@@ -29,8 +29,8 @@ pl_Obj *plObjStretch(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z) {
   return o;
 }
 
-pl_Obj *plObjTranslate(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z) {
-  pl_uInt32 i = o->NumVertices;
+pl_Obj *plObjTranslate(pl_Obj *o, float x, float y, float z) {
+  uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   while (i--) {
     v->x += x; v->y += y; v->z += z; v++;
@@ -39,7 +39,7 @@ pl_Obj *plObjTranslate(pl_Obj *o, pl_Float x, pl_Float y, pl_Float z) {
 }
 
 pl_Obj *plObjFlipNormals(pl_Obj *o) {
-  pl_uInt32 i = o->NumVertices;
+  uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   pl_Face *f = o->Faces;
   while (i--) {
@@ -56,7 +56,7 @@ pl_Obj *plObjFlipNormals(pl_Obj *o) {
 }
 
 void plObjDelete(pl_Obj *o) {
-  pl_uInt i;
+  uint32_t i;
   if (o) {
     for (i = 0; i < PL_MAX_CHILDREN; i ++) 
       if (o->Children[i]) plObjDelete(o->Children[i]);
@@ -66,7 +66,7 @@ void plObjDelete(pl_Obj *o) {
   }
 }
 
-pl_Obj *plObjCreate(pl_uInt32 nv, pl_uInt32 nf) {
+pl_Obj *plObjCreate(uint32_t nv, uint32_t nf) {
   pl_Obj *o;
   if (!(o = (pl_Obj *) malloc(sizeof(pl_Obj)))) return 0;
   memset(o,0,sizeof(pl_Obj));
@@ -90,7 +90,7 @@ pl_Obj *plObjCreate(pl_uInt32 nv, pl_uInt32 nf) {
 
 pl_Obj *plObjClone(pl_Obj *o) {
   pl_Face *iff, *of;
-  pl_uInt32 i;
+  uint32_t i;
   pl_Obj *out;
   if (!(out = plObjCreate(o->NumVertices,o->NumFaces))) return 0;
   for (i = 0; i < PL_MAX_CHILDREN; i ++) 
@@ -127,8 +127,8 @@ pl_Obj *plObjClone(pl_Obj *o) {
   return out;
 }
 
-void plObjSetMat(pl_Obj *o, pl_Mat *m, pl_Bool th) {
-  pl_sInt32 i = o->NumFaces;
+void plObjSetMat(pl_Obj *o, pl_Mat *m, bool th) {
+  int32_t i = o->NumFaces;
   pl_Face *f = o->Faces;
   while (i--) (f++)->Material = m; 
   if (th) for (i = 0; i < PL_MAX_CHILDREN; i++) 
@@ -136,7 +136,7 @@ void plObjSetMat(pl_Obj *o, pl_Mat *m, pl_Bool th) {
 }
 
 void plObjCalcNormals(pl_Obj *obj) {
-  pl_uInt32 i;
+  uint32_t i;
   pl_Vertex *v = obj->Vertices;
   pl_Face *f = obj->Faces;
   double x1, x2, y1, y2, z1, z2;
@@ -153,9 +153,9 @@ void plObjCalcNormals(pl_Obj *obj) {
     y2 = f->Vertices[0]->y-f->Vertices[2]->y;
     z1 = f->Vertices[0]->z-f->Vertices[1]->z;
     z2 = f->Vertices[0]->z-f->Vertices[2]->z;
-    f->nx = (pl_Float) (y1*z2 - z1*y2);
-    f->ny = (pl_Float) (z1*x2 - x1*z2);
-    f->nz = (pl_Float) (x1*y2 - y1*x2);
+    f->nx = (float) (y1*z2 - z1*y2);
+    f->ny = (float) (z1*x2 - x1*z2);
+    f->nz = (float) (x1*y2 - y1*x2);
     plNormalizeVector(&f->nx, &f->ny, &f->nz);
     f->Vertices[0]->nx += f->nx;
     f->Vertices[0]->ny += f->ny;

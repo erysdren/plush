@@ -27,10 +27,10 @@ Copyright (c) 1996-2000, Justin Frankel
 pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
   FILE *jawfile;
   pl_Obj *obj;
-  pl_uInt32 i;
-  pl_sInt crap;
+  uint32_t i;
+  int32_t crap;
   char line[256];
-  pl_uInt32 total_points = 0, total_polys = 0;
+  uint32_t total_points = 0, total_polys = 0;
   if ((jawfile = fopen(filename, "r")) == NULL) return 0;
   fgets(line, 256, jawfile); /* Ignores lightsource info */
   while (fgets(line, 256, jawfile) != NULL)
@@ -47,15 +47,15 @@ pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
   while (fgets(line, 256, jawfile) != NULL) if (strstr(line, ":") != NULL) {
     float x, y, z;
     sscanf(line, "%d: %f %f %f",&crap,&x,&y,&z);
-    obj->Vertices[i].x = (pl_Float) x;
-    obj->Vertices[i].y = (pl_Float) y;
-    obj->Vertices[i].z = (pl_Float) z;
+    obj->Vertices[i].x = (float) x;
+    obj->Vertices[i].y = (float) y;
+    obj->Vertices[i].z = (float) z;
     i++;
   }
   rewind(jawfile); fgets(line, 256, jawfile);
   i = 0;
   while (fgets(line, 256, jawfile) != NULL) if (strstr(line, "tri") != NULL) {
-    pl_uInt32 a,b,c;
+    uint32_t a,b,c;
     sscanf(line, "tri %ld, %ld, %ld", &a, &b, &c);
     obj->Faces[i].Vertices[0] = obj->Vertices + a;
     obj->Faces[i].Vertices[1] = obj->Vertices + c;

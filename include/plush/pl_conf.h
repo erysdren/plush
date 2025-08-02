@@ -25,18 +25,6 @@ approximately 8*PL_MAX_TRIANGLES bytes of memory. i.e. the default of
 
 #define PL_MAX_TRIANGLES (16384)
 
-typedef float pl_ZBuffer;              /* z-buffer type (must be float) */
-typedef float pl_Float;                /* IEEE 32 bit floating point */
-typedef int32_t pl_sInt32;     /* signed 32 bit integer */
-typedef uint32_t pl_uInt32;   /* unsigned 32 bit integer */
-typedef int16_t pl_sInt16;    /* signed 16 bit integer */
-typedef uint16_t pl_uInt16;  /* unsigned 16 bit integer */
-typedef int32_t pl_sInt;            /* signed optimal integer */
-typedef uint32_t pl_uInt;          /* unsigned optimal integer */
-typedef int pl_Bool;                   /* boolean */
-typedef uint8_t pl_uChar;        /* unsigned 8 bit integer */
-typedef int8_t pl_sChar;          /* signed 8 bit integer */
-
 #ifdef __cplusplus
 }
 #endif

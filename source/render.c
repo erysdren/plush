@@ -8,13 +8,13 @@ Copyright (c) 1996-2000, Justin Frankel
 #include <plush/plush.h>
 
 typedef struct {
-  pl_Float zd;
+  float zd;
   pl_Face *face;
 } _faceInfo;
 
 typedef struct {
   pl_Light *light;
-  pl_Float l[3];
+  float l[3];
 } _lightInfo;
 
 #define MACRO_plMatrixApply(m,x,y,z,outx,outy,outz) \
@@ -29,28 +29,28 @@ typedef struct {
   double length; \
   length = ( x )*( x )+( y )*( y )+( z )*( z ); \
   if (length > 0.0000000001) { \
-    pl_Float l = (pl_Float) sqrt(length); \
+    float l = (float) sqrt(length); \
     ( x ) /= l; \
     ( y ) /= l; \
     ( z ) /= l; \
   } \
 }
 
-pl_uInt32 plRender_TriStats[4];
+uint32_t plRender_TriStats[4];
 
-static pl_uInt32 _numfaces;
+static uint32_t _numfaces;
 static _faceInfo _faces[PL_MAX_TRIANGLES];
 
-static pl_Float _cMatrix[16];
-static pl_uInt32 _numlights;
+static float _cMatrix[16];
+static uint32_t _numlights;
 static _lightInfo _lights[PL_MAX_LIGHTS];
 static pl_Cam *_cam;
-static void _RenderObj(pl_Obj *, pl_Float *, pl_Float *);
+static void _RenderObj(pl_Obj *, float *, float *);
 static void _sift_down(int L, int U, int dir);
 static void _hsort(_faceInfo *base, int nel, int dir);
 
 void plRenderBegin(pl_Cam *Camera) {
-  pl_Float tempMatrix[16];
+  float tempMatrix[16];
   memset(plRender_TriStats,0,sizeof(plRender_TriStats));
   _cam = Camera;
   _numlights = 0;
@@ -64,7 +64,7 @@ void plRenderBegin(pl_Cam *Camera) {
 }
 
 void plRenderLight(pl_Light *light) {
-  pl_Float *pl, xp, yp, zp;
+  float *pl, xp, yp, zp;
   if (light->Type == PL_LIGHT_NONE || _numlights >= PL_MAX_LIGHTS) return;
   pl = _lights[_numlights].l;
   if (light->Type == PL_LIGHT_VECTOR) {
@@ -81,11 +81,11 @@ void plRenderLight(pl_Light *light) {
   _lights[_numlights++].light = light;
 }
 
-static void _RenderObj(pl_Obj *obj, pl_Float *bmatrix, pl_Float *bnmatrix) {
-  pl_uInt32 i, x, facepos;
-  pl_Float nx = 0.0, ny = 0.0, nz = 0.0;
+static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
+  uint32_t i, x, facepos;
+  float nx = 0.0, ny = 0.0, nz = 0.0;
   double tmp, tmp2;
-  pl_Float oMatrix[16], nMatrix[16], tempMatrix[16];
+  float oMatrix[16], nMatrix[16], tempMatrix[16];
 
   pl_Vertex *vertex;
   pl_Face *face;
@@ -97,15 +97,15 @@ static void _RenderObj(pl_Obj *obj, pl_Float *bmatrix, pl_Float *bnmatrix) {
     plMatrixMultiply(nMatrix,tempMatrix);
     plMatrixRotate(tempMatrix,3,obj->Za);
     plMatrixMultiply(nMatrix,tempMatrix);
-    memcpy(oMatrix,nMatrix,sizeof(pl_Float)*16);
-  } else memcpy(nMatrix,obj->RotMatrix,sizeof(pl_Float)*16);
+    memcpy(oMatrix,nMatrix,sizeof(float)*16);
+  } else memcpy(nMatrix,obj->RotMatrix,sizeof(float)*16);
 
   if (bnmatrix) plMatrixMultiply(nMatrix,bnmatrix);
 
   if (obj->GenMatrix) {
     plMatrixTranslate(tempMatrix, obj->Xp, obj->Yp, obj->Zp);
     plMatrixMultiply(oMatrix,tempMatrix);
-  } else memcpy(oMatrix,obj->Matrix,sizeof(pl_Float)*16);
+  } else memcpy(oMatrix,obj->Matrix,sizeof(float)*16);
   if (bmatrix) plMatrixMultiply(oMatrix,bmatrix);
 
   for (i = 0; i < PL_MAX_CHILDREN; i ++)
@@ -187,18 +187,18 @@ static void _RenderObj(pl_Obj *obj, pl_Float *bmatrix, pl_Float *bnmatrix) {
             tmp += 1.0-(face->Vertices[0]->xformedz+face->Vertices[1]->xformedz+
                         face->Vertices[2]->xformedz) /
                        (face->Material->FadeDist*3.0);
-          face->fShade = (pl_Float) tmp;
+          face->fShade = (float) tmp;
         } else face->fShade = 0.0; /* End of flatmask lighting if */
         if (face->Material->_ft & PL_FILL_ENVIRONMENT) {
-          face->eMappingU[0] = 32768 + (pl_sInt32) (face->Vertices[0]->xformednx*32768.0);
-          face->eMappingV[0] = 32768 - (pl_sInt32) (face->Vertices[0]->xformedny*32768.0);
-          face->eMappingU[1] = 32768 + (pl_sInt32) (face->Vertices[1]->xformednx*32768.0);
-          face->eMappingV[1] = 32768 - (pl_sInt32) (face->Vertices[1]->xformedny*32768.0);
-          face->eMappingU[2] = 32768 + (pl_sInt32) (face->Vertices[2]->xformednx*32768.0);
-          face->eMappingV[2] = 32768 - (pl_sInt32) (face->Vertices[2]->xformedny*32768.0);
+          face->eMappingU[0] = 32768 + (int32_t) (face->Vertices[0]->xformednx*32768.0);
+          face->eMappingV[0] = 32768 - (int32_t) (face->Vertices[0]->xformedny*32768.0);
+          face->eMappingU[1] = 32768 + (int32_t) (face->Vertices[1]->xformednx*32768.0);
+          face->eMappingV[1] = 32768 - (int32_t) (face->Vertices[1]->xformedny*32768.0);
+          face->eMappingU[2] = 32768 + (int32_t) (face->Vertices[2]->xformednx*32768.0);
+          face->eMappingV[2] = 32768 - (int32_t) (face->Vertices[2]->xformedny*32768.0);
         } 
         if (face->Material->_st &(PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE)) {
-          pl_uChar a;
+          uint8_t a;
           for (a = 0; a < 3; a ++) {
             tmp = face->vsLighting[a];
             if (face->Material->_st & PL_SHADE_GOURAUD) {
@@ -239,7 +239,7 @@ static void _RenderObj(pl_Obj *obj, pl_Float *bmatrix, pl_Float *bnmatrix) {
             } /* End of gouraud shading if */
             if (face->Material->_st & PL_SHADE_GOURAUD_DISTANCE)
               tmp += 1.0-face->Vertices[a]->xformedz/face->Material->FadeDist;
-            face->Shades[a] = (pl_Float) tmp;
+            face->Shades[a] = (float) tmp;
           } /* End of vertex loop for */ 
         } /* End of gouraud shading mask if */
         _faces[facepos].zd = face->Vertices[0]->xformedz+

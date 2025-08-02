@@ -8,30 +8,30 @@ Copyright (c) 1996-2000, Justin Frankel
 #include <plush/plush.h>
 
 typedef struct {
-    pl_uInt16 id;
-    void (*func)(FILE *f, pl_uInt32 p);
+    uint16_t id;
+    void (*func)(FILE *f, uint32_t p);
 } _pl_3DSChunk;
 
 static pl_Obj *obj;
 static pl_Obj *bobj;
 static pl_Obj *lobj;
-static pl_sInt16 currentobj;
+static int16_t currentobj;
 static pl_Mat *_m;
 
-static pl_Float _pl3DSReadFloat(FILE *f);
-static pl_uInt32 _pl3DSReadDWord(FILE *f);
-static pl_uInt16 _pl3DSReadWord(FILE *f);
-static void _pl3DSChunkReader(FILE *f, pl_uInt32 p);
-static void _pl3DSRGBFReader(FILE *f, pl_uInt32 p);
-static void _pl3DSRGBBReader(FILE *f, pl_uInt32 p);
-static void _pl3DSASCIIZReader(FILE *f, pl_uInt32 p, char *as);
-static void _pl3DSObjBlockReader(FILE *f, pl_uInt32 p);
-static void _pl3DSTriMeshReader(FILE *f, pl_uInt32 p);
-static void _pl3DSVertListReader(FILE *f, pl_uInt32 p);
-static void _pl3DSFaceListReader(FILE *f, pl_uInt32 p);
-static void _pl3DSFaceMatReader(FILE *f, pl_uInt32 p);
-static void MapListReader(FILE *f, pl_uInt32 p);
-static pl_sInt16 _pl3DSFindChunk(pl_uInt16 id);
+static float _pl3DSReadFloat(FILE *f);
+static uint32_t _pl3DSReadDWord(FILE *f);
+static uint16_t _pl3DSReadWord(FILE *f);
+static void _pl3DSChunkReader(FILE *f, uint32_t p);
+static void _pl3DSRGBFReader(FILE *f, uint32_t p);
+static void _pl3DSRGBBReader(FILE *f, uint32_t p);
+static void _pl3DSASCIIZReader(FILE *f, uint32_t p, char *as);
+static void _pl3DSObjBlockReader(FILE *f, uint32_t p);
+static void _pl3DSTriMeshReader(FILE *f, uint32_t p);
+static void _pl3DSVertListReader(FILE *f, uint32_t p);
+static void _pl3DSFaceListReader(FILE *f, uint32_t p);
+static void _pl3DSFaceMatReader(FILE *f, uint32_t p);
+static void MapListReader(FILE *f, uint32_t p);
+static int16_t _pl3DSFindChunk(uint16_t id);
 
 static _pl_3DSChunk _pl3DSChunkNames[] = {
     {0x4D4D,NULL}, /* Main */
@@ -53,7 +53,7 @@ static _pl_3DSChunk _pl3DSChunkNames[] = {
 
 pl_Obj *plRead3DSObj(const char *fn, pl_Mat *m) {
   FILE *f;
-  pl_uInt32 p;
+  uint32_t p;
   _m = m;
   obj = bobj = lobj = 0;
   currentobj = 0;
@@ -67,16 +67,16 @@ pl_Obj *plRead3DSObj(const char *fn, pl_Mat *m) {
   return bobj;
 }
 
-static pl_Float _pl3DSReadFloat(FILE *f) {
-  pl_uInt32 *i;
-  pl_Float c;
-  i = (pl_uInt32 *) &c;
+static float _pl3DSReadFloat(FILE *f) {
+  uint32_t *i;
+  float c;
+  i = (uint32_t *) &c;
   *i = _pl3DSReadDWord(f);
-  return ((pl_Float) c);
+  return ((float) c);
 }
 
-static pl_uInt32 _pl3DSReadDWord(FILE *f) {
-  pl_uInt32 r;
+static uint32_t _pl3DSReadDWord(FILE *f) {
+  uint32_t r;
   r = fgetc(f);
   r |= fgetc(f)<<8;
   r |= fgetc(f)<<16;
@@ -84,26 +84,26 @@ static pl_uInt32 _pl3DSReadDWord(FILE *f) {
   return r;
 }
 
-static pl_uInt16 _pl3DSReadWord(FILE *f) {
-  pl_uInt16 r;
+static uint16_t _pl3DSReadWord(FILE *f) {
+  uint16_t r;
   r = fgetc(f);
   r |= fgetc(f)<<8;
   return r;
 }
 
-static void _pl3DSRGBFReader(FILE *f, pl_uInt32 p) {
-  pl_Float c[3];
+static void _pl3DSRGBFReader(FILE *f, uint32_t p) {
+  float c[3];
   c[0] = _pl3DSReadFloat(f);
   c[1] = _pl3DSReadFloat(f);
   c[2] = _pl3DSReadFloat(f);
 }
 
-static void _pl3DSRGBBReader(FILE *f, pl_uInt32 p) {
+static void _pl3DSRGBBReader(FILE *f, uint32_t p) {
   unsigned char c[3];
   if (fread(&c, sizeof(c), 1, f) != 1) return;
 }
 
-static void _pl3DSASCIIZReader(FILE *f, pl_uInt32 p, char *as) {
+static void _pl3DSASCIIZReader(FILE *f, uint32_t p, char *as) {
   char c;
   if (!as) while ((c = fgetc(f)) != EOF && c != '\0');
   else { 
@@ -112,13 +112,13 @@ static void _pl3DSASCIIZReader(FILE *f, pl_uInt32 p, char *as) {
   }
 }
 
-static void _pl3DSObjBlockReader(FILE *f, pl_uInt32 p) {
+static void _pl3DSObjBlockReader(FILE *f, uint32_t p) {
   _pl3DSASCIIZReader(f,p,0);
   _pl3DSChunkReader(f, p);
 }
 
-static void _pl3DSTriMeshReader(FILE *f, pl_uInt32 p) {
-  pl_uInt32 i; 
+static void _pl3DSTriMeshReader(FILE *f, uint32_t p) {
+  uint32_t i; 
   pl_Face *face;
   obj = plObjCreate(0,0);
   _pl3DSChunkReader(f, p);
@@ -146,8 +146,8 @@ static void _pl3DSTriMeshReader(FILE *f, pl_uInt32 p) {
   }
 }
 
-static void _pl3DSVertListReader(FILE *f, pl_uInt32 p) {
-  pl_uInt16 nv;
+static void _pl3DSVertListReader(FILE *f, uint32_t p) {
+  uint16_t nv;
   pl_Vertex *v;
   nv = _pl3DSReadWord(f);
   obj->NumVertices = nv;
@@ -161,10 +161,10 @@ static void _pl3DSVertListReader(FILE *f, pl_uInt32 p) {
   }
 }
 
-static void _pl3DSFaceListReader(FILE *f, pl_uInt32 p) {
-  pl_uInt16 nv;
-  pl_uInt16 c[3];
-  pl_uInt16 flags;
+static void _pl3DSFaceListReader(FILE *f, uint32_t p) {
+  uint16_t nv;
+  uint16_t c[3];
+  uint16_t flags;
   pl_Face *face;
 
   nv = _pl3DSReadWord(f);
@@ -185,8 +185,8 @@ static void _pl3DSFaceListReader(FILE *f, pl_uInt32 p) {
   _pl3DSChunkReader(f, p);
 }
 
-static void _pl3DSFaceMatReader(FILE *f, pl_uInt32 p) {
-  pl_uInt16 n, nf;
+static void _pl3DSFaceMatReader(FILE *f, uint32_t p) {
+  uint16_t n, nf;
 
   _pl3DSASCIIZReader(f, p,0);
 
@@ -196,9 +196,9 @@ static void _pl3DSFaceMatReader(FILE *f, pl_uInt32 p) {
   }
 }
 
-static void MapListReader(FILE *f, pl_uInt32 p) {
-  pl_uInt16 nv;
-  pl_Float c[2];
+static void MapListReader(FILE *f, uint32_t p) {
+  uint16_t nv;
+  float c[2];
   pl_Vertex *v;
   nv = _pl3DSReadWord(f);
   v = obj->Vertices;
@@ -206,24 +206,24 @@ static void MapListReader(FILE *f, pl_uInt32 p) {
     c[0] = _pl3DSReadFloat(f);
     c[1] = _pl3DSReadFloat(f);
     if (feof(f)) return;
-    v->xformedx = (pl_sInt32) (c[0]*65536.0);
-    v->xformedy = (pl_sInt32) (c[1]*65536.0);
+    v->xformedx = (int32_t) (c[0]*65536.0);
+    v->xformedy = (int32_t) (c[1]*65536.0);
     v++;
   }
 }
 
-static pl_sInt16 _pl3DSFindChunk(pl_uInt16 id) {
-  pl_sInt16 i;
+static int16_t _pl3DSFindChunk(uint16_t id) {
+  int16_t i;
   for (i = 0; i < sizeof(_pl3DSChunkNames)/sizeof(_pl3DSChunkNames[0]); i++)
     if (id == _pl3DSChunkNames[i].id) return i;
   return -1;
 }
 
-static void _pl3DSChunkReader(FILE *f, pl_uInt32 p) {
-  pl_uInt32 hlen;
-  pl_uInt16 hid;
-  pl_sInt16 n;
-  pl_uInt32 pc;
+static void _pl3DSChunkReader(FILE *f, uint32_t p) {
+  uint32_t hlen;
+  uint16_t hid;
+  int16_t n;
+  uint32_t pc;
 
   while (ftell(f) < (int)p) {
     pc = ftell(f);

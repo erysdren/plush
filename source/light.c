@@ -7,9 +7,9 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
-pl_Light *plLightSet(pl_Light *light, pl_uChar mode, pl_Float x, pl_Float y,
-                     pl_Float z, pl_Float intensity, pl_Float halfDist) {
-  pl_Float m[16], m2[16];
+pl_Light *plLightSet(pl_Light *light, uint8_t mode, float x, float y,
+                     float z, float intensity, float halfDist) {
+  float m[16], m2[16];
   light->Type = mode;
   light->Intensity = intensity;
   light->HalfDistSquared = halfDist*halfDist;

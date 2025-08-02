@@ -10,32 +10,32 @@ Copyright (c) 1996-2000, Justin Frankel
 
 
 void plPF_TexEnv(pl_Cam *cam, pl_Face *TriFace) {
-  pl_uChar i0, i1, i2;
-  pl_uChar *gmem = cam->frameBuffer;
-  pl_uChar *remap;
-  pl_ZBuffer *zbuf = cam->zBuffer;
+  uint8_t i0, i1, i2;
+  uint8_t *gmem = cam->frameBuffer;
+  uint8_t *remap;
+  float *zbuf = cam->zBuffer;
 
-  pl_sInt32 MappingU1, MappingU2, MappingU3;
-  pl_sInt32 MappingV1, MappingV2, MappingV3;
-  pl_sInt32 MappingU_AND, MappingV_AND;
-  pl_sInt32 eMappingU1, eMappingU2, eMappingU3;
-  pl_sInt32 eMappingV1, eMappingV2, eMappingV3;
-  pl_sInt32 eMappingU_AND, eMappingV_AND;
+  int32_t MappingU1, MappingU2, MappingU3;
+  int32_t MappingV1, MappingV2, MappingV3;
+  int32_t MappingU_AND, MappingV_AND;
+  int32_t eMappingU1, eMappingU2, eMappingU3;
+  int32_t eMappingV1, eMappingV2, eMappingV3;
+  int32_t eMappingU_AND, eMappingV_AND;
 
-  pl_uChar *texture, *environment;
-  pl_uChar vshift;
-  pl_uChar evshift;
-  pl_uInt16 *addtable;
+  uint8_t *texture, *environment;
+  uint8_t vshift;
+  uint8_t evshift;
+  uint16_t *addtable;
   pl_Texture *Texture, *Environment;
-  pl_uChar stat;
-  pl_Bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  uint8_t stat;
+  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
 
-  pl_sInt32 U1, V1, U2, V2, dU1=0, dU2=0, dV1=0, dV2=0, dUL=0, dVL=0, UL, VL;
-  pl_sInt32 eU1, eV1, eU2, eV2, edU1=0, edU2=0, edV1=0, 
+  int32_t U1, V1, U2, V2, dU1=0, dU2=0, dV1=0, dV2=0, dUL=0, dVL=0, UL, VL;
+  int32_t eU1, eV1, eU2, eV2, edU1=0, edU2=0, edV1=0, 
             edV2=0, edUL=0, edVL=0, eUL, eVL;
-  pl_sInt32 X1, X2, dX1=0, dX2=0, XL1, XL2;
-  pl_Float Z1, ZL, dZ1=0, dZ2=0, dZL=0, Z2;
-  pl_sInt32 Y1, Y2, Y0, dY;
+  int32_t X1, X2, dX1=0, dX2=0, XL1, XL2;
+  float Z1, ZL, dZ1=0, dZ2=0, dZL=0, Z2;
+  int32_t Y1, Y2, Y0, dY;
 
   Environment = TriFace->Material->Environment;
   Texture = TriFace->Material->Texture;
@@ -55,12 +55,12 @@ void plPF_TexEnv(pl_Cam *cam, pl_Face *TriFace) {
 
   PUTFACE_SORT_TEX();
 
-  eMappingU1=(pl_sInt32) (TriFace->eMappingU[i0]*Environment->uScale*TriFace->Material->EnvScaling);
-  eMappingV1=(pl_sInt32) (TriFace->eMappingV[i0]*Environment->vScale*TriFace->Material->EnvScaling);
-  eMappingU2=(pl_sInt32) (TriFace->eMappingU[i1]*Environment->uScale*TriFace->Material->EnvScaling);
-  eMappingV2=(pl_sInt32) (TriFace->eMappingV[i1]*Environment->vScale*TriFace->Material->EnvScaling);
-  eMappingU3=(pl_sInt32) (TriFace->eMappingU[i2]*Environment->uScale*TriFace->Material->EnvScaling);
-  eMappingV3=(pl_sInt32) (TriFace->eMappingV[i2]*Environment->vScale*TriFace->Material->EnvScaling);
+  eMappingU1=(int32_t) (TriFace->eMappingU[i0]*Environment->uScale*TriFace->Material->EnvScaling);
+  eMappingV1=(int32_t) (TriFace->eMappingV[i0]*Environment->vScale*TriFace->Material->EnvScaling);
+  eMappingU2=(int32_t) (TriFace->eMappingU[i1]*Environment->uScale*TriFace->Material->EnvScaling);
+  eMappingV2=(int32_t) (TriFace->eMappingV[i1]*Environment->vScale*TriFace->Material->EnvScaling);
+  eMappingU3=(int32_t) (TriFace->eMappingU[i2]*Environment->uScale*TriFace->Material->EnvScaling);
+  eMappingV3=(int32_t) (TriFace->eMappingV[i2]*Environment->vScale*TriFace->Material->EnvScaling);
 
   U1 = U2 = MappingU1;
   V1 = V2 = MappingV1;
@@ -221,26 +221,26 @@ void plPF_TexEnv(pl_Cam *cam, pl_Face *TriFace) {
 }
 
 void plPF_TexF(pl_Cam *cam, pl_Face *TriFace) {
-  pl_uChar i0, i1, i2;
-  pl_uChar *gmem = cam->frameBuffer;
-  pl_ZBuffer *zbuf = cam->zBuffer;
-  pl_sInt32 MappingU1, MappingU2, MappingU3;
-  pl_sInt32 MappingV1, MappingV2, MappingV3;
-  pl_sInt32 MappingU_AND, MappingV_AND;
-  pl_uChar *texture;
-  pl_uChar vshift;
-  pl_uInt bc;
-  pl_uChar *remap;
+  uint8_t i0, i1, i2;
+  uint8_t *gmem = cam->frameBuffer;
+  float *zbuf = cam->zBuffer;
+  int32_t MappingU1, MappingU2, MappingU3;
+  int32_t MappingV1, MappingV2, MappingV3;
+  int32_t MappingU_AND, MappingV_AND;
+  uint8_t *texture;
+  uint8_t vshift;
+  uint32_t bc;
+  uint8_t *remap;
   pl_Texture *Texture;
-  pl_uChar stat;
+  uint8_t stat;
 
-  pl_ZBuffer Z1, ZL, dZ1=0, dZL=0, Z2, dZ2=0;
-  pl_sInt32 dU1=0, dV1=0, dU2=0, dV2=0, U1, V1, U2, V2;
-  pl_sInt32 dUL=0, dVL=0, UL, VL;
-  pl_sInt32 X1, X2, dX1=0, dX2=0, XL1, XL2;
-  pl_sInt32 Y1, Y2, Y0, dY;
-  pl_Bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
-  pl_sInt shade;
+  float Z1, ZL, dZ1=0, dZL=0, Z2, dZ2=0;
+  int32_t dU1=0, dV1=0, dU2=0, dV2=0, U1, V1, U2, V2;
+  int32_t dUL=0, dVL=0, UL, VL;
+  int32_t X1, X2, dX1=0, dX2=0, XL1, XL2;
+  int32_t Y1, Y2, Y0, dY;
+  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  int32_t shade;
 
   if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
   else Texture = TriFace->Material->Texture;
@@ -249,7 +249,7 @@ void plPF_TexF(pl_Cam *cam, pl_Face *TriFace) {
   remap = TriFace->Material->_ReMapTable;
   if (TriFace->Material->_AddTable)
   {
-    shade=(pl_sInt)(TriFace->fShade*255.0f);
+    shade=(int32_t)(TriFace->fShade*255.0f);
     if (shade < 0) shade=0;
     if (shade > 255) shade=255;
     bc = TriFace->Material->_AddTable[shade];
@@ -395,26 +395,26 @@ void plPF_TexF(pl_Cam *cam, pl_Face *TriFace) {
 }
 
 void plPF_TexG(pl_Cam *cam, pl_Face *TriFace) {
-  pl_uChar i0, i1, i2;
-  pl_uChar *gmem = cam->frameBuffer;
-  pl_ZBuffer *zbuf = cam->zBuffer;
-  pl_sInt32 MappingU1, MappingU2, MappingU3;
-  pl_sInt32 MappingV1, MappingV2, MappingV3;
-  pl_sInt32 MappingU_AND, MappingV_AND;
-  pl_uChar *texture;
-  pl_uChar *remap;
-  pl_uChar vshift;
-  pl_uInt16 *addtable;
+  uint8_t i0, i1, i2;
+  uint8_t *gmem = cam->frameBuffer;
+  float *zbuf = cam->zBuffer;
+  int32_t MappingU1, MappingU2, MappingU3;
+  int32_t MappingV1, MappingV2, MappingV3;
+  int32_t MappingU_AND, MappingV_AND;
+  uint8_t *texture;
+  uint8_t *remap;
+  uint8_t vshift;
+  uint16_t *addtable;
   pl_Texture *Texture;
 
-  pl_sInt32 U1, V1, U2, V2, dU1=0, dU2=0, dV1=0, dV2=0, dUL=0, dVL=0, UL, VL;
-  pl_sInt32 X1, X2, dX1=0, dX2=0, XL1, XL2;
-  pl_sInt32 C1, C2, dC1=0, dC2=0, CL, dCL=0;
-  pl_ZBuffer Z1, ZL, dZ1=0, dZ2=0, dZL=0, Z2;
-  pl_sInt32 Y1, Y2, Y0, dY;
-  pl_uChar stat;
+  int32_t U1, V1, U2, V2, dU1=0, dU2=0, dV1=0, dV2=0, dUL=0, dVL=0, UL, VL;
+  int32_t X1, X2, dX1=0, dX2=0, XL1, XL2;
+  int32_t C1, C2, dC1=0, dC2=0, CL, dCL=0;
+  float Z1, ZL, dZ1=0, dZ2=0, dZL=0, Z2;
+  int32_t Y1, Y2, Y0, dY;
+  uint8_t stat;
 
-  pl_Bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
 
   if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
   else Texture = TriFace->Material->Texture;

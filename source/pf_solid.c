@@ -9,24 +9,24 @@ Copyright (c) 1996-2000, Justin Frankel
 #include "putface.h"
 
 void plPF_SolidF(pl_Cam *cam, pl_Face *TriFace) {
-  pl_uChar i0, i1, i2;
+  uint8_t i0, i1, i2;
 
-  pl_uChar *gmem = cam->frameBuffer;
-  pl_ZBuffer *zbuf = cam->zBuffer;
+  uint8_t *gmem = cam->frameBuffer;
+  float *zbuf = cam->zBuffer;
 
-  pl_sInt32 X1, X2, dX1=0, dX2=0, XL1, XL2;
-  pl_ZBuffer dZL=0, dZ1=0, dZ2=0, Z1, ZL, Z2, Z3;
-  pl_sInt32 Y1, Y2, Y0, dY;
-  pl_uChar stat;
-  pl_Bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
-  pl_uChar bc;
-  pl_sInt32 shade;
+  int32_t X1, X2, dX1=0, dX2=0, XL1, XL2;
+  float dZL=0, dZ1=0, dZ2=0, Z1, ZL, Z2, Z3;
+  int32_t Y1, Y2, Y0, dY;
+  uint8_t stat;
+  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  uint8_t bc;
+  int32_t shade;
 
   PUTFACE_SORT();
 
-  shade=(pl_sInt32) (TriFace->fShade*(TriFace->Material->_ColorsUsed-1));
+  shade=(int32_t) (TriFace->fShade*(TriFace->Material->_ColorsUsed-1));
   if (shade < 0) shade=0;
-  if (shade > (pl_sInt32) TriFace->Material->_ColorsUsed-1) shade=TriFace->Material->_ColorsUsed-1;
+  if (shade > (int32_t) TriFace->Material->_ColorsUsed-1) shade=TriFace->Material->_ColorsUsed-1;
   bc=TriFace->Material->_ReMapTable[shade];
 
   X2 = X1 = TriFace->Scrx[i0];
@@ -130,27 +130,27 @@ void plPF_SolidF(pl_Cam *cam, pl_Face *TriFace) {
 }
 
 void plPF_SolidG(pl_Cam *cam, pl_Face *TriFace) {
-  pl_uChar i0, i1, i2;
-  pl_uChar *gmem = cam->frameBuffer;
-  pl_uChar *remap = TriFace->Material->_ReMapTable;
-  pl_ZBuffer *zbuf = cam->zBuffer;
-  pl_ZBuffer dZL=0, dZ1=0, dZ2=0, Z1, Z2, ZL, Z3;
-  pl_sInt32 dX1=0, dX2=0, X1, X2, XL1, XL2;
-  pl_sInt32 C1, C2, dC1=0, dC2=0, dCL=0, CL, C3;
-  pl_sInt32 Y1, Y2, Y0, dY;
-  pl_uChar stat;
-  pl_Bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  uint8_t i0, i1, i2;
+  uint8_t *gmem = cam->frameBuffer;
+  uint8_t *remap = TriFace->Material->_ReMapTable;
+  float *zbuf = cam->zBuffer;
+  float dZL=0, dZ1=0, dZ2=0, Z1, Z2, ZL, Z3;
+  int32_t dX1=0, dX2=0, X1, X2, XL1, XL2;
+  int32_t C1, C2, dC1=0, dC2=0, dCL=0, CL, C3;
+  int32_t Y1, Y2, Y0, dY;
+  uint8_t stat;
+  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
 
-  pl_Float nc = (TriFace->Material->_ColorsUsed-1)*65536.0f;
-  pl_sInt32 maxColor=((TriFace->Material->_ColorsUsed-1)<<16);
-  pl_sInt32 maxColorNonShift=TriFace->Material->_ColorsUsed-1;
+  float nc = (TriFace->Material->_ColorsUsed-1)*65536.0f;
+  int32_t maxColor=((TriFace->Material->_ColorsUsed-1)<<16);
+  int32_t maxColorNonShift=TriFace->Material->_ColorsUsed-1;
 
   PUTFACE_SORT();
 
   
-  C1 = (pl_sInt32) (TriFace->Shades[i0]*nc);
-  C2 = (pl_sInt32) (TriFace->Shades[i1]*nc);
-  C3 = (pl_sInt32) (TriFace->Shades[i2]*nc);
+  C1 = (int32_t) (TriFace->Shades[i0]*nc);
+  C2 = (int32_t) (TriFace->Shades[i1]*nc);
+  C3 = (int32_t) (TriFace->Shades[i2]*nc);
   X2 = X1 = TriFace->Scrx[i0];
   Z1 = TriFace->Scrz[i0];
   Z2 = TriFace->Scrz[i1];

@@ -25,7 +25,7 @@ static _clipInfo m_cl[2];
 
 static double m_clipPlanes[NUM_CLIP_PLANES][4];
 static pl_Cam *m_cam;
-static pl_sInt32 m_cx, m_cy; 
+static int32_t m_cx, m_cy; 
 static double m_fov;
 static double m_adj_asp;
 
@@ -35,7 +35,7 @@ static void _FindNormal(double x2, double x3,
                         double *res);
 
  /* Returns: 0 if nothing gets in,  1 or 2 if pout1 & pout2 get in */
-static pl_uInt _ClipToPlane(pl_uInt numVerts, double *plane);
+static uint32_t _ClipToPlane(uint32_t numVerts, double *plane);
 
 void plClipSetFrustum(pl_Cam *cam) {
   m_adj_asp = 1.0 / cam->AspectRatio;
@@ -110,7 +110,7 @@ void plClipSetFrustum(pl_Cam *cam) {
 
 
 void plClipRenderFace(pl_Face *face) {
-  pl_uInt k, a, w, numVerts;
+  uint32_t k, a, w, numVerts;
   double tmp, tmp2;
   pl_Face newface;
 
@@ -139,17 +139,17 @@ void plClipRenderFace(pl_Face *face) {
         if (a == 0) w = 0;
         else w = a+(k-2);
         newface.Vertices[a] = m_cl[0].newVertices+w;
-        newface.Shades[a] = (pl_Float) m_cl[0].Shades[w];
-        newface.MappingU[a] = (pl_sInt32)m_cl[0].MappingU[w];
-        newface.MappingV[a] = (pl_sInt32)m_cl[0].MappingV[w];
-        newface.eMappingU[a] = (pl_sInt32)m_cl[0].eMappingU[w];
-        newface.eMappingV[a] = (pl_sInt32)m_cl[0].eMappingV[w];
+        newface.Shades[a] = (float) m_cl[0].Shades[w];
+        newface.MappingU[a] = (int32_t)m_cl[0].MappingU[w];
+        newface.MappingV[a] = (int32_t)m_cl[0].MappingV[w];
+        newface.eMappingU[a] = (int32_t)m_cl[0].eMappingU[w];
+        newface.eMappingV[a] = (int32_t)m_cl[0].eMappingV[w];
         newface.Scrz[a] = 1.0f/newface.Vertices[a]->xformedz;
         tmp2 = m_fov * newface.Scrz[a];
         tmp = tmp2*newface.Vertices[a]->xformedx;
         tmp2 *= newface.Vertices[a]->xformedy;
-        newface.Scrx[a] = m_cx + ((pl_sInt32)((tmp*(float) (1<<20))));
-        newface.Scry[a] = m_cy - ((pl_sInt32)((tmp2*m_adj_asp*(float) (1<<20))));
+        newface.Scrx[a] = m_cx + ((int32_t)((tmp*(float) (1<<20))));
+        newface.Scry[a] = m_cy - ((int32_t)((tmp2*m_adj_asp*(float) (1<<20))));
       }
       newface.Material->_PutFace(m_cam,&newface);
       plRender_TriStats[3] ++; 
@@ -158,7 +158,7 @@ void plClipRenderFace(pl_Face *face) {
   }
 }
 
-pl_sInt plClipNeeded(pl_Face *face) {
+int32_t plClipNeeded(pl_Face *face) {
   double dr,dl,db,dt; 
   double f;
   dr = (m_cam->ClipRight-m_cam->CenterX);
@@ -197,11 +197,11 @@ static void _FindNormal(double x2, double x3,double y2, double y3,
 }
 
  /* Returns: 0 if nothing gets in,  1 or 2 if pout1 & pout2 get in */
-static pl_uInt _ClipToPlane(pl_uInt numVerts, double *plane)
+static uint32_t _ClipToPlane(uint32_t numVerts, double *plane)
 {
-  pl_uInt i, nextvert, curin, nextin;
+  uint32_t i, nextvert, curin, nextin;
   double curdot, nextdot, scale;
-  pl_uInt invert, outvert;
+  uint32_t invert, outvert;
   invert = 0;
   outvert = 0;
   curdot = m_cl[0].newVertices[0].xformedx*plane[0] +
@@ -225,13 +225,13 @@ static pl_uInt _ClipToPlane(pl_uInt numVerts, double *plane)
     nextin = (nextdot >= plane[3]);
     if (curin != nextin) {
       scale = (plane[3] - curdot) / (nextdot - curdot);
-      m_cl[1].newVertices[outvert].xformedx = (pl_Float) (m_cl[0].newVertices[invert].xformedx +
+      m_cl[1].newVertices[outvert].xformedx = (float) (m_cl[0].newVertices[invert].xformedx +
            (m_cl[0].newVertices[nextvert].xformedx - m_cl[0].newVertices[invert].xformedx)
              * scale);
-      m_cl[1].newVertices[outvert].xformedy = (pl_Float) (m_cl[0].newVertices[invert].xformedy +
+      m_cl[1].newVertices[outvert].xformedy = (float) (m_cl[0].newVertices[invert].xformedy +
            (m_cl[0].newVertices[nextvert].xformedy - m_cl[0].newVertices[invert].xformedy)
              * scale);
-      m_cl[1].newVertices[outvert].xformedz = (pl_Float) (m_cl[0].newVertices[invert].xformedz +
+      m_cl[1].newVertices[outvert].xformedz = (float) (m_cl[0].newVertices[invert].xformedz +
            (m_cl[0].newVertices[nextvert].xformedz - m_cl[0].newVertices[invert].xformedz)
              * scale);
       m_cl[1].Shades[outvert] = m_cl[0].Shades[invert] + 

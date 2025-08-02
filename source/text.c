@@ -8,25 +8,25 @@ Copyright (c) 1996-2000, Justin Frankel
 #include <plush/plush.h>
 #include <stdarg.h>
 
-static pl_uChar font_height = 16;
+static uint8_t font_height = 16;
 
-static pl_uChar *current_font = plText_DefaultFont;
+static uint8_t *current_font = plText_DefaultFont;
 
-void plTextSetFont(pl_uChar *font, pl_uChar height) {
+void plTextSetFont(uint8_t *font, uint8_t height) {
   current_font = font;
   font_height = height;
 }
 
-void plTextPutChar(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                   pl_uChar color, pl_uChar c) {
-  pl_uChar *font = current_font + (c*font_height);
-  pl_sInt offset = x+(y*cam->ScreenWidth);
-  pl_ZBuffer zz = (pl_ZBuffer) (1.0/z);
-  pl_sInt xx = x, a;
-  pl_uChar len = font_height;
-  pl_uChar ch;
-  pl_uChar *outmem;
-  pl_ZBuffer *zbuffer;
+void plTextPutChar(pl_Cam *cam, int32_t x, int32_t y, float z,
+                   uint8_t color, uint8_t c) {
+  uint8_t *font = current_font + (c*font_height);
+  int32_t offset = x+(y*cam->ScreenWidth);
+  float zz = (float) (1.0/z);
+  int32_t xx = x, a;
+  uint8_t len = font_height;
+  uint8_t ch;
+  uint8_t *outmem;
+  float *zbuffer;
   if (y+font_height < cam->ClipTop || y >= cam->ClipBottom) return;
   if (y < cam->ClipTop) {
     font += (cam->ClipTop-y);
@@ -76,9 +76,9 @@ void plTextPutChar(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
   }  
 }
 
-void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, const char *string) {
-  pl_sInt xx = x;
+void plTextPutStr(pl_Cam *cam, int32_t x, int32_t y, float z,
+                  uint8_t color, const char *string) {
+  int32_t xx = x;
   while (*string) {
     switch (*string) {
       case '\n': y += font_height; xx = x; break;
@@ -86,7 +86,7 @@ void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
       case '\r': break;
       case '\t': xx += 8*5; break;
       default:
-        plTextPutChar(cam,xx,y,z,color,(pl_uChar) *string);
+        plTextPutChar(cam,xx,y,z,color,(uint8_t) *string);
         xx += 8;
       break;
     }
@@ -94,8 +94,8 @@ void plTextPutStr(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
   }
 }
 
-void plTextPrintf(pl_Cam *cam, pl_sInt x, pl_sInt y, pl_Float z,
-                  pl_uChar color, const char *format, ...) {
+void plTextPrintf(pl_Cam *cam, int32_t x, int32_t y, float z,
+                  uint8_t color, const char *format, ...) {
   va_list arglist;
   char str[256];
   va_start(arglist, format);

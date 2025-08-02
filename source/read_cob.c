@@ -15,9 +15,9 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
   char temp_string[PL_COB_MAX_LINELENGTH];
   float TransMatrix[4][4];
   pl_Obj *obj;
-  pl_sInt32 x,i2;
+  int32_t x,i2;
   long int numVertices, numMappingVertices, numFaces, i;
-  pl_sInt32 *MappingVertices = 0;
+  int32_t *MappingVertices = 0;
   if (!fp) return 0;
 
   fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
@@ -97,8 +97,8 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
   } while (!feof(fp) && memcmp("Texture Vertices",temp_string,16));
   if (!feof(fp)) {
-    MappingVertices = (pl_sInt32 *) 
-      malloc(sizeof(pl_sInt32) * numMappingVertices * 2);
+    MappingVertices = (int32_t *) 
+      malloc(sizeof(int32_t) * numMappingVertices * 2);
     if (MappingVertices) {
       for (x = 0; x < numMappingVertices; x ++) {
         float p1, p2;
@@ -106,8 +106,8 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat) {
         if (feof(fp) || sscanf(temp_string,"%f %f", &p1, &p2) != 2) {
           free(MappingVertices); plObjDelete(obj); fclose(fp); return 0;
         }
-        MappingVertices[x*2] = (pl_sInt32) (p1*65536.0);
-        MappingVertices[x*2+1] = (pl_sInt32) (p2*65536.0);
+        MappingVertices[x*2] = (int32_t) (p1*65536.0);
+        MappingVertices[x*2+1] = (int32_t) (p2*65536.0);
       }
     }
   } 

@@ -7,8 +7,8 @@ Copyright (c) 2024, erysdren (it/she/they)
 
 #include <plush/plush.h>
 
-pl_uInt _plHiBit(pl_uInt16 x) {
-  pl_uInt i = 16, mask = 1<<15;
+uint32_t _plHiBit(uint16_t x) {
+  uint32_t i = 16, mask = 1<<15;
   while (mask) {
     if (x & mask) return i;
     mask >>= 1; i--;
@@ -16,15 +16,15 @@ pl_uInt _plHiBit(pl_uInt16 x) {
   return 0;
 }
 
-pl_uInt _plOptimizeImage(pl_uChar *pal, pl_uChar *data, pl_uInt32 len) {
-  pl_uChar colors[256], *dd = data;
-  pl_uChar remap[256];
-  pl_sInt32 lastused, firstunused;
-  pl_uInt32 x;
+uint32_t _plOptimizeImage(uint8_t *pal, uint8_t *data, uint32_t len) {
+  uint8_t colors[256], *dd = data;
+  uint8_t remap[256];
+  int32_t lastused, firstunused;
+  uint32_t x;
   memset(colors,0,256);
-  for (x = 0; x < len; x ++) colors[(pl_uInt) *dd++] = 1;
+  for (x = 0; x < len; x ++) colors[(uint32_t) *dd++] = 1;
   lastused = -1;
-  for (x = 0; x < 256; x ++) remap[x] = (pl_uChar)x;
+  for (x = 0; x < 256; x ++) remap[x] = (uint8_t)x;
   lastused = 255;
   firstunused = 0;
   for (;;) {
@@ -38,22 +38,22 @@ pl_uInt _plOptimizeImage(pl_uChar *pal, pl_uChar *data, pl_uInt32 len) {
     pal[firstunused*3+2] = pal[lastused*3+2];
     colors[lastused] = 0;
     colors[firstunused] = 1;
-	  remap[lastused] = (pl_uChar) firstunused;
+	  remap[lastused] = (uint8_t) firstunused;
   }
   x = len;
-  while (x--) *data++ = remap[(pl_uInt) *data];
+  while (x--) *data++ = remap[(uint32_t) *data];
   return (lastused+1);
 }
 
-void _plRescaleImage(pl_uChar *in, pl_uChar *out, pl_uInt inw,
-                            pl_uInt inh, pl_uInt outx, pl_uInt outy) {
-  pl_uInt x;
-  pl_uInt32 X, dX, dY, Y;
+void _plRescaleImage(uint8_t *in, uint8_t *out, uint32_t inw,
+                            uint32_t inh, uint32_t outx, uint32_t outy) {
+  uint32_t x;
+  uint32_t X, dX, dY, Y;
   dX = (inw<<16) / outx;
   dY = (inh<<16) / outy;
   Y = 0;
   do {
-    pl_uChar *ptr = in + inw*(Y>>16);
+    uint8_t *ptr = in + inw*(Y>>16);
     X = 0;
     Y += dY;
     x = outx;
@@ -64,12 +64,12 @@ void _plRescaleImage(pl_uChar *in, pl_uChar *out, pl_uInt inw,
   } while (--outy);
 }
 
-pl_Texture *plTexCreate(pl_uInt w, pl_uInt h, pl_uChar *p, pl_uInt nc, pl_uChar *c)
+pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t *c)
 {
 	pl_Texture *t = (pl_Texture *)malloc(sizeof(pl_Texture));
 
 	/* create copy of palette data */
-	t->PaletteData = (pl_uChar *)malloc(nc * 3);
+	t->PaletteData = (uint8_t *)malloc(nc * 3);
 	memcpy(t->PaletteData, c, nc * 3);
 
 	/* rescale image */
@@ -77,7 +77,7 @@ pl_Texture *plTexCreate(pl_uInt w, pl_uInt h, pl_uChar *p, pl_uInt nc, pl_uChar 
 	t->Height = _plHiBit(h);
 	if (1 << t->Width != w || 1 << t->Height != h)
 	{
-		pl_uChar nw, nh;
+		uint8_t nw, nh;
 
 		nw = t->Width;
 		if ((1 << t->Width) != w) nw++;
@@ -85,7 +85,7 @@ pl_Texture *plTexCreate(pl_uInt w, pl_uInt h, pl_uChar *p, pl_uInt nc, pl_uChar 
 		nh = t->Height;
 		if ((1 << t->Height) != h) nh++;
 
-		t->Data = (pl_uChar *)malloc((1 << nw) * (1 << nh));
+		t->Data = (uint8_t *)malloc((1 << nw) * (1 << nh));
 
 		_plRescaleImage(p, t->Data, w, h, 1 << nw, 1 << nh);
 
@@ -97,15 +97,15 @@ pl_Texture *plTexCreate(pl_uInt w, pl_uInt h, pl_uChar *p, pl_uInt nc, pl_uChar 
 	else
 	{
 		/* create copy of pixel data */
-		t->Data = (pl_uChar *)malloc(w * h);
+		t->Data = (uint8_t *)malloc(w * h);
 		memcpy(t->Data, p, w * h);
 	}
 
 	/* setup fields */
 	t->iWidth = w;
 	t->iHeight = h;
-	t->uScale = (pl_Float)(1 << t->Width);
-	t->vScale = (pl_Float)(1 << t->Height);
+	t->uScale = (float)(1 << t->Width);
+	t->vScale = (float)(1 << t->Height);
 	t->NumColors = nc;
 
 	return t;

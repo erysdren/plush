@@ -20,9 +20,9 @@ pl_Obj *TheCube;      // Our cube object
 pl_Mat *CubeMat;      // The material for the cube
 pl_Mat *AllMaterials[2]; // Used for creating palette
 pl_Cam *TheCamera; // Our camera
-pl_uChar *TheFrameBuffer; // Our framebuffer to render to
-pl_ZBuffer *TheZBuffer;   // Our zbuffer
-pl_uChar ThePalette[768];
+uint8_t *TheFrameBuffer; // Our framebuffer to render to
+float *TheZBuffer;   // Our zbuffer
+uint8_t ThePalette[768];
 
 int main(int argc, char **argv) { // Main
   int i;
@@ -32,14 +32,14 @@ int main(int argc, char **argv) { // Main
 #endif
   exSetGraphics(); // Set graphics
  
-  TheFrameBuffer = (pl_uChar *) malloc(W*H); // Alloc framebuffer
+  TheFrameBuffer = (uint8_t *) malloc(W*H); // Alloc framebuffer
   if (!TheFrameBuffer) { 
     exSetText(); 
     printf("Out of memory!\n");
     exit(1);
   }
   // Alloc z-buffer
-  TheZBuffer = (pl_ZBuffer *) malloc(W*H*sizeof(pl_ZBuffer));
+  TheZBuffer = (float *) malloc(W*H*sizeof(float));
 
   CubeMat = plMatCreate();    // Create the material for the cube
   CubeMat->NumGradients = 100; // Have it use 100 colors
@@ -92,7 +92,7 @@ int main(int argc, char **argv) { // Main
     TheCube->Za += 1.0;
 
                                       // clear zbuffer for next frame
-    memset(TheZBuffer,0,W*H*sizeof(pl_ZBuffer));
+    memset(TheZBuffer,0,W*H*sizeof(float));
     memset(TheFrameBuffer,0,W*H); // clear framebuffer for next frame
     plRenderBegin(TheCamera);        // Start rendering with the camera
     plRenderLight(TheLight);         // Render our light

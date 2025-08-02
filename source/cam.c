@@ -11,28 +11,28 @@ void plCamDelete(pl_Cam *c) {
   if (c) free(c);
 }
 
-void plCamSetTarget(pl_Cam *c, pl_Float x, pl_Float y, pl_Float z) {
+void plCamSetTarget(pl_Cam *c, float x, float y, float z) {
   double dx, dy, dz;
   dx = x - c->X;
   dy = y - c->Y;
   dz = z - c->Z;
   c->Roll = 0;
   if (dz > 0.0001f) {
-    c->Pan = (pl_Float) (-atan(dx/dz)*(180.0/PL_PI));
+    c->Pan = (float) (-atan(dx/dz)*(180.0/PL_PI));
     dz /= cos(c->Pan*(PL_PI/180.0));
-    c->Pitch = (pl_Float) (atan(dy/dz)*(180.0/PL_PI));
+    c->Pitch = (float) (atan(dy/dz)*(180.0/PL_PI));
   } else if (dz < -0.0001f) { 
-    c->Pan = (pl_Float) (180.0-atan(dx/dz)*(180.0/PL_PI));
+    c->Pan = (float) (180.0-atan(dx/dz)*(180.0/PL_PI));
     dz /= cos((c->Pan-180.0f)*(PL_PI/180.0));
-    c->Pitch = (pl_Float) (-atan(dy/dz)*(180.0/PL_PI));
+    c->Pitch = (float) (-atan(dy/dz)*(180.0/PL_PI));
   } else {
     c->Pan = 0.0f;
     c->Pitch = -90.0f;
   }
 }
 
-pl_Cam *plCamCreate(pl_uInt sw, pl_uInt sh, pl_Float ar, pl_Float fov,
-                    pl_uChar *fb, pl_ZBuffer *zb) {
+pl_Cam *plCamCreate(uint32_t sw, uint32_t sh, float ar, float fov,
+                    uint8_t *fb, float *zb) {
   pl_Cam *c;
   c = (pl_Cam *)malloc(sizeof(pl_Cam));
   if (!c) return 0;

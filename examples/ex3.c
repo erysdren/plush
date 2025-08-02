@@ -17,7 +17,7 @@
 
 // Our variables
 pl_Light *TheLight;   // Our light
-pl_Float TheLight_Xa, TheLight_Ya, TheLight_Za; 
+float TheLight_Xa, TheLight_Ya, TheLight_Za; 
                      // The rotation angles of our light
 pl_Obj *TheCube;      // Our cube object
 pl_Obj *TheTorus;     // Our torus object
@@ -25,9 +25,9 @@ pl_Mat *CubeMat;      // The material for the cube
 pl_Mat *TorusMat;     // The material for the torus
 pl_Mat *AllMaterials[3]; // Used for creating palette
 pl_Cam *TheCamera; // Our camera
-pl_uChar *TheFrameBuffer; // Our framebuffer to render to
-pl_ZBuffer *TheZBuffer;   // Our zbuffer
-pl_uChar ThePalette[768];
+uint8_t *TheFrameBuffer; // Our framebuffer to render to
+float *TheZBuffer;   // Our zbuffer
+uint8_t ThePalette[768];
 
 int main(int argc, char **argv) { // Main
   int i;
@@ -37,14 +37,14 @@ int main(int argc, char **argv) { // Main
 #endif
   exSetGraphics(); // Set graphics
  
-  TheFrameBuffer = (pl_uChar *) malloc(W*H); // Alloc framebuffer
+  TheFrameBuffer = (uint8_t *) malloc(W*H); // Alloc framebuffer
   if (!TheFrameBuffer) { 
     exSetText(); 
     printf("Out of memory!\n");
     exit(1);
   }
   // Alloc z-buffer
-  TheZBuffer = (pl_ZBuffer *) malloc(W*H*sizeof(pl_ZBuffer));
+  TheZBuffer = (float *) malloc(W*H*sizeof(float));
 
   CubeMat = plMatCreate();    // Create the material for the cube
   CubeMat->NumGradients = 100; // Have it use 100 colors
@@ -127,7 +127,7 @@ int main(int argc, char **argv) { // Main
                1.0); // falloff, not used for vector lights
 
                                       // clear zbuffer for next frame
-    memset(TheZBuffer,0,W*H*sizeof(pl_ZBuffer));
+    memset(TheZBuffer,0,W*H*sizeof(float));
     memset(TheFrameBuffer,0,W*H); // clear framebuffer for next frame
     plRenderBegin(TheCamera);        // Start rendering with the camera
     plRenderLight(TheLight);         // Render our light
