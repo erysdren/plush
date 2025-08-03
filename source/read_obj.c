@@ -89,9 +89,9 @@ pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m)
 			if (sscanf(line, "f %d %d %d", &a, &b, &c) != 3)
 				continue;
 
-			obj->Faces[num_tris].Vertices[0] = obj->Vertices + a;
-			obj->Faces[num_tris].Vertices[1] = obj->Vertices + c;
-			obj->Faces[num_tris].Vertices[2] = obj->Vertices + b;
+			obj->Faces[num_tris].Vertices[0] = obj->Vertices + a - 1;
+			obj->Faces[num_tris].Vertices[1] = obj->Vertices + b - 1;
+			obj->Faces[num_tris].Vertices[2] = obj->Vertices + c - 1;
 			obj->Faces[num_tris].Material = m;
 
 			num_tris++;
