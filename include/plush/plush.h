@@ -553,6 +553,16 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat);
 pl_Obj *plReadJAWObj(const char *fn, pl_Mat *m);
 
 /*
+  plReadWavefrontObj() reads a Wavefront OBJ object.
+  Parameters:
+    fn: filename of object to read
+    m: material to assign it
+  Returns:
+    pointer to object
+*/
+pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m);
+
+/*
   plReadPCXTex() reads a 8bpp PCX texture
   Parameters:
     fn: filename of texture to read
