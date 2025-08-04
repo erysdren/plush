@@ -55,8 +55,8 @@ pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
   rewind(jawfile); fgets(line, 256, jawfile);
   i = 0;
   while (fgets(line, 256, jawfile) != NULL) if (strstr(line, "tri") != NULL) {
-    uint32_t a,b,c;
-    sscanf(line, "tri %ld, %ld, %ld", &a, &b, &c);
+    int a,b,c;
+    sscanf(line, "tri %d, %d, %d", &a, &b, &c);
     obj->Faces[i].Vertices[0] = obj->Vertices + a;
     obj->Faces[i].Vertices[1] = obj->Vertices + c;
     obj->Faces[i].Vertices[2] = obj->Vertices + b;

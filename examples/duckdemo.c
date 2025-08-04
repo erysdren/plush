@@ -22,7 +22,7 @@ uint8_t framebuffer[W*H]; // Our framebuffer to render to
 
 void SetUpColors();
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
   float *zbuffer;             // Our zbuffer
 
   printf("%s\n%s\n\n",plVersionString,plCopyrightString); // I like to do this
@@ -37,7 +37,7 @@ void main(int argc, char **argv) {
   Object = plRead3DSObj("duckdemo.3ds",Material1);
   if (!Object) {
     perror("Can't load duckdemo.3ds");
-    exit(1);
+    return 1;
   }
 
      // First child is an eye, child of child is eye
@@ -90,6 +90,7 @@ void main(int argc, char **argv) {
   plFree(zbuffer);
   exSetText(); // Restore text mode
   //printf("Try \"duckdemo 640x480\" or \"duckdemo 320x200 -nozb\" etc\n");
+  return 0;
 }
 
 void SetUpColors() {

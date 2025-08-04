@@ -23,7 +23,7 @@ void makeBoxes(pl_Obj *obj, float s,
                pl_Mat **m, int i);       // Makes hierarchy of cubes
 void rotateBoxes(pl_Obj *obj, float r); // Rotates hierarchy
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
   int i, done = 0;
 
   pl_Mat *mat[NUM_ITERS]; // Materials
@@ -55,7 +55,7 @@ void main(int argc, char **argv) {
     mat[i] = plMatCreate();
     mat[i]->NumGradients = 200;
     mat[i]->Transparent = 2;
-    mat[i]->Ambient[0] = mat[i]->Ambient[1] = mat[i]->Ambient[3] = 20;
+    mat[i]->Ambient[0] = mat[i]->Ambient[1] = mat[i]->Ambient[2] = 20;
     mat[i]->Shininess = 3;
     mat[i]->ShadeType = PL_SHADE_GOURAUD;
     //mat[i]->Priority = i;
@@ -107,6 +107,7 @@ void main(int argc, char **argv) {
   plLightDelete(light);
   plCamDelete(cam);
   exSetText(); // Restore text mode
+  return 0;
 }
 
 void makeBoxes(pl_Obj *obj, float s, pl_Mat **m, int i) {
