@@ -90,6 +90,7 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
   pl_Vertex *vertex;
   pl_Face *face;
   pl_Light *light;
+  pl_Obj *child;
 
   if (obj->GenMatrix) {
     plMatrixRotate(nMatrix,1,obj->Xa);
@@ -108,8 +109,14 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
   } else memcpy(oMatrix,obj->Matrix,sizeof(float)*16);
   if (bmatrix) plMatrixMultiply(oMatrix,bmatrix);
 
-  for (i = 0; i < PL_MAX_CHILDREN; i ++)
-    if (obj->Children[i]) _RenderObj(obj->Children[i],oMatrix,nMatrix);
+  // erysdren
+  child = obj->Children;
+  while (child)
+  {
+    _RenderObj(child,oMatrix,nMatrix);
+    child = child->NextSibling;
+  }
+
   if (!obj->NumFaces || !obj->NumVertices) return;
 
   plMatrixTranslate(tempMatrix, -_cam->X, -_cam->Y, -_cam->Z);

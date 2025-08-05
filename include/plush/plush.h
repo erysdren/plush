@@ -158,6 +158,26 @@ pl_Obj *plObjCreate(uint32_t np, uint32_t nf);
 */
 void plObjDelete(pl_Obj *o);
 
+
+/*
+  plObjAddChild() adds an object as a child of the given parent object
+  Paramters:
+    parent: parent object
+    child: object to add as child
+  Returns:
+    child object
+*/
+pl_Obj *plObjAddChild(pl_Obj *parent, pl_Obj *child);
+
+/*
+  plObjRemoveParent() removes a given object from its parent hierarchy
+  Paramters:
+    o: object to remove from parent hierarchy
+  Returns:
+    child object
+*/
+pl_Obj *plObjRemoveParent(pl_Obj *o);
+
 /* 
   plObjClone() creates an exact but independent duplicate of an object and
     all of it's subobjects

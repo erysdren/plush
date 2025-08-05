@@ -70,10 +70,8 @@ int main(int argc, char **argv) {
   setup_materials(mat,pal); // intialize materials and palette
 
   land = setup_landscape(mat[0],mat[1],mat[2]); // create landscape
-  sky = land->Children[0]; // unhierarchicalize the sky from the land
-  land->Children[0] = 0;
-  sky2 = land->Children[1];
-  land->Children[1] = 0;
+  sky = plObjRemoveParent(land->Children->NextSibling); // unhierarchicalize the sky from the land
+  sky2 = plObjRemoveParent(land->Children);
 
   frames = 0;     // set up for framerate counter
   t = exClock();
@@ -269,6 +267,7 @@ void setup_materials(pl_Mat **mat, uint8_t *pal) {
 pl_Obj *setup_landscape(pl_Mat *m, pl_Mat *sm, pl_Mat *sm2) {
   int i;
   // make our root object the land
+  pl_Obj *sky;
   pl_Obj *o = plMakePlane(LAND_SIZE,LAND_SIZE,LAND_DIV-1,m); 
   // give it a nice random bumpy effect
   for (i = 0; i < o->NumVertices; i ++)
@@ -277,14 +276,14 @@ pl_Obj *setup_landscape(pl_Mat *m, pl_Mat *sm, pl_Mat *sm2) {
   plObjCalcNormals(o);
 
   // Make our first child the first sky
-  o->Children[0] = plMakePlane(LAND_SIZE,LAND_SIZE,1,sm);
-  o->Children[0]->Yp = 2000;
-  o->Children[0]->BackfaceCull = 0;
+  sky = plObjAddChild(o, plMakePlane(LAND_SIZE,LAND_SIZE,1,sm));
+  sky->Yp = 2000;
+  sky->BackfaceCull = 0;
 
   // and the second the second sky
-  o->Children[1] = plMakeSphere(LAND_SIZE,10,10,sm2);
-  o->Children[1]->Yp = 2000;
-  plObjFlipNormals(o->Children[1]);
+  sky = plObjAddChild(o, plMakeSphere(LAND_SIZE,10,10,sm2));
+  sky->Yp = 2000;
+  plObjFlipNormals(sky);
 
   return (o);
 }

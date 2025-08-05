@@ -141,7 +141,7 @@ static void _pl3DSTriMeshReader(FILE *f, uint32_t p) {
     currentobj = 1;
     lobj = bobj = obj;
   } else {
-    lobj->Children[0] = obj;
+    plObjAddChild(lobj, obj);
     lobj = obj;
   }
 }

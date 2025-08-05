@@ -93,16 +93,28 @@ typedef struct _pl_Face {
   float vsLighting[3];      /* Vertex static lighting. Should be 0.0 */
 } pl_Face;
 
-/* 
-** Object 
+/*
+** Model
 */
-typedef struct _pl_Obj {
+typedef struct _pl_Mdl {
   uint32_t NumVertices;              /* Number of vertices */
   uint32_t NumFaces;                 /* Number of faces */
   pl_Vertex *Vertices;                /* Array of vertices */
   pl_Face *Faces;                     /* Array of faces */
-  struct _pl_Obj *Children[PL_MAX_CHILDREN];
-                                      /* Children */
+} pl_Mdl;
+
+/* 
+** Object 
+*/
+typedef struct _pl_Obj {
+  uint32_t NumVertices;            /* Number of vertices */
+  uint32_t NumFaces;               /* Number of faces */
+  pl_Vertex *Vertices;             /* Array of vertices */
+  pl_Face *Faces;                  /* Array of faces */
+  struct _pl_Obj *Parent;          /* Parent object */
+  struct _pl_Obj *PrevSibling;     /* Previous in linked list of siblings */
+  struct _pl_Obj *NextSibling;     /* Next in linked list of siblings */
+  struct _pl_Obj *Children;        /* First in linked list of children */
   bool BackfaceCull;               /* Are backfacing polys drawn? */
   bool BackfaceIllumination;       /* Illuminated by lights behind them? */ 
   bool GenMatrix;                  /* Generate Matrix from the following

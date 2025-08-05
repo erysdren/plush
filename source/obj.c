@@ -8,24 +8,34 @@ Copyright (c) 1996-2000, Justin Frankel
 #include <plush/plush.h>
 
 pl_Obj *plObjScale(pl_Obj *o, float s) {
+  pl_Obj *child;
   uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   while (i--) {
     v->x *= s; v->y *= s; v->z *= s; v++;
   }
-  for (i = 0; i < PL_MAX_CHILDREN; i ++) 
-    if (o->Children[i]) plObjScale(o->Children[i],s);
+  child = o->Children;
+  while (child)
+  {
+    plObjScale(child,s);
+    child = child->NextSibling;
+  }
   return o;
 }
 
 pl_Obj *plObjStretch(pl_Obj *o, float x, float y, float z) {
+  pl_Obj *child;
   uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   while (i--) {
     v->x *= x; v->y *= y; v->z *= z; v++;
   }
-  for (i = 0; i < PL_MAX_CHILDREN; i ++) 
-    if (o->Children[i]) plObjStretch(o->Children[i],x,y,z);
+  child = o->Children;
+  while (child)
+  {
+    plObjStretch(child,x,y,z);
+    child = child->NextSibling;
+  }
   return o;
 }
 
@@ -39,6 +49,7 @@ pl_Obj *plObjTranslate(pl_Obj *o, float x, float y, float z) {
 }
 
 pl_Obj *plObjFlipNormals(pl_Obj *o) {
+  pl_Obj *child;
   uint32_t i = o->NumVertices;
   pl_Vertex *v = o->Vertices;
   pl_Face *f = o->Faces;
@@ -50,16 +61,25 @@ pl_Obj *plObjFlipNormals(pl_Obj *o) {
     f->nx = - f->nx; f->ny = - f->ny; f->nz = - f->nz;
     f++;
   }
-  for (i = 0; i < PL_MAX_CHILDREN; i ++) 
-    if (o->Children[i]) plObjFlipNormals(o->Children[i]);
+  child = o->Children;
+  while (child)
+  {
+    plObjFlipNormals(child);
+    child = child->NextSibling;
+  }
   return o;
 }
 
 void plObjDelete(pl_Obj *o) {
+  pl_Obj *child;
   uint32_t i;
   if (o) {
-    for (i = 0; i < PL_MAX_CHILDREN; i ++) 
-      if (o->Children[i]) plObjDelete(o->Children[i]);
+    child = o->Children;
+    while (child)
+    {
+      plObjDelete(child);
+      child = child->NextSibling;
+    }
     if (o->Vertices) plFree(o->Vertices);
     if (o->Faces) plFree(o->Faces);
     plFree(o);
@@ -85,16 +105,24 @@ pl_Obj *plObjCreate(uint32_t nv, uint32_t nf) {
   }
   memset(o->Vertices,0,sizeof(pl_Vertex)*nv);
   memset(o->Faces,0,sizeof(pl_Face)*nf);
+  o->Parent = NULL;
+  o->NextSibling = NULL;
+  o->Children = NULL;
   return o;
 }
 
 pl_Obj *plObjClone(pl_Obj *o) {
   pl_Face *iff, *of;
   uint32_t i;
+  pl_Obj *child;
   pl_Obj *out;
   if (!(out = plObjCreate(o->NumVertices,o->NumFaces))) return 0;
-  for (i = 0; i < PL_MAX_CHILDREN; i ++) 
-    if (o->Children[i]) out->Children[i] = plObjClone(o->Children[i]);
+  child = o->Children;
+  while (child)
+  {
+    plObjAddChild(out, plObjClone(child));
+    child = child->NextSibling;
+  }
   out->Xa = o->Xa; out->Ya = o->Ya; out->Za = o->Za;
   out->Xp = o->Xp; out->Yp = o->Yp; out->Zp = o->Zp;
   out->BackfaceCull = o->BackfaceCull;
@@ -131,11 +159,18 @@ void plObjSetMat(pl_Obj *o, pl_Mat *m, bool th) {
   int32_t i = o->NumFaces;
   pl_Face *f = o->Faces;
   while (i--) (f++)->Material = m; 
-  if (th) for (i = 0; i < PL_MAX_CHILDREN; i++) 
-    if (o->Children[i]) plObjSetMat(o->Children[i],m,th);
+  if (th) {
+    pl_Obj *child = o->Children;
+    while (child)
+    {
+      plObjSetMat(child,m,th);
+      child = child->NextSibling;
+    }
+  }
 }
 
 void plObjCalcNormals(pl_Obj *obj) {
+  pl_Obj *child;
   uint32_t i;
   pl_Vertex *v = obj->Vertices;
   pl_Face *f = obj->Faces;
@@ -174,6 +209,36 @@ void plObjCalcNormals(pl_Obj *obj) {
     plNormalizeVector(&v->nx, &v->ny, &v->nz);
     v++;
   } while (--i);
-  for (i = 0; i < PL_MAX_CHILDREN; i ++) 
-    if (obj->Children[i]) plObjCalcNormals(obj->Children[i]);
+  child = obj->Children;
+  while (child)
+  {
+    plObjCalcNormals(child);
+    child = child->NextSibling;
+  }
+}
+
+pl_Obj *plObjAddChild(pl_Obj *parent, pl_Obj *child)
+{
+	plObjRemoveParent(child);
+	child->Parent = parent;
+	child->NextSibling = parent->Children;
+	if (parent->Children)
+		parent->Children->PrevSibling = child;
+	parent->Children = child;
+	return child;
+}
+
+pl_Obj *plObjRemoveParent(pl_Obj *o)
+{
+	if (o->Parent && o->Parent->Children == o)
+		o->Parent->Children = NULL;
+
+	if (o->NextSibling)
+		o->NextSibling->PrevSibling = o->PrevSibling;
+	if (o->PrevSibling)
+		o->PrevSibling->NextSibling = o->NextSibling;
+	o->Parent = NULL;
+	o->PrevSibling = NULL;
+	o->NextSibling = NULL;
+	return o;
 }

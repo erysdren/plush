@@ -41,11 +41,10 @@ int main(int argc, char **argv) {
   }
 
      // First child is an eye, child of child is eye
-  plObjSetMat(Object->Children[0],Material2,0);
-  plObjSetMat(Object->Children[0]->Children[0],Material2,0);
+  plObjSetMat(Object->Children,Material2,0);
+  plObjSetMat(Object->Children->Children,Material2,0);
      // Child of eye is other eye, make it child of duck
-  Object->Children[1] = Object->Children[0]->Children[0];
-  Object->Children[0]->Children[0] = 0;
+  plObjAddChild(Object, plObjRemoveParent(Object->Children->Children));
 
   plObjScale(Object,0.1); // Scale object down...
 

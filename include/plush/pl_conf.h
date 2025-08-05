@@ -11,9 +11,6 @@
 extern "C" {
 #endif
 
-/* Maximum children per object */
-#define PL_MAX_CHILDREN (16)
-
 /* Maximum lights per scene -- if you exceed this, they will be ignored */
 #define PL_MAX_LIGHTS (32)
 

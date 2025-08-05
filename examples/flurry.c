@@ -111,30 +111,40 @@ int main(int argc, char **argv) {
 }
 
 void makeBoxes(pl_Obj *obj, float s, pl_Mat **m, int i) {
-  int x;
+  pl_Obj *child;
   if (!i) return;
-  obj->Children[0] = plMakeBox(s/2,s/2,s/2,*m);
-  obj->Children[0]->Xp = s*BOX_DIST;
-  obj->Children[1] = plMakeBox(s/2,s/2,s/2,*m);
-  obj->Children[1]->Xp = -s*BOX_DIST;
-  obj->Children[2] = plMakeBox(s/2,s/2,s/2,*m);
-  obj->Children[2]->Yp = s*BOX_DIST;
-  obj->Children[3] = plMakeBox(s/2,s/2,s/2,*m);
-  obj->Children[3]->Yp = -s*BOX_DIST;
-  obj->Children[4] = plMakeBox(s/2,s/2,s/2,*m);
-  obj->Children[4]->Zp = s*BOX_DIST;
-  obj->Children[5] = plMakeBox(s/2,s/2,s/2,*m);
-  obj->Children[5]->Zp = -s*BOX_DIST;
-  for (x = 0; x < 6; x ++) 
-    makeBoxes(obj->Children[x],s/2,m+1,i-1);
+  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child->Xp = s*BOX_DIST;;
+  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child->Xp = -s*BOX_DIST;
+  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child->Yp = s*BOX_DIST;
+  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child->Yp = -s*BOX_DIST;
+  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child->Zp = s*BOX_DIST;
+  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child->Zp = -s*BOX_DIST;
+
+  child = obj->Children;
+  while (child)
+  {
+    makeBoxes(child,s/2,m+1,i-1);
+    child = child->NextSibling;
+  }
 }
 
 void rotateBoxes(pl_Obj *obj, float r) {
+  pl_Obj *child;
   int i;
   if (!obj) return;
   obj->Ya += r;
   obj->Xa += r;
-  for (i = 0 ; i < 6; i ++) 
-    rotateBoxes(obj->Children[i],r*BOX_ROTFACTOR);
-  rotateBoxes(obj->Children[5],r*BOX_ROTFACTOR);
+
+  child = obj->Children;
+  while (child)
+  {
+    rotateBoxes(child,r*BOX_ROTFACTOR);
+    child = child->NextSibling;
+  }
 }
