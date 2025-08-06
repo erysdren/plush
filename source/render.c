@@ -117,15 +117,17 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
     child = child->NextSibling;
   }
 
-  if (!obj->NumFaces || !obj->NumVertices) return;
+  if (!obj->Model) return;
+
+  if (!obj->Model->NumFaces || !obj->Model->NumVertices) return;
 
   plMatrixTranslate(tempMatrix, -_cam->X, -_cam->Y, -_cam->Z);
   plMatrixMultiply(oMatrix,tempMatrix);
   plMatrixMultiply(oMatrix,_cMatrix);
   plMatrixMultiply(nMatrix,_cMatrix);
   
-  x = obj->NumVertices;
-  vertex = obj->Vertices;
+  x = obj->Model->NumVertices;
+  vertex = obj->Model->Vertices;
 
   do {
     MACRO_plMatrixApply(oMatrix,vertex->x,vertex->y,vertex->z, 
@@ -135,17 +137,17 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
     vertex++;
   } while (--x);
 
-  face = obj->Faces;
+  face = obj->Model->Faces;
   facepos = _numfaces;
 
-  if (_numfaces + obj->NumFaces >= PL_MAX_TRIANGLES) // exceeded maximum face coutn
+  if (_numfaces + obj->Model->NumFaces >= PL_MAX_TRIANGLES) // exceeded maximum face coutn
   {
     return;
   }
 
-  plRender_TriStats[0] += obj->NumFaces; 
-  _numfaces += obj->NumFaces;
-  x = obj->NumFaces;
+  plRender_TriStats[0] += obj->Model->NumFaces;
+  _numfaces += obj->Model->NumFaces;
+  x = obj->Model->NumFaces;
 
   do {
     if (obj->BackfaceCull || face->Material->_st & PL_SHADE_FLAT)

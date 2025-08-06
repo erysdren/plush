@@ -28,6 +28,7 @@ target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/make.c
 	${PROJECT_SOURCE_DIR}/source/mat.c
 	${PROJECT_SOURCE_DIR}/source/math.c
+	${PROJECT_SOURCE_DIR}/source/mdl.c
 	${PROJECT_SOURCE_DIR}/source/obj.c
 	${PROJECT_SOURCE_DIR}/source/pf_ptex.c
 	${PROJECT_SOURCE_DIR}/source/pf_solid.c

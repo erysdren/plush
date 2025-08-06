@@ -133,6 +133,103 @@ void plMatMapToPal(pl_Mat *m, uint8_t *pal, int32_t pstart, int32_t pend);
 void plMatMakeOptPal(uint8_t *p, int32_t pstart, 
                      int32_t pend, pl_Mat **materials, int32_t nmats);
 
+/******************************************************************************
+** Model Functions (mdl.c)
+******************************************************************************/
+
+/*
+  plMdlCreate() allocates a model
+  Paramters:
+    np: Number of vertices in model
+    nf: Number of faces in model
+  Returns:
+    a pointer to the model on success, 0 on failure
+*/
+pl_Mdl *plMdlCreate(uint32_t np, uint32_t nf);
+
+/*
+  plMdlDelete() frees a model
+    that was allocated with plMdlCreate();
+  Paramters:
+    mdl: model to delete
+  Returns:
+    nothing
+*/
+void plMdlDelete(pl_Mdl *mdl);
+
+/*
+   plMdlCalcNormals() calculates all face and vertex normals for a model
+   Paramters:
+     mdl: the model
+   Returns:
+     nothing
+*/
+void plMdlCalcNormals(pl_Mdl *mdl);
+
+/*
+  plMdlSetMat() sets the material of all faces in a model
+  Paramters:
+    mdl: the model to set the material of
+    mat: the material to set it to
+  Returns:
+    nothing
+*/
+void plMdlSetMat(pl_Mdl *mdl, pl_Mat *mat);
+
+/*
+  plMdlScale() scales a model
+  Paramters:
+    mdl: a pointer to the model to scale
+    s: the scaling factor
+  Returns:
+    a pointer to mdl.
+  Notes: This scales it slowly, by going through each vertex and scaling it's
+    position. Avoid doing this in realtime.
+*/
+pl_Mdl *plMdlScale(pl_Mdl *mdl, float s);
+
+/*
+  plMdlStretch() stretches a model
+  Parameters:
+    mdl: a pointer to the model to stretch
+    x,y,z: the x y and z stretch factors
+  Returns:
+    a pointer to mdl.
+  Notes: same as plMdlScale(). Note that the normals are preserved.
+*/
+pl_Mdl *plMdlStretch(pl_Mdl *mdl, float x, float y, float z);
+
+/*
+   plMdlTranslate() translates an model
+   Parameters:
+     mdl: a pointer to the model to translate
+     x,y,z: translation in model space
+   Returns:
+     a pointer to mdl
+   Notes: same as plMdlScale().
+*/
+pl_Mdl *plMdlTranslate(pl_Mdl *mdl, float x, float y, float z);
+
+/*
+  plMdlFlipNormals() flips all vertex and face normals of a model
+  Parameters:
+    mdl: a pointer to the model to flip normals of
+  Returns:
+    a pointer to mdl
+  Notes:
+    Not especially fast.
+    A call to plMdlFlipNormals() or plMdlCalcNormals() will restore the normals
+*/
+pl_Mdl *plMdlFlipNormals(pl_Mdl *mdl);
+
+/*
+  plMdlClone() creates an exact but independent duplicate of a model
+  Paramters:
+    mdl: the model to clone
+  Returns:
+    a pointer to the new model on success, 0 on failure
+*/
+pl_Mdl *plMdlClone(pl_Mdl *mdl);
 
 /******************************************************************************
 ** Object Functions (obj.c)
@@ -146,7 +243,7 @@ void plMatMakeOptPal(uint8_t *p, int32_t pstart,
   Returns:
     a pointer to the object on success, 0 on failure
 */
-pl_Obj *plObjCreate(uint32_t np, uint32_t nf);
+pl_Obj *plObjCreate(pl_Obj *parent);
 
 /*
   plObjDelete() frees an object and all of it's subobjects
@@ -157,7 +254,6 @@ pl_Obj *plObjCreate(uint32_t np, uint32_t nf);
     nothing
 */
 void plObjDelete(pl_Obj *o);
-
 
 /*
   plObjAddChild() adds an object as a child of the given parent object
@@ -177,85 +273,6 @@ pl_Obj *plObjAddChild(pl_Obj *parent, pl_Obj *child);
     child object
 */
 pl_Obj *plObjRemoveParent(pl_Obj *o);
-
-/* 
-  plObjClone() creates an exact but independent duplicate of an object and
-    all of it's subobjects
-  Paramters:
-    o: the object to clone
-  Returns:
-    a pointer to the new object on success, 0 on failure
-*/
-pl_Obj *plObjClone(pl_Obj *o);
-
-/*
-  plObjScale() scales an object, and all of it's subobjects.
-  Paramters:
-    o: a pointer to the object to scale
-    s: the scaling factor
-  Returns:
-    a pointer to o.
-  Notes: This scales it slowly, by going through each vertex and scaling it's 
-    position. Avoid doing this in realtime.
-*/
-pl_Obj *plObjScale(pl_Obj *o, float s);
-
-/*
-  plObjStretch() stretches an object, and all of it's subobjects
-  Parameters:
-    o: a pointer to the object to stretch
-    x,y,z: the x y and z stretch factors
-  Returns:
-    a pointer to o. 
-  Notes: same as plObjScale(). Note that the normals are preserved.
-*/
-pl_Obj *plObjStretch(pl_Obj *o, float x, float y, float z);
-
-/*
-   plObjTranslate() translates an object
-   Parameters:
-     o: a pointer to the object to translate
-     x,y,z: translation in object space 
-   Returns:
-     a pointer to o
-   Notes: same has plObjScale().
-*/
-pl_Obj *plObjTranslate(pl_Obj *o, float x, float y, float z);
-
-/*
-  plObjFlipNormals() flips all vertex and face normals of and object
-    and allo of it's subobjects.
-  Parameters:
-    o: a pointer to the object to flip normals of
-  Returns:
-    a pointer to o
-  Notes: 
-    Not especially fast. 
-    A call to plObjFlipNormals() or plObjCalcNormals() will restore the normals
-*/
-pl_Obj *plObjFlipNormals(pl_Obj *o);
-
-/*
-  plObjSetMat() sets the material of all faces in an object.
-  Paramters:
-    o: the object to set the material of
-    m: the material to set it to
-    th: "transcend hierarchy". If set, it will set the 
-        material of all subobjects too.
-  Returns:
-    nothing
-*/
-void plObjSetMat(pl_Obj *o, pl_Mat *m, bool th);
-
-/*
-   plObjCalcNormals() calculates all face and vertex normals for an object
-     and all subobjects.
-   Paramters:
-     obj: the object
-   Returns: 
-     nothing
-*/
-void plObjCalcNormals(pl_Obj *obj);
 
 /******************************************************************************
 ** Frustum Clipping Functions (clip.c)
@@ -458,7 +475,7 @@ void plRenderEnd(void);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakePlane(float w, float d, uint32_t res, pl_Mat *m);
+pl_Mdl *plMakePlane(float w, float d, uint32_t res, pl_Mat *m);
 
 /*
   plMakeBox() makes a box centered at the origin
@@ -469,7 +486,7 @@ pl_Obj *plMakePlane(float w, float d, uint32_t res, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m);
+pl_Mdl *plMakeBox(float w, float d, float h, pl_Mat *m);
 
 /* 
   plMakeCone() makes a cone centered at the origin
@@ -482,7 +499,7 @@ pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeCone(float r, float h, uint32_t div, bool cap, pl_Mat *m);
+pl_Mdl *plMakeCone(float r, float h, uint32_t div, bool cap, pl_Mat *m);
 
 /*
   plMakeCylinder() makes a cylinder centered at the origin
@@ -496,7 +513,7 @@ pl_Obj *plMakeCone(float r, float h, uint32_t div, bool cap, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop, 
+pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
                        bool capbottom, pl_Mat *m);
 
 /*
@@ -509,7 +526,7 @@ pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m);
+pl_Mdl *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m);
 
 /*
   plMakeTorus() makes a torus centered at the origin
@@ -522,7 +539,7 @@ pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m);
   Returns:
     pointer to object created.
 */
-pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, 
+pl_Mdl *plMakeTorus(float r1, float r2, uint32_t divrot,
                     uint32_t divrad, pl_Mat *m);
 
 /******************************************************************************
@@ -558,7 +575,7 @@ pl_Obj *plRead3DSObj(const char *fn, pl_Mat *m);
     Polygons with lots of sides are not always tesselated correctly. Just
       use the "Tesselate" button from within truespace to improve the results.
 */
-pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat);
+pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat);
 
 /*
   plReadJAWObj() reads a .JAW object.
@@ -571,7 +588,7 @@ pl_Obj *plReadCOBObj(const char *fn, pl_Mat *mat);
     For information on the .JAW format, please see the jaw3D homepage,
       http://www.tc.umn.edu/nlhome/g346/kari0022/jaw3d/
 */
-pl_Obj *plReadJAWObj(const char *fn, pl_Mat *m);
+pl_Mdl *plReadJAWMdl(const char *fn, pl_Mat *m);
 
 /*
   plReadWavefrontObj() reads a Wavefront OBJ object.
@@ -581,7 +598,7 @@ pl_Obj *plReadJAWObj(const char *fn, pl_Mat *m);
   Returns:
     pointer to object
 */
-pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m);
+pl_Mdl *plReadWavefrontMdl(const char *fn, pl_Mat *m);
 
 /*
   plReadPCXTex() reads a 8bpp PCX texture

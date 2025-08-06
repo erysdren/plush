@@ -91,8 +91,10 @@ int main(int argc, char **argv) { // Main
   // for (i = 0; i < 768; i ++) ThePalette[i] >>= 2;
   exSetPalette(ThePalette); // Set the palette
  
-  TheCube = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
-  TheTorus = plMakeTorus(40.0,100.0,10,8,TorusMat); // Create the torus
+  TheCube = plObjCreate(NULL);
+  TheTorus = plObjCreate(NULL);
+  TheCube->Model = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
+  TheTorus->Model = plMakeTorus(40.0,100.0,10,8,TorusMat); // Create the torus
 
   TheTorus->Xp = -70.0; // Shift the torus to the left a bit
 

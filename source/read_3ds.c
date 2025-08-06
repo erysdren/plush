@@ -120,14 +120,15 @@ static void _pl3DSObjBlockReader(FILE *f, uint32_t p) {
 static void _pl3DSTriMeshReader(FILE *f, uint32_t p) {
   uint32_t i; 
   pl_Face *face;
-  obj = plObjCreate(0,0);
+  obj = plObjCreate(NULL);
+  obj->Model = plMdlCreate(0,0);
   _pl3DSChunkReader(f, p);
-  i = obj->NumFaces;
-  face = obj->Faces;
+  i = obj->Model->NumFaces;
+  face = obj->Model->Faces;
   while (i--) {
-    face->Vertices[0] = obj->Vertices + (ptrdiff_t) face->Vertices[0];
-    face->Vertices[1] = obj->Vertices + (ptrdiff_t) face->Vertices[1];
-    face->Vertices[2] = obj->Vertices + (ptrdiff_t) face->Vertices[2];
+    face->Vertices[0] = obj->Model->Vertices + (ptrdiff_t) face->Vertices[0];
+    face->Vertices[1] = obj->Model->Vertices + (ptrdiff_t) face->Vertices[1];
+    face->Vertices[2] = obj->Model->Vertices + (ptrdiff_t) face->Vertices[2];
     face->MappingU[0] = face->Vertices[0]->xformedx;
     face->MappingV[0] = face->Vertices[0]->xformedy;
     face->MappingU[1] = face->Vertices[1]->xformedx;
@@ -136,7 +137,7 @@ static void _pl3DSTriMeshReader(FILE *f, uint32_t p) {
     face->MappingV[2] = face->Vertices[2]->xformedy;
     face++;
   }
-  plObjCalcNormals(obj);
+  plMdlCalcNormals(obj->Model);
   if (currentobj == 0) {
     currentobj = 1;
     lobj = bobj = obj;
@@ -150,8 +151,8 @@ static void _pl3DSVertListReader(FILE *f, uint32_t p) {
   uint16_t nv;
   pl_Vertex *v;
   nv = _pl3DSReadWord(f);
-  obj->NumVertices = nv;
-  v = obj->Vertices = (pl_Vertex *) plCalloc(sizeof(pl_Vertex)*nv,1);
+  obj->Model->NumVertices = nv;
+  v = obj->Model->Vertices = (pl_Vertex *) plCalloc(sizeof(pl_Vertex)*nv,1);
   while (nv--) {
     v->x = _pl3DSReadFloat(f);
     v->y = _pl3DSReadFloat(f);
@@ -168,8 +169,8 @@ static void _pl3DSFaceListReader(FILE *f, uint32_t p) {
   pl_Face *face;
 
   nv = _pl3DSReadWord(f);
-  obj->NumFaces = nv;
-  face = obj->Faces = (pl_Face *) plCalloc(sizeof(pl_Face)*nv,1);
+  obj->Model->NumFaces = nv;
+  face = obj->Model->Faces = (pl_Face *) plCalloc(sizeof(pl_Face)*nv,1);
   while (nv--) {
     c[0] = _pl3DSReadWord(f);
     c[1] = _pl3DSReadWord(f);
@@ -201,8 +202,8 @@ static void MapListReader(FILE *f, uint32_t p) {
   float c[2];
   pl_Vertex *v;
   nv = _pl3DSReadWord(f);
-  v = obj->Vertices;
-  if (nv == obj->NumVertices) while (nv--) {
+  v = obj->Model->Vertices;
+  if (nv == obj->Model->NumVertices) while (nv--) {
     c[0] = _pl3DSReadFloat(f);
     c[1] = _pl3DSReadFloat(f);
     if (feof(f)) return;

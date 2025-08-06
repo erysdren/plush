@@ -64,7 +64,8 @@ int main(int argc, char **argv) { // Main
   // for (i = 0; i < 768; i ++) ThePalette[i] >>= 2;
   exSetPalette(ThePalette); // Set the palette
  
-  TheCube = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
+  TheCube = plObjCreate(NULL);
+  TheCube->Model = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
 
   TheCamera = plCamCreate(W, // Screen width
                           H, // Screen height

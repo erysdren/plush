@@ -268,22 +268,25 @@ pl_Obj *setup_landscape(pl_Mat *m, pl_Mat *sm, pl_Mat *sm2) {
   int i;
   // make our root object the land
   pl_Obj *sky;
-  pl_Obj *o = plMakePlane(LAND_SIZE,LAND_SIZE,LAND_DIV-1,m); 
+  pl_Obj *o = plObjCreate(NULL);
+  o->Model = plMakePlane(LAND_SIZE,LAND_SIZE,LAND_DIV-1,m);
   // give it a nice random bumpy effect
-  for (i = 0; i < o->NumVertices; i ++)
-    o->Vertices[i].y += (float) (rand()%1400)-700;
+  for (i = 0; i < o->Model->NumVertices; i ++)
+    o->Model->Vertices[i].y += (float) (rand()%1400)-700;
   // gotta recalculate normals for backface culling to work right
-  plObjCalcNormals(o);
+  plMdlCalcNormals(o->Model);
 
   // Make our first child the first sky
-  sky = plObjAddChild(o, plMakePlane(LAND_SIZE,LAND_SIZE,1,sm));
+  sky = plObjCreate(o);
+  sky->Model = plMakePlane(LAND_SIZE,LAND_SIZE,1,sm);
   sky->Yp = 2000;
   sky->BackfaceCull = 0;
 
   // and the second the second sky
-  sky = plObjAddChild(o, plMakeSphere(LAND_SIZE,10,10,sm2));
+  sky = plObjCreate(o);
+  sky->Model = plMakeSphere(LAND_SIZE,10,10,sm2);
   sky->Yp = 2000;
-  plObjFlipNormals(sky);
+  plMdlFlipNormals(sky->Model);
 
   return (o);
 }

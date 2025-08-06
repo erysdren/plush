@@ -41,12 +41,12 @@ int main(int argc, char **argv) {
   }
 
      // First child is an eye, child of child is eye
-  plObjSetMat(Object->Children,Material2,0);
-  plObjSetMat(Object->Children->Children,Material2,0);
+  plMdlSetMat(Object->Children->Model,Material2);
+  plMdlSetMat(Object->Children->Children->Model,Material2);
      // Child of eye is other eye, make it child of duck
   plObjAddChild(Object, plObjRemoveParent(Object->Children->Children));
 
-  plObjScale(Object,0.1); // Scale object down...
+  plMdlScale(Object->Model,0.1); // Scale object down...
 
   Object->BackfaceCull = 0;    // We want to be able to see through the duck
   Object->BackfaceIllumination = 1;

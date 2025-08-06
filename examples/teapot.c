@@ -11,7 +11,7 @@
 #include "ex.h"
 
 pl_Light *light;
-pl_Obj *model;
+pl_Obj *teapot;
 pl_Mat *material;
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
@@ -47,9 +47,10 @@ int main(int argc, char **argv)
 	exSetPalette(palette);
 
 	/* load fork model */
-	model = plReadWavefrontObj("teapot.obj", material);
-	plObjScale(model, 32);
-	plObjTranslate(model, 0, -32, 0);
+	teapot = plObjCreate(NULL);
+	teapot->Model = plReadWavefrontMdl("teapot.obj", material);
+	plMdlScale(teapot->Model, 32);
+	plMdlTranslate(teapot->Model, 0, -32, 0);
 
 	/* create camera */
 	camera = plCamCreate(W, H, W * 3.0 / (H * 4.0), 90.0, framebuffer, zbuffer);
@@ -62,9 +63,9 @@ int main(int argc, char **argv)
 	while (!exGetKey())
 	{
 		/* rotate model */
-		model->Xa += 1.0;
-		model->Ya += 1.0;
-		model->Za += 1.0;
+		teapot->Xa += 1.0;
+		teapot->Ya += 1.0;
+		teapot->Za += 1.0;
 
 		/* clear back buffer */
 		memset(zbuffer, 0, sizeof(zbuffer));
@@ -73,7 +74,7 @@ int main(int argc, char **argv)
 		/* render frame */
 		plRenderBegin(camera);
 		plRenderLight(light);
-		plRenderObj(model);
+		plRenderObj(teapot);
 		plRenderEnd();
 
 		/* wait for vsync, then copy to screen */
@@ -84,7 +85,7 @@ int main(int argc, char **argv)
 	/* clean up */
 	plCamDelete(camera);
 	plLightDelete(light);
-	plObjDelete(model);
+	plObjDelete(teapot);
 	plMatDelete(material);
 
 	/* shut down video */

@@ -97,20 +97,17 @@ typedef struct _pl_Face {
 ** Model
 */
 typedef struct _pl_Mdl {
-  uint32_t NumVertices;              /* Number of vertices */
-  uint32_t NumFaces;                 /* Number of faces */
-  pl_Vertex *Vertices;                /* Array of vertices */
-  pl_Face *Faces;                     /* Array of faces */
+  uint32_t NumVertices;            /* Number of vertices */
+  uint32_t NumFaces;               /* Number of faces */
+  pl_Vertex *Vertices;             /* Array of vertices */
+  pl_Face *Faces;                  /* Array of faces */
 } pl_Mdl;
 
 /* 
 ** Object 
 */
 typedef struct _pl_Obj {
-  uint32_t NumVertices;            /* Number of vertices */
-  uint32_t NumFaces;               /* Number of faces */
-  pl_Vertex *Vertices;             /* Array of vertices */
-  pl_Face *Faces;                  /* Array of faces */
+  pl_Mdl *Model;                   /* Renderable mesh */
   struct _pl_Obj *Parent;          /* Parent object */
   struct _pl_Obj *PrevSibling;     /* Previous in linked list of siblings */
   struct _pl_Obj *NextSibling;     /* Next in linked list of siblings */

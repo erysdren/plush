@@ -65,7 +65,8 @@ int main(int argc, char **argv)
 	exSetPalette(palette);
 
 	/* create cube */
-	model = plMakeBox(100, 100, 100, material);
+	model = plObjCreate(NULL);
+	model->Model = plMakeBox(100, 100, 100, material);
 
 	/* create camera */
 	camera = plCamCreate(W, H, W * 3.0 / (H * 4.0), 90.0, framebuffer, NULL);

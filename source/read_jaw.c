@@ -1,7 +1,7 @@
 /******************************************************************************
 Plush Version 1.2
 read_jaw.c
-Jaw3D Object Reader
+Jaw3D Model Reader
 Copyright (c) 1996-2000, Justin Frankel
 *******************************************************************************
  Notes on .JAW files:
@@ -18,15 +18,15 @@ Copyright (c) 1996-2000, Justin Frankel
      A series of lines, having the format "tri a, b, c" where a b and c are 
         the vertices that the face uses. It is unclear at this time which
         way the vertices are listed (ccw or cw), so just make em consistent
-        and you can always use plFlipObjectNormals() on the loaded object.
+        and you can always use plFlipMdlectNormals() on the loaded object.
    That is it! (I told ya it was simple).
 ******************************************************************************/
 
 #include <plush/plush.h>
 
-pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
+pl_Mdl *plReadJAWMdl(const char *filename, pl_Mat *m) {
   FILE *jawfile;
-  pl_Obj *obj;
+  pl_Mdl *mdl;
   uint32_t i;
   int32_t crap;
   char line[256];
@@ -41,15 +41,15 @@ pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
     if (strstr(line, "tri") != NULL) total_polys++;
 
   rewind(jawfile); fgets(line, 256, jawfile);
-  obj = plObjCreate(total_points,total_polys);
+  mdl = plMdlCreate(total_points,total_polys);
 
   i = 0;
   while (fgets(line, 256, jawfile) != NULL) if (strstr(line, ":") != NULL) {
     float x, y, z;
     sscanf(line, "%d: %f %f %f",&crap,&x,&y,&z);
-    obj->Vertices[i].x = (float) x;
-    obj->Vertices[i].y = (float) y;
-    obj->Vertices[i].z = (float) z;
+    mdl->Vertices[i].x = (float) x;
+    mdl->Vertices[i].y = (float) y;
+    mdl->Vertices[i].z = (float) z;
     i++;
   }
   rewind(jawfile); fgets(line, 256, jawfile);
@@ -57,13 +57,13 @@ pl_Obj *plReadJAWObj(const char *filename, pl_Mat *m) {
   while (fgets(line, 256, jawfile) != NULL) if (strstr(line, "tri") != NULL) {
     int a,b,c;
     sscanf(line, "tri %d, %d, %d", &a, &b, &c);
-    obj->Faces[i].Vertices[0] = obj->Vertices + a;
-    obj->Faces[i].Vertices[1] = obj->Vertices + c;
-    obj->Faces[i].Vertices[2] = obj->Vertices + b;
-    obj->Faces[i].Material = m;
+    mdl->Faces[i].Vertices[0] = mdl->Vertices + a;
+    mdl->Faces[i].Vertices[1] = mdl->Vertices + c;
+    mdl->Faces[i].Vertices[2] = mdl->Vertices + b;
+    mdl->Faces[i].Material = m;
     i++;
   }
   fclose(jawfile);
-  plObjCalcNormals(obj);
-  return obj;
+  plMdlCalcNormals(mdl);
+  return mdl;
 }	

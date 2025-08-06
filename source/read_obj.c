@@ -7,10 +7,10 @@ Copyright (c) 2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
-pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m)
+pl_Mdl *plReadWavefrontMdl(const char *fn, pl_Mat *m)
 {
 	FILE *file;
-	pl_Obj *obj;
+	pl_Mdl *mdl;
 	char line[256];
 	uint32_t total_verts = 0, total_tris = 0, total_coords = 0, total_norms = 0;
 	uint32_t num_verts = 0, num_tris = 0, num_coords = 0, num_norms = 0;
@@ -43,7 +43,7 @@ pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m)
 	if (total_norms)
 		norms = plMalloc(sizeof(*norms) * total_norms * 3);
 
-	obj = plObjCreate(total_verts, total_tris);
+	mdl = plMdlCreate(total_verts, total_tris);
 
 	rewind(file);
 
@@ -57,9 +57,9 @@ pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m)
 				float px, py, pz;
 				if (sscanf(line, "v %f %f %f", &px, &py, &pz) != 3)
 					continue;
-				obj->Vertices[num_verts].x = px;
-				obj->Vertices[num_verts].y = py;
-				obj->Vertices[num_verts].z = pz;
+				mdl->Vertices[num_verts].x = px;
+				mdl->Vertices[num_verts].y = py;
+				mdl->Vertices[num_verts].z = pz;
 				num_verts++;
 			}
 			else if (line[1] == 't')
@@ -89,10 +89,10 @@ pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m)
 			if (sscanf(line, "f %d %d %d", &a, &b, &c) != 3)
 				continue;
 
-			obj->Faces[num_tris].Vertices[0] = obj->Vertices + a - 1;
-			obj->Faces[num_tris].Vertices[1] = obj->Vertices + b - 1;
-			obj->Faces[num_tris].Vertices[2] = obj->Vertices + c - 1;
-			obj->Faces[num_tris].Material = m;
+			mdl->Faces[num_tris].Vertices[0] = mdl->Vertices + a - 1;
+			mdl->Faces[num_tris].Vertices[1] = mdl->Vertices + b - 1;
+			mdl->Faces[num_tris].Vertices[2] = mdl->Vertices + c - 1;
+			mdl->Faces[num_tris].Material = m;
 
 			num_tris++;
 		}
@@ -102,8 +102,8 @@ pl_Obj *plReadWavefrontObj(const char *fn, pl_Mat *m)
 	if (norms) plFree(norms);
 
 	fclose(file);
-	plObjCalcNormals(obj);
-	return obj;
+	plMdlCalcNormals(mdl);
+	return mdl;
 }
 
 // extended wavefront obj loader - unfinished, feel free to finish it :3

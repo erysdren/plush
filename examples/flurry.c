@@ -80,7 +80,8 @@ int main(int argc, char **argv) {
   exSetPalette(pal); // Set the new palette via mode 13 function
 
   // Make objects
-  obj = plMakeBox(100,100,100,mat[0]);
+  obj = plObjCreate(NULL);
+  obj->Model = plMakeBox(100,100,100,mat[0]);
   makeBoxes(obj,100.0,mat+1,NUM_ITERS-1);
 
   // Setup light
@@ -113,17 +114,23 @@ int main(int argc, char **argv) {
 void makeBoxes(pl_Obj *obj, float s, pl_Mat **m, int i) {
   pl_Obj *child;
   if (!i) return;
-  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child = plObjCreate(obj);
+  child->Model = plMakeBox(s/2,s/2,s/2,*m);
   child->Xp = s*BOX_DIST;;
-  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child = plObjCreate(obj);
+  child->Model = plMakeBox(s/2,s/2,s/2,*m);
   child->Xp = -s*BOX_DIST;
-  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child = plObjCreate(obj);
+  child->Model = plMakeBox(s/2,s/2,s/2,*m);
   child->Yp = s*BOX_DIST;
-  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child = plObjCreate(obj);
+  child->Model = plMakeBox(s/2,s/2,s/2,*m);
   child->Yp = -s*BOX_DIST;
-  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child = plObjCreate(obj);
+  child->Model = plMakeBox(s/2,s/2,s/2,*m);
   child->Zp = s*BOX_DIST;
-  child = plObjAddChild(obj, plMakeBox(s/2,s/2,s/2,*m));
+  child = plObjCreate(obj);
+  child->Model = plMakeBox(s/2,s/2,s/2,*m);
   child->Zp = -s*BOX_DIST;
 
   child = obj->Children;

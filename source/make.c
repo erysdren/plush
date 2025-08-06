@@ -1,7 +1,7 @@
 /******************************************************************************
 Plush Version 1.2
 make.c
-Object Primitives
+Model Primitives
 Copyright (c) 1996-2000, Justin Frankel
 *******************************************************************************
  Notes:
@@ -13,9 +13,9 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
-pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad, 
+pl_Mdl *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad,
                     pl_Mat *m) {
-  pl_Obj *o;
+  pl_Mdl *mdl;
   pl_Vertex *v;
   pl_Face *f;
   uint32_t x, y;
@@ -25,9 +25,9 @@ pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad,
   if (divrad < 3) divrad = 3;
   ravg = (r1+r2)*0.5;
   rt = (r2-r1)*0.5;
-  o = plObjCreate(divrad*divrot,divrad*divrot*2);
-  if (!o) return 0;
-  v = o->Vertices;
+  mdl = plMdlCreate(divrad*divrot,divrad*divrot*2);
+  if (!mdl) return 0;
+  v = mdl->Vertices;
   a = 0.0;
   da = 2*PL_PI/divrot;
   for (y = 0; y < divrot; y ++) {
@@ -42,8 +42,8 @@ pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad,
     }
     a += da;
   }
-  v = o->Vertices;
-  f = o->Faces;
+  v = mdl->Vertices;
+  f = mdl->Faces;
   dV = 65535/divrad;
   dU = 65535/divrot;
   U = 0;
@@ -76,12 +76,12 @@ pl_Obj *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad,
     }
     U += dU;
   }
-  plObjCalcNormals(o);
-  return (o);
+  plMdlCalcNormals(mdl);
+  return (mdl);
 }
 
-pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
-  pl_Obj *o;
+pl_Mdl *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
+  pl_Mdl *mdl;
   pl_Vertex *v;
   pl_Face *f;
   uint32_t x, y;
@@ -89,9 +89,9 @@ pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
   int32_t U,V,dU,dV;
   if (divh < 3) divh = 3;
   if (divr < 3) divr = 3;
-  o = plObjCreate(2+(divh-2)*(divr),2*divr+(divh-3)*divr*2);
-  if (!o) return 0;
-  v = o->Vertices;
+  mdl = plMdlCreate(2+(divh-2)*(divr),2*divr+(divh-3)*divr*2);
+  if (!mdl) return 0;
+  v = mdl->Vertices;
   v->x = v->z = 0.0; v->y = r; v++;
   v->x = v->z = 0.0; v->y = -r; v++;
   ya = 0.0;
@@ -110,14 +110,14 @@ pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
       a += da;
     }
   }
-  f = o->Faces;
-  v = o->Vertices + 2;
+  f = mdl->Faces;
+  v = mdl->Vertices + 2;
   a = 0.0; 
   U = 0;
   dU = 65535/divr;
   dV = V = 65535/divh;
   for (x = 0; x < divr; x ++) {
-    f->Vertices[0] = o->Vertices;
+    f->Vertices[0] = mdl->Vertices;
     f->Vertices[1] = v + (x+1==divr ? 0 : x+1);
     f->Vertices[2] = v + x;
     f->MappingU[0] = U;
@@ -131,7 +131,7 @@ pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
     U += dU;
   }
   da = 1.0/(divr+1);
-  v = o->Vertices + 2;
+  v = mdl->Vertices + 2;
   for (x = 0; x < (divh-3); x ++) {
     U = 0;
     for (y = 0; y < divr; y ++) {
@@ -160,10 +160,10 @@ pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
     V += dV;
     v += divr;
   }
-  v = o->Vertices + o->NumVertices - divr;
+  v = mdl->Vertices + mdl->NumVertices - divr;
   U = 0;
   for (x = 0; x < divr; x ++) {
-    f->Vertices[0] = o->Vertices + 1;
+    f->Vertices[0] = mdl->Vertices + 1;
     f->Vertices[1] = v + x;
     f->Vertices[2] = v + (x+1==divr ? 0 : x+1);
     f->MappingU[0] = U;
@@ -176,25 +176,25 @@ pl_Obj *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
     f++;
     U += dU;
   }
-  plObjCalcNormals(o);
-  return (o);
+  plMdlCalcNormals(mdl);
+  return (mdl);
 }
 
-pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop, 
+pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
                        bool capbottom, pl_Mat *m) {
-  pl_Obj *o;
+  pl_Mdl *mdl;
   pl_Vertex *v, *topverts, *bottomverts, *topcapvert=0, *bottomcapvert=0;
   pl_Face *f;
   uint32_t i;
   double a, da;
   if (divr < 3) divr = 3;
-  o = plObjCreate(divr*2+((divr==3)?0:(captop?1:0)+(capbottom?1:0)),
+  mdl = plMdlCreate(divr*2+((divr==3)?0:(captop?1:0)+(capbottom?1:0)),
                   divr*2+(divr==3 ? (captop ? 1 : 0) + (capbottom ? 1 : 0) :
                   (captop ? divr : 0) + (capbottom ? divr : 0)));
-  if (!o) return 0;
+  if (!mdl) return 0;
   a = 0.0;
   da = (2.0*PL_PI)/divr;
-  v = o->Vertices;
+  v = mdl->Vertices;
   topverts = v;
   for (i = 0; i < divr; i ++) {
     v->y = h/2.0f; 
@@ -227,7 +227,7 @@ pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
     v->x = v->z = 0.0f;
     v++;
   }
-  f = o->Faces;
+  f = mdl->Faces;
   for (i = 0; i < divr; i ++) {
     f->Vertices[0] = bottomverts + i;
     f->Vertices[1] = topverts + i;
@@ -296,22 +296,22 @@ pl_Obj *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
       }
     }
   }
-  plObjCalcNormals(o);
-  return (o);
+  plMdlCalcNormals(mdl);
+  return (mdl);
 }
 
-pl_Obj *plMakeCone(float r, float h, uint32_t div,
+pl_Mdl *plMakeCone(float r, float h, uint32_t div,
                    bool cap, pl_Mat *m) {
-  pl_Obj *o;
+  pl_Mdl *mdl;
   pl_Vertex *v;
   pl_Face *f;
   uint32_t i;
   double a, da;
   if (div < 3) div = 3;
-  o = plObjCreate(div + (div == 3 ? 1 : (cap ? 2 : 1)),
+  mdl = plMdlCreate(div + (div == 3 ? 1 : (cap ? 2 : 1)),
                   div + (div == 3 ? 1 : (cap ? div : 0)));
-  if (!o) return 0;
-  v = o->Vertices;
+  if (!mdl) return 0;
+  v = mdl->Vertices;
   v->x = v->z = 0; v->y = h/2;
   v->xformedx = 1<<15;
   v->xformedy = 1<<15;
@@ -334,51 +334,51 @@ pl_Obj *plMakeCone(float r, float h, uint32_t div,
     v->xformedy = (float) (1<<15);
     v++;
   }
-  f = o->Faces;
+  f = mdl->Faces;
   for (i = 1; i <= div; i ++) {
-    f->Vertices[0] = o->Vertices;
-    f->Vertices[1] = o->Vertices + (i == div ? 1 : i + 1);
-    f->Vertices[2] = o->Vertices + i;
-    f->MappingU[0] = (int32_t) o->Vertices[0].xformedx;
-    f->MappingV[0] = (int32_t) o->Vertices[0].xformedy;
-    f->MappingU[1] = (int32_t) o->Vertices[(i==div?1:i+1)].xformedx;
-    f->MappingV[1] = (int32_t) o->Vertices[(i==div?1:i+1)].xformedy;
-    f->MappingU[2] = (int32_t) o->Vertices[i].xformedx;
-    f->MappingV[2] = (int32_t) o->Vertices[i].xformedy;
+    f->Vertices[0] = mdl->Vertices;
+    f->Vertices[1] = mdl->Vertices + (i == div ? 1 : i + 1);
+    f->Vertices[2] = mdl->Vertices + i;
+    f->MappingU[0] = (int32_t) mdl->Vertices[0].xformedx;
+    f->MappingV[0] = (int32_t) mdl->Vertices[0].xformedy;
+    f->MappingU[1] = (int32_t) mdl->Vertices[(i==div?1:i+1)].xformedx;
+    f->MappingV[1] = (int32_t) mdl->Vertices[(i==div?1:i+1)].xformedy;
+    f->MappingU[2] = (int32_t) mdl->Vertices[i].xformedx;
+    f->MappingV[2] = (int32_t) mdl->Vertices[i].xformedy;
     f->Material = m;
     f++;
   }
   if (cap) {
     if (div == 3) {
-      f->Vertices[0] = o->Vertices + 1;
-      f->Vertices[1] = o->Vertices + 2;
-      f->Vertices[2] = o->Vertices + 3;
-      f->MappingU[0] = (int32_t) o->Vertices[1].xformedx;
-      f->MappingV[0] = (int32_t) o->Vertices[1].xformedy;
-      f->MappingU[1] = (int32_t) o->Vertices[2].xformedx;
-      f->MappingV[1] = (int32_t) o->Vertices[2].xformedy;
-      f->MappingU[2] = (int32_t) o->Vertices[3].xformedx;
-      f->MappingV[2] = (int32_t) o->Vertices[3].xformedy;
+      f->Vertices[0] = mdl->Vertices + 1;
+      f->Vertices[1] = mdl->Vertices + 2;
+      f->Vertices[2] = mdl->Vertices + 3;
+      f->MappingU[0] = (int32_t) mdl->Vertices[1].xformedx;
+      f->MappingV[0] = (int32_t) mdl->Vertices[1].xformedy;
+      f->MappingU[1] = (int32_t) mdl->Vertices[2].xformedx;
+      f->MappingV[1] = (int32_t) mdl->Vertices[2].xformedy;
+      f->MappingU[2] = (int32_t) mdl->Vertices[3].xformedx;
+      f->MappingV[2] = (int32_t) mdl->Vertices[3].xformedy;
       f->Material = m;
       f++;
     } else {
       for (i = 1; i <= div; i ++) {
-        f->Vertices[0] = o->Vertices + div + 1;
-        f->Vertices[1] = o->Vertices + i;
-        f->Vertices[2] = o->Vertices + (i==div ? 1 : i+1);
-        f->MappingU[0] = (int32_t) o->Vertices[div+1].xformedx;
-        f->MappingV[0] = (int32_t) o->Vertices[div+1].xformedy;
-        f->MappingU[1] = (int32_t) o->Vertices[i].xformedx;
-        f->MappingV[1] = (int32_t) o->Vertices[i].xformedy;
-        f->MappingU[2] = (int32_t) o->Vertices[i==div?1:i+1].xformedx;
-        f->MappingV[2] = (int32_t) o->Vertices[i==div?1:i+1].xformedy;
+        f->Vertices[0] = mdl->Vertices + div + 1;
+        f->Vertices[1] = mdl->Vertices + i;
+        f->Vertices[2] = mdl->Vertices + (i==div ? 1 : i+1);
+        f->MappingU[0] = (int32_t) mdl->Vertices[div+1].xformedx;
+        f->MappingV[0] = (int32_t) mdl->Vertices[div+1].xformedy;
+        f->MappingU[1] = (int32_t) mdl->Vertices[i].xformedx;
+        f->MappingV[1] = (int32_t) mdl->Vertices[i].xformedy;
+        f->MappingU[2] = (int32_t) mdl->Vertices[i==div?1:i+1].xformedx;
+        f->MappingV[2] = (int32_t) mdl->Vertices[i==div?1:i+1].xformedy;
         f->Material = m;
         f++;
       }
     }
   }
-  plObjCalcNormals(o);
-  return (o);
+  plMdlCalcNormals(mdl);
+  return (mdl);
 }
 
 static uint8_t verts[6*6] = { 
@@ -395,16 +395,16 @@ static uint8_t map[24*2*3] = {
 };
 
 
-pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m) {
+pl_Mdl *plMakeBox(float w, float d, float h, pl_Mat *m) {
   uint8_t *mm = map;
   uint8_t *vv = verts;
-  pl_Obj *o;
+  pl_Mdl *mdl;
   pl_Vertex *v;
   pl_Face *f;
   uint32_t x;
-  o = plObjCreate(8,12);
-  if (!o) return 0;
-  v = o->Vertices;
+  mdl = plMdlCreate(8,12);
+  if (!mdl) return 0;
+  v = mdl->Vertices;
   v->x = -w/2; v->y = h/2; v->z = d/2; v++;
   v->x = w/2; v->y = h/2; v->z = d/2; v++;
   v->x = -w/2; v->y = h/2; v->z = -d/2; v++;
@@ -413,11 +413,11 @@ pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m) {
   v->x = w/2; v->y = -h/2; v->z = d/2; v++;
   v->x = -w/2; v->y = -h/2; v->z = -d/2; v++;
   v->x = w/2; v->y = -h/2; v->z = -d/2; v++;
-  f = o->Faces;
+  f = mdl->Faces;
   for (x = 0; x < 12; x ++) {
-    f->Vertices[0] = o->Vertices + *vv++;
-    f->Vertices[1] = o->Vertices + *vv++;
-    f->Vertices[2] = o->Vertices + *vv++;
+    f->Vertices[0] = mdl->Vertices + *vv++;
+    f->Vertices[1] = mdl->Vertices + *vv++;
+    f->Vertices[2] = mdl->Vertices + *vv++;
     f->MappingU[0] = (int32_t) ((double)*mm++ * 65535.0);
     f->MappingV[0] = (int32_t) ((double)*mm++ * 65535.0);
     f->MappingU[1] = (int32_t) ((double)*mm++ * 65535.0);
@@ -428,18 +428,18 @@ pl_Obj *plMakeBox(float w, float d, float h, pl_Mat *m) {
     f++;
   }
 
-  plObjCalcNormals(o);
-  return (o);
+  plMdlCalcNormals(mdl);
+  return (mdl);
 }
 
-pl_Obj *plMakePlane(float w, float d, uint32_t res, pl_Mat *m) {
-  pl_Obj *o;
+pl_Mdl *plMakePlane(float w, float d, uint32_t res, pl_Mat *m) {
+  pl_Mdl *mdl;
   pl_Vertex *v;
   pl_Face *f;
   uint32_t x, y;
-  o = plObjCreate((res+1)*(res+1),res*res*2);
-  if (!o) return 0;
-  v = o->Vertices;
+  mdl = plMdlCreate((res+1)*(res+1),res*res*2);
+  if (!mdl) return 0;
+  v = mdl->Vertices;
   for (y = 0; y <= res; y ++) {
     for (x = 0; x <= res; x ++) {
       v->y = 0;
@@ -448,33 +448,33 @@ pl_Obj *plMakePlane(float w, float d, uint32_t res, pl_Mat *m) {
       v++;
     }
   }
-  f = o->Faces;
+  f = mdl->Faces;
   for (y = 0; y < res; y ++) {
     for (x = 0; x < res; x ++) {
-      f->Vertices[0] = o->Vertices + x+(y*(res+1));
+      f->Vertices[0] = mdl->Vertices + x+(y*(res+1));
       f->MappingU[0] = (x<<16)/res;
       f->MappingV[0] = (y<<16)/res;
-      f->Vertices[2] = o->Vertices + x+1+(y*(res+1));
+      f->Vertices[2] = mdl->Vertices + x+1+(y*(res+1));
       f->MappingU[2] = ((x+1)<<16)/res;
       f->MappingV[2] = (y<<16)/res;
-      f->Vertices[1] = o->Vertices + x+((y+1)*(res+1));
+      f->Vertices[1] = mdl->Vertices + x+((y+1)*(res+1));
       f->MappingU[1] = (x<<16)/res;
       f->MappingV[1] = ((y+1)<<16)/res;
       f->Material = m;
       f++;
-      f->Vertices[0] = o->Vertices + x+((y+1)*(res+1));
+      f->Vertices[0] = mdl->Vertices + x+((y+1)*(res+1));
       f->MappingU[0] = (x<<16)/res;
       f->MappingV[0] = ((y+1)<<16)/res;
-      f->Vertices[2] = o->Vertices + x+1+(y*(res+1));
+      f->Vertices[2] = mdl->Vertices + x+1+(y*(res+1));
       f->MappingU[2] = ((x+1)<<16)/res;
       f->MappingV[2] = (y<<16)/res;
-      f->Vertices[1] = o->Vertices + x+1+((y+1)*(res+1));
+      f->Vertices[1] = mdl->Vertices + x+1+((y+1)*(res+1));
       f->MappingU[1] = ((x+1)<<16)/res;
       f->MappingV[1] = ((y+1)<<16)/res;
       f->Material = m;
       f++;
     }
   }
-  plObjCalcNormals(o);
-  return (o);
+  plMdlCalcNormals(mdl);
+  return (mdl);
 }
