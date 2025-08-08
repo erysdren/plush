@@ -1,3 +1,4 @@
 untracked*/
 cmake-build*/
 build*/
+*.blend1

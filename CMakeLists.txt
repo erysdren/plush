@@ -62,8 +62,8 @@ endif()
 # examples
 
 if(PLUSH_BUILD_EXAMPLES)
-	set(examples duckdemo eggbug ex1 ex2 ex3 ex4 flurry fly model teapot texture)
-	set(files duckdemo.3ds eggbug.3ds eggbug.pcx fork.3ds ground.pcx sky.pcx sky2.pcx teapot.obj texture1.pcx)
+	set(examples duckdemo eggbug ex1 ex2 ex3 ex4 flurry fly model ship teapot texture)
+	set(files duckdemo.3ds eggbug.3ds eggbug.pcx fork.3ds ground.pcx ship.mtl ship.obj sky.pcx sky2.pcx teapot.obj texture1.pcx)
 	find_package(SDL2)
 	if(SDL2_FOUND)
 		# build sdl2 examples
