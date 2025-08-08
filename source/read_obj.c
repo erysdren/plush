@@ -111,8 +111,8 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
 			materials[i]->Diffuse[j] = mesh->materials[i].Kd[j] * 255.0f;
 			materials[i]->Specular[j] = mesh->materials[i].Ks[j] * 255.0f;
 		}
-
-		plMatInit(materials[i]);
+		materials[i]->Shininess = mesh->materials[i].Ns;
+		// printf("%d: Ambient=%d %d %d Diffuse=%d %d %d Specular=%d %d %d Shininess=%u\n", i, materials[i]->Ambient[0], materials[i]->Ambient[1], materials[i]->Ambient[2], materials[i]->Diffuse[0], materials[i]->Diffuse[1], materials[i]->Diffuse[2], materials[i]->Specular[0], materials[i]->Specular[1], materials[i]->Specular[2], materials[i]->Shininess);
 	}
 
 	mdl = plMdlCreate(mesh->position_count - 1, mesh->face_count);

@@ -601,6 +601,22 @@ pl_Mdl *plReadJAWMdl(const char *fn, pl_Mat *m);
 pl_Mdl *plReadWavefrontMdl(const char *fn, pl_Mat *m);
 
 /*
+  plReadWavefrontMdlEx() reads a Wavefront OBJ object and its materials.
+  Parameters:
+    filename: filename of object to read
+    materials: array of materials to read into
+    max_materials: number of materials in array
+    num_materials: returned number of read materials
+    fallback_material: fallback material if none are read
+  Returns:
+    pointer to model
+  Notes:
+    Each material must be properly initialized after calling this function! Set
+    the material's ShadeType and use plMatInit() accordingly!
+*/
+pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t max_materials, size_t *num_materials, pl_Mat *fallback_material);
+
+/*
   plReadPCXTex() reads a 8bpp PCX texture
   Parameters:
     fn: filename of texture to read
