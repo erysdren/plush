@@ -10,6 +10,53 @@ Copyright (c) 2025, erysdren (it/its)
 #define FAST_OBJ_IMPLEMENTATION
 #include "fast_obj.h"
 
+static void process_group(pl_Mdl *mdl, fastObjMesh *mesh, fastObjGroup *group, pl_Mat **materials, pl_Mat *fallback_material, bool *calcnorms)
+{
+	int idx = 0;
+	for (int j = 0; j < group->face_count; j++)
+	{
+		int fv = mesh->face_vertices[group->face_offset + j];
+		int fm = mesh->face_materials[group->face_offset + j];
+		if (fv != 3)
+			continue;
+
+		for (int k = 0; k < fv; k++)
+		{
+			fastObjIndex *index = &mesh->indices[group->index_offset + idx];
+
+			mdl->Faces[group->face_offset + j].Vertices[k] = mdl->Vertices + index->p - 1;
+
+			mdl->Faces[group->face_offset + j].Vertices[k]->x = mesh->positions[3 * index->p + 0];
+			mdl->Faces[group->face_offset + j].Vertices[k]->y = mesh->positions[3 * index->p + 1];
+			mdl->Faces[group->face_offset + j].Vertices[k]->z = mesh->positions[3 * index->p + 2];
+
+			if (index->t)
+			{
+				mdl->Faces[group->face_offset + j].MappingU[k] = mesh->texcoords[2 * index->t + 0] * 65536.0f;
+				mdl->Faces[group->face_offset + j].MappingV[k] = mesh->texcoords[2 * index->t + 1] * 65536.0f;
+			}
+
+			if (index->n)
+			{
+				mdl->Faces[group->face_offset + j].Vertices[k]->nx = mesh->normals[3 * index->n + 0];
+				mdl->Faces[group->face_offset + j].Vertices[k]->ny = mesh->normals[3 * index->n + 1];
+				mdl->Faces[group->face_offset + j].Vertices[k]->nz = mesh->normals[3 * index->n + 2];
+			}
+			else
+			{
+				if (calcnorms) *calcnorms = true;
+			}
+
+			idx++;
+		}
+
+		if (mesh->materials[fm].fallback || !materials)
+			mdl->Faces[group->face_offset + j].Material = fallback_material;
+		else
+			mdl->Faces[group->face_offset + j].Material = materials[fm];
+	}
+}
+
 pl_Mdl *plReadWavefrontMdl(const char *filename, pl_Mat *material)
 {
 	pl_Mdl *mdl;
@@ -27,47 +74,9 @@ pl_Mdl *plReadWavefrontMdl(const char *filename, pl_Mat *material)
 	mdl = plMdlCreate(mesh->position_count - 1, mesh->face_count);
 
 	for (int i = 0; i < mesh->object_count; i++)
-	{
-		int idx = 0;
-		for (int j = 0; j < mesh->objects[i].face_count; j++)
-		{
-			int fv = mesh->face_vertices[mesh->objects[i].face_offset + j];
-			if (fv != 3)
-				continue;
-
-			for (int k = 0; k < fv; k++)
-			{
-				fastObjIndex *index = &mesh->indices[mesh->objects[i].index_offset + idx];
-
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k] = mdl->Vertices + index->p - 1;
-
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->x = mesh->positions[3 * index->p + 0];
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->y = mesh->positions[3 * index->p + 1];
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->z = mesh->positions[3 * index->p + 2];
-
-				if (index->t)
-				{
-					mdl->Faces[mesh->objects[i].face_offset + j].MappingU[k] = mesh->texcoords[2 * index->t + 0] * 65536.0f;
-					mdl->Faces[mesh->objects[i].face_offset + j].MappingV[k] = mesh->texcoords[2 * index->t + 1] * 65536.0f;
-				}
-
-				if (index->n)
-				{
-					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->nx = mesh->normals[3 * index->n + 0];
-					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->ny = mesh->normals[3 * index->n + 1];
-					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->nz = mesh->normals[3 * index->n + 2];
-				}
-				else
-				{
-					calcnorms = true;
-				}
-
-				idx++;
-			}
-
-			mdl->Faces[mesh->objects[i].face_offset + j].Material = material;
-		}
-	}
+		process_group(mdl, mesh, &mesh->objects[i], NULL, material, &calcnorms);
+	for (int i = 0; i < mesh->group_count; i++)
+		process_group(mdl, mesh, &mesh->groups[i], NULL, material, &calcnorms);
 
 	if (calcnorms)
 		plMdlCalcNormals(mdl);
@@ -112,57 +121,14 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
 			materials[i]->Specular[j] = mesh->materials[i].Ks[j] * 255.0f;
 		}
 		materials[i]->Shininess = mesh->materials[i].Ns;
-		// printf("%d: Ambient=%d %d %d Diffuse=%d %d %d Specular=%d %d %d Shininess=%u\n", i, materials[i]->Ambient[0], materials[i]->Ambient[1], materials[i]->Ambient[2], materials[i]->Diffuse[0], materials[i]->Diffuse[1], materials[i]->Diffuse[2], materials[i]->Specular[0], materials[i]->Specular[1], materials[i]->Specular[2], materials[i]->Shininess);
 	}
 
 	mdl = plMdlCreate(mesh->position_count - 1, mesh->face_count);
 
 	for (int i = 0; i < mesh->object_count; i++)
-	{
-		int idx = 0;
-		for (int j = 0; j < mesh->objects[i].face_count; j++)
-		{
-			int fv = mesh->face_vertices[mesh->objects[i].face_offset + j];
-			int fm = mesh->face_materials[mesh->objects[i].face_offset + j];
-			if (fv != 3)
-				continue;
-
-			for (int k = 0; k < fv; k++)
-			{
-				fastObjIndex *index = &mesh->indices[mesh->objects[i].index_offset + idx];
-
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k] = mdl->Vertices + index->p - 1;
-
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->x = mesh->positions[3 * index->p + 0];
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->y = mesh->positions[3 * index->p + 1];
-				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->z = mesh->positions[3 * index->p + 2];
-
-				if (index->t)
-				{
-					mdl->Faces[mesh->objects[i].face_offset + j].MappingU[k] = mesh->texcoords[2 * index->t + 0] * 65536.0f;
-					mdl->Faces[mesh->objects[i].face_offset + j].MappingV[k] = mesh->texcoords[2 * index->t + 1] * 65536.0f;
-				}
-
-				if (index->n)
-				{
-					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->nx = mesh->normals[3 * index->n + 0];
-					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->ny = mesh->normals[3 * index->n + 1];
-					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->nz = mesh->normals[3 * index->n + 2];
-				}
-				else
-				{
-					calcnorms = true;
-				}
-
-				idx++;
-			}
-
-			if (mesh->materials[fm].fallback)
-				mdl->Faces[mesh->objects[i].face_offset + j].Material = fallback_material;
-			else
-				mdl->Faces[mesh->objects[i].face_offset + j].Material = materials[fm];
-		}
-	}
+		process_group(mdl, mesh, &mesh->objects[i], materials, fallback_material, &calcnorms);
+	for (int i = 0; i < mesh->group_count; i++)
+		process_group(mdl, mesh, &mesh->groups[i], materials, fallback_material, &calcnorms);
 
 	if (calcnorms)
 		plMdlCalcNormals(mdl);
