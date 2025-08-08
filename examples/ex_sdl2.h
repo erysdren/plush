@@ -79,13 +79,9 @@ static int exGetKey(void)
 
 static void exWaitVSync(void)
 {
-	void *pixels;
-	int pitch;
-
-	if (SDL_LockTexture(exTexture, NULL, &pixels, &pitch) == 0)
+	if (SDL_LockTexture(exTexture, NULL, &exWindowSurface->pixels, &exWindowSurface->pitch) == 0)
 	{
 		SDL_BlitSurface(exSurface, NULL, exWindowSurface, NULL);
-		SDL_memcpy(pixels, exWindowSurface->pixels, exWindowSurface->pitch * exWindowSurface->h);
 		SDL_UnlockTexture(exTexture);
 	}
 
@@ -126,7 +122,7 @@ static void exSetGraphics(void)
 
 	exTexture = SDL_CreateTexture(exRenderer, format, SDL_TEXTUREACCESS_STREAMING, W, H);
 
-	exWindowSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 0, format);
+	exWindowSurface = SDL_CreateRGBSurfaceWithFormatFrom(NULL, W, H, 0, 0, format);
 
 	exSurface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 0, SDL_PIXELFORMAT_INDEX8);
 
