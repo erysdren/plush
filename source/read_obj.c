@@ -7,108 +7,77 @@ Copyright (c) 2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
-pl_Mdl *plReadWavefrontMdl(const char *fn, pl_Mat *m)
+#define FAST_OBJ_IMPLEMENTATION
+#include "fast_obj.h"
+
+pl_Mdl *plReadWavefrontMdl(const char *filename, pl_Mat *material)
 {
-	FILE *file;
 	pl_Mdl *mdl;
-	char line[256];
-	uint32_t total_verts = 0, total_tris = 0, total_coords = 0, total_norms = 0;
-	uint32_t num_verts = 0, num_tris = 0, num_coords = 0, num_norms = 0;
-	float *coords = NULL, *norms = NULL;
-
-	file = fopen(fn, "r");
-	if (!file)
+	bool calcnorms = false;
+	fastObjMesh *mesh = fast_obj_read(filename);
+	if (!mesh)
 		return NULL;
 
-	while (fgets(line, sizeof(line), file) != NULL)
+	if (!mesh->position_count || !mesh->face_count)
 	{
-		if (line[0] == 'v' && line[1] == ' ')
-			total_verts++;
-		else if (line[0] == 'v' && line[1] == 't')
-			total_coords++;
-		else if (line[0] == 'v' && line[1] == 'n')
-			total_norms++;
-		else if (line[0] == 'f' && line[1] == ' ')
-			total_tris++;
-	}
-
-	if (!total_verts || !total_tris)
-	{
-		fclose(file);
+		fast_obj_destroy(mesh);
 		return NULL;
 	}
 
-	if (total_coords)
-		coords = plMalloc(sizeof(*coords) * total_coords * 2);
-	if (total_norms)
-		norms = plMalloc(sizeof(*norms) * total_norms * 3);
+	mdl = plMdlCreate(mesh->position_count - 1, mesh->face_count);
 
-	mdl = plMdlCreate(total_verts, total_tris);
-
-	rewind(file);
-
-	while (fgets(line, sizeof(line), file) != NULL)
+	for (int i = 0; i < mesh->object_count; i++)
 	{
-		if (line[0] == 'v')
+		int idx = 0;
+		for (int j = 0; j < mesh->objects[i].face_count; j++)
 		{
-			// vertices
-			if (line[1] == ' ')
-			{
-				float px, py, pz;
-				if (sscanf(line, "v %f %f %f", &px, &py, &pz) != 3)
-					continue;
-				mdl->Vertices[num_verts].x = px;
-				mdl->Vertices[num_verts].y = py;
-				mdl->Vertices[num_verts].z = pz;
-				num_verts++;
-			}
-			else if (line[1] == 't')
-			{
-				float s, t;
-				if (sscanf(line, "vt %f %f", &s, &t) != 2)
-					continue;
-				coords[num_coords + 0] = s;
-				coords[num_coords + 1] = t;
-				num_coords += 2;
-			}
-			else if (line[1] == 'n')
-			{
-				float nx, ny, nz;
-				if (sscanf(line, "vn %f %f %f", &nx, &ny, &nz) != 3)
-					continue;
-				norms[num_norms + 0] = nx;
-				norms[num_norms + 1] = ny;
-				norms[num_norms + 2] = nz;
-				num_norms += 3;
-			}
-		}
-		else if (line[0] == 'f' && line[1] == ' ')
-		{
-			// faces
-			int a, b, c;
-			if (sscanf(line, "f %d %d %d", &a, &b, &c) != 3)
+			int fv = mesh->face_vertices[mesh->objects[i].face_offset + j];
+			if (fv != 3)
 				continue;
 
-			mdl->Faces[num_tris].Vertices[0] = mdl->Vertices + a - 1;
-			mdl->Faces[num_tris].Vertices[1] = mdl->Vertices + b - 1;
-			mdl->Faces[num_tris].Vertices[2] = mdl->Vertices + c - 1;
-			mdl->Faces[num_tris].Material = m;
+			for (int k = 0; k < fv; k++)
+			{
+				fastObjIndex *index = &mesh->indices[mesh->objects[i].index_offset + idx];
 
-			num_tris++;
+				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k] = mdl->Vertices + index->p - 1;
+
+				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->x = mesh->positions[3 * index->p + 0];
+				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->y = mesh->positions[3 * index->p + 1];
+				mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->z = mesh->positions[3 * index->p + 2];
+
+				if (index->t)
+				{
+					mdl->Faces[mesh->objects[i].face_offset + j].MappingU[k] = mesh->texcoords[2 * index->t + 0] * 65536.0f;
+					mdl->Faces[mesh->objects[i].face_offset + j].MappingV[k] = mesh->texcoords[2 * index->t + 1] * 65536.0f;
+				}
+
+				if (index->n)
+				{
+					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->nx = mesh->normals[3 * index->n + 0];
+					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->ny = mesh->normals[3 * index->n + 1];
+					mdl->Faces[mesh->objects[i].face_offset + j].Vertices[k]->nz = mesh->normals[3 * index->n + 2];
+				}
+				else
+				{
+					calcnorms = true;
+				}
+
+				idx++;
+			}
+
+			mdl->Faces[mesh->objects[i].face_offset + j].Material = material;
 		}
 	}
 
-	if (coords) plFree(coords);
-	if (norms) plFree(norms);
+	if (calcnorms)
+		plMdlCalcNormals(mdl);
 
-	fclose(file);
-	plMdlCalcNormals(mdl);
+	fast_obj_destroy(mesh);
 	return mdl;
 }
 
-// extended wavefront obj loader - unfinished, feel free to finish it :3
 #if 0
-bool plReadWavefrontObjEx(const char *filename, pl_Obj **objects, size_t *num_objects, pl_Mat **materials, size_t *num_materials, pl_Mat *fallback_material)
+bool plReadWavefrontMdlEx(const char *filename, pl_Mdl **models, size_t *num_models, pl_Mat **materials, size_t *num_materials, pl_Mat *fallback_material)
 {
 	FILE *objfile = NULL, *mtlfile = NULL;
 	char line[256];
