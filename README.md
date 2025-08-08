@@ -37,6 +37,7 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 	- .3DS Mesh Reader
 	- .COB Mesh Reader
 	- .JAW Mesh Reader
+	- .OBJ Mesh Reader (using [fast_obj](https://github.com/thisistherk/fast_obj/))
 - Textures
 	- PCX texture reader with palette optimization and auto-rescaling
 	- Perspective Correct modes have piecewise linear approximation every n pixels.
