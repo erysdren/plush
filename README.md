@@ -1,11 +1,9 @@
 ![Plush 3D v1.2.0](.github/plush.png)
 
-|   |   |
-|---|---|
 | ![](.github/screenshot1.png) | ![](.github/screenshot2.png) |
+|------------------------------|------------------------------|
 | ![](.github/screenshot3.png) | ![](.github/screenshot4.png) |
-
-![](.github/sprite.gif)
+| ![](.github/flurry.png)      | ![](.github/sprite.gif)      |
 
 A neat, portable, realtime 3D rendering library originally created between
 1996 and 2000 by Justin Frankel and Nullsoft, Inc.
