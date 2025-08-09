@@ -1,13 +1,18 @@
-![Plush 3D v1.2.0](/.github/plush.png)
+![Plush 3D v1.2.0](.github/plush.png)
 
 |   |   |
 |---|---|
 | ![](.github/screenshot1.png) | ![](.github/screenshot2.png) |
 | ![](.github/screenshot3.png) | ![](.github/screenshot4.png) |
 
-A neat, portable, realtime 3D rendering library originally created between 1996 and 2000 by Justin Frankel and Nullsoft, Inc.
+![](.github/sprite.gif)
 
-This version has been updated with some minor modernization tweaks, including the use of `stdint.h` and packaging through CMake and pkg-config. The original examples have also been ported to SDL2.
+A neat, portable, realtime 3D rendering library originally created between
+1996 and 2000 by Justin Frankel and Nullsoft, Inc.
+
+This version has been updated with some minor modernization tweaks, including
+the use of `stdint.h` and packaging through CMake and pkg-config. The original
+examples have also been ported to SDL2 and SDL3.
 
 Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 
@@ -64,12 +69,20 @@ Copyright (C) 1996-1998, Justin Frankel\
 Copyright (C) 1998-2000, Nullsoft, Inc.\
 Copyright (C) 2024-2025, erysdren (it/its)
 
-This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+This software is provided 'as-is', without any express or implied warranty. In
+no event will the authors be held liable for any damages arising from the use
+of this software.
 
-Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+Permission is granted to anyone to use this software for any purpose, including
+commercial applications, and to alter it and redistribute it freely, subject to
+the following restrictions:
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+1. The origin of this software must not be misrepresented; you must not claim
+that you wrote the original software. If you use this software in a product,
+an acknowledgment in the product documentation would be appreciated but is not
+required.
+2. Altered source versions must be plainly marked as such, and must not be
+misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 
 Justin Frankel
