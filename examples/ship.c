@@ -12,24 +12,45 @@
 
 pl_Light *light;
 pl_Obj *ship;
-pl_Mat *materials[32];
+pl_Obj *city;
+pl_Mat *materials[64];
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
 float zbuffer[W * H];
 uint8_t palette[768];
-size_t num_materials = 0;
+size_t num_materials;
+size_t num_materials1 = 0;
+size_t num_materials2 = 0;
 
 int main(int argc, char **argv)
 {
 	/* setup graphics mode */
 	exSetGraphics();
 
+	/* fallback material */
+	materials[0] = plMatCreate();
+	materials[0]->Ambient[0] = 0.1745 * 255;
+	materials[0]->Ambient[1] = 0.03175 * 255;
+	materials[0]->Ambient[2] = 0.03175 * 255;
+	materials[0]->Diffuse[0] = 0.61424 * 255;
+	materials[0]->Diffuse[1] = 0.10136 * 255;
+	materials[0]->Diffuse[2] = 0.10136 * 255;
+	materials[0]->Specular[0] = 0.727811 * 255;
+	materials[0]->Specular[1] = 0.626959 * 255;
+	materials[0]->Specular[2] = 0.626959 * 255;
+
+	/* load city model */
+	city = plObjCreate(NULL);
+	city->Model = plReadWavefrontMdlEx("citybbk.obj", &materials[1], 64 - 1, &num_materials1, materials[0]);
+
 	/* load ship model */
 	ship = plObjCreate(NULL);
-	ship->Model = plReadWavefrontMdlEx("ship.obj", materials, 32, &num_materials, NULL);
-	plMdlScale(ship->Model, 2);
+	ship->Model = plReadWavefrontMdlEx("ship.obj", &materials[num_materials1 + 1], 64 - num_materials1 - 1, &num_materials2, materials[0]);
+	ship->Yp = 300;
+	ship->Zp = 200;
 
 	/* initialize materials */
+	num_materials = 1 + num_materials1 + num_materials2;
 	for (int i = 0; i < num_materials; i++)
 	{
 		materials[i]->ShadeType = PL_SHADE_GOURAUD;
@@ -47,10 +68,13 @@ int main(int argc, char **argv)
 
 	/* create camera */
 	camera = plCamCreate(W, H, W * 3.0 / (H * 4.0), 90.0, framebuffer, zbuffer);
-	camera->Z = -300;
+	camera->X = 10;
+	camera->Y = 330;
+	camera->Pitch = -10;
+	camera->Pan = 10;
 
 	/* create light */
-	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
+	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 40.0, 30.0, 10.0, 1.0, 1.0);
 
 	/* main loop */
 	while (!exGetKey())
@@ -60,6 +84,8 @@ int main(int argc, char **argv)
 		ship->Ya += 1.0;
 		ship->Za += 1.0;
 
+		city->Ya += 0.01;
+
 		/* clear back buffer */
 		memset(zbuffer, 0, sizeof(zbuffer));
 		memset(framebuffer, 0, sizeof(framebuffer));
@@ -67,6 +93,7 @@ int main(int argc, char **argv)
 		/* render frame */
 		plRenderBegin(camera);
 		plRenderLight(light);
+		plRenderObj(city);
 		plRenderObj(ship);
 		plRenderEnd();
 
@@ -79,6 +106,7 @@ int main(int argc, char **argv)
 	plCamDelete(camera);
 	plLightDelete(light);
 	plObjDelete(ship);
+	plObjDelete(city);
 	for (int i = 0; i < num_materials; i++)
 		plMatDelete(materials[i]);
 
