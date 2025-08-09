@@ -13,6 +13,7 @@
 pl_Light *light;
 pl_Obj *ship;
 pl_Obj *city;
+pl_Obj *sky;
 pl_Mat *materials[64];
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
@@ -39,19 +40,35 @@ int main(int argc, char **argv)
 	materials[0]->Specular[1] = 0.626959 * 255;
 	materials[0]->Specular[2] = 0.626959 * 255;
 
+	/* sky material */
+	materials[1] = plMatCreate();
+	materials[1]->ShadeType = PL_SHADE_NONE;
+	materials[1]->Shininess = 1;
+	materials[1]->NumGradients = 1500;
+	materials[1]->Texture = plReadPCXTex("sky2.pcx", true, true);
+	materials[1]->TexScaling = 20.0;
+	materials[1]->PerspectiveCorrect = 2;
+
 	/* load city model */
 	city = plObjCreate(NULL);
-	city->Model = plReadWavefrontMdlEx("citybbk.obj", &materials[1], 64 - 1, &num_materials1, materials[0]);
+	city->Model = plReadWavefrontMdlEx("citybbk.obj", &materials[2], 64 - 2, &num_materials1, materials[0]);
+
+	/* create sky model */
+	sky = plObjCreate(city);
+	sky->Model = plMakeSphere(65000, 10, 10, materials[1]);
+	plMdlFlipNormals(sky->Model);
 
 	/* load ship model */
 	ship = plObjCreate(NULL);
-	ship->Model = plReadWavefrontMdlEx("ship.obj", &materials[num_materials1 + 1], 64 - num_materials1 - 1, &num_materials2, materials[0]);
+	ship->Model = plReadWavefrontMdlEx("ship.obj", &materials[num_materials1 + 2], 64 - num_materials1 - 2, &num_materials2, materials[0]);
 	ship->Yp = 300;
 	ship->Zp = 200;
 
 	/* initialize materials */
-	num_materials = 1 + num_materials1 + num_materials2;
-	for (int i = 0; i < num_materials; i++)
+	num_materials = 2 + num_materials1 + num_materials2;
+	plMatInit(materials[0]);
+	plMatInit(materials[1]);
+	for (int i = 2; i < num_materials; i++)
 	{
 		materials[i]->ShadeType = PL_SHADE_GOURAUD;
 		materials[i]->Ambient[0] = materials[i]->Ambient[1] = materials[i]->Ambient[2] = 0;
@@ -84,7 +101,7 @@ int main(int argc, char **argv)
 		ship->Ya += 1.0;
 		ship->Za += 1.0;
 
-		city->Ya += 0.01;
+		city->Ya += 0.1;
 
 		/* clear back buffer */
 		memset(zbuffer, 0, sizeof(zbuffer));
@@ -93,6 +110,7 @@ int main(int argc, char **argv)
 		/* render frame */
 		plRenderBegin(camera);
 		plRenderLight(light);
+		plRenderObj(sky);
 		plRenderObj(city);
 		plRenderObj(ship);
 		plRenderEnd();
