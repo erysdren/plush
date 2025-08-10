@@ -274,6 +274,16 @@ pl_Obj *plObjAddChild(pl_Obj *parent, pl_Obj *child);
 */
 pl_Obj *plObjRemoveParent(pl_Obj *o);
 
+/*
+  plObjSetName() sets the name of an object
+  Paramters:
+    o: object to name
+    name: null terminated name string
+  Returns:
+    child object
+*/
+void plObjSetName(pl_Obj *o, const char *name);
+
 /******************************************************************************
 ** Frustum Clipping Functions (clip.c)
 ******************************************************************************/

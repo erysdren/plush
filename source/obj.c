@@ -11,6 +11,7 @@ void plObjDelete(pl_Obj *o) {
   pl_Obj *child, *next;
   uint32_t i;
   if (o) {
+    if (o->Name) plFree(o->Name);
     plObjRemoveParent(o);
     child = o->Children;
     while (child)
@@ -61,4 +62,19 @@ pl_Obj *plObjRemoveParent(pl_Obj *o)
 	o->PrevSibling = NULL;
 	o->NextSibling = NULL;
 	return o;
+}
+
+void plObjSetName(pl_Obj *o, const char *name)
+{
+	size_t len;
+	if (!o || !name)
+		return;
+	len = strlen(name);
+	if (!len)
+		return;
+	if (o->Name)
+		plFree(o->Name);
+	o->Name = plMalloc(len + 1);
+	strncpy(o->Name, name, len);
+	o->Name[len] = 0;
 }

@@ -107,6 +107,7 @@ typedef struct _pl_Mdl {
 ** Object 
 */
 typedef struct _pl_Obj {
+  char *Name;                      /* Identifier name */
   pl_Mdl *Model;                   /* Renderable mesh */
   struct _pl_Obj *Parent;          /* Parent object */
   struct _pl_Obj *PrevSibling;     /* Previous in linked list of siblings */
