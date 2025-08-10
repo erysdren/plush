@@ -10,6 +10,14 @@ project(plush
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
 
+option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
+
+# asan
+
+add_library(ASAN::ASAN IMPORTED INTERFACE)
+target_compile_options(ASAN::ASAN INTERFACE -fsanitize=address $<$<NOT:$<COMPILE_LANG_AND_ID:C,MSVC>>:-fno-omit-frame-pointer>)
+target_link_options(ASAN::ASAN INTERFACE -fsanitize=address)
+
 # library
 
 add_library(plush STATIC)
@@ -59,6 +67,8 @@ if(MATH)
 	target_link_libraries(plush PUBLIC ${MATH})
 endif()
 
+target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
+
 # examples
 
 if(PLUSH_BUILD_EXAMPLES)
@@ -71,6 +81,7 @@ if(PLUSH_BUILD_EXAMPLES)
 			add_executable(${example}-sdl2 ${PROJECT_SOURCE_DIR}/examples/${example}.c)
 			target_compile_definitions(${example}-sdl2 PUBLIC PLUSH_EXAMPLE_SDL2)
 			target_link_libraries(${example}-sdl2 PUBLIC plush ${SDL2_LIBRARIES})
+			target_link_libraries(${example}-sdl2 PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
 			target_include_directories(${example}-sdl2 PUBLIC ${SDL2_INCLUDE_DIRS})
 			if(CMAKE_C_COMPILER_ID STREQUAL "TinyCC")
 				target_compile_definitions(${example}-sdl2 PUBLIC SDL_DISABLE_IMMINTRIN_H)
@@ -103,6 +114,7 @@ if(PLUSH_BUILD_EXAMPLES)
 			add_executable(${example}-sdl3 ${PROJECT_SOURCE_DIR}/examples/${example}.c)
 			target_compile_definitions(${example}-sdl3 PUBLIC PLUSH_EXAMPLE_SDL3)
 			target_link_libraries(${example}-sdl3 PUBLIC plush ${SDL3_LIBRARIES})
+			target_link_libraries(${example}-sdl3 PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
 			target_include_directories(${example}-sdl3 PUBLIC ${SDL3_INCLUDE_DIRS})
 			if(CMAKE_C_COMPILER_ID STREQUAL "TinyCC")
 				target_compile_definitions(${example}-sdl3 PUBLIC SDL_DISABLE_IMMINTRIN_H)
