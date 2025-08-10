@@ -8,15 +8,16 @@ Copyright (c) 1996-2000, Justin Frankel
 #include <plush/plush.h>
 
 void plObjDelete(pl_Obj *o) {
-  pl_Obj *child;
+  pl_Obj *child, *next;
   uint32_t i;
   if (o) {
     plObjRemoveParent(o);
     child = o->Children;
     while (child)
     {
+      next = child->NextSibling;
       plObjDelete(child);
-      child = child->NextSibling;
+      child = next;
     }
     if (o->Model) plMdlDelete(o->Model);
     plFree(o);

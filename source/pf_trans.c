@@ -23,8 +23,8 @@ void plPF_TransF(pl_Cam *cam, pl_Face *TriFace) {
 
   PUTFACE_SORT();
   
-  if (bc < 0) bc=0;
   if (bc > (int32_t) TriFace->Material->_tsfact-1) bc=TriFace->Material->_tsfact-1;
+  if (bc < 0) bc=0;
   remap+=bc;
 
   X2 = X1 = TriFace->Scrx[i0];
