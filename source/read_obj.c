@@ -50,7 +50,7 @@ static void process_group(pl_Mdl *mdl, fastObjMesh *mesh, fastObjGroup *group, p
 			idx++;
 		}
 
-		if (mesh->materials[fm].fallback || !materials)
+		if (fm == 0 || mesh->materials[fm].fallback || !materials)
 			mdl->Faces[group->face_offset + j].Material = fallback_material;
 		else
 			mdl->Faces[group->face_offset + j].Material = materials[fm];

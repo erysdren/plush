@@ -180,6 +180,9 @@ int main(int argc, char **argv) {
   plObjDelete(land);
   plObjDelete(sky);
   plObjDelete(sky2);
+  plTexDelete(mat[0]->Texture);
+  plTexDelete(mat[1]->Texture);
+  plTexDelete(mat[2]->Texture);
   plMatDelete(mat[0]);
   plMatDelete(mat[1]);
   plMatDelete(mat[2]);
