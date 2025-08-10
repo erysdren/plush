@@ -284,6 +284,27 @@ pl_Obj *plObjRemoveParent(pl_Obj *o);
 */
 void plObjSetName(pl_Obj *o, const char *name);
 
+/*
+  plObjEnumerate() runs a function for every object in a tree
+  Paramters:
+    obj: object tree to enumerate
+    func: callback function, return nonzero to stop the enumeration
+    user: user pointer for callback
+  Returns:
+    return value of callback
+*/
+int plObjEnumerate(pl_Obj *obj, int (*func)(pl_Obj *obj, void *user), void *user);
+
+/*
+  plObjFind() finds an object in a tree by name
+  Paramters:
+    obj: object tree to search
+    name: null terminated name string to search by
+  Returns:
+    found object or NULL
+*/
+pl_Obj *plObjFind(pl_Obj *obj, const char *name);
+
 /******************************************************************************
 ** Frustum Clipping Functions (clip.c)
 ******************************************************************************/

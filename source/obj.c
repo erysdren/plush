@@ -78,3 +78,53 @@ void plObjSetName(pl_Obj *o, const char *name)
 	strncpy(o->Name, name, len);
 	o->Name[len] = 0;
 }
+
+int plObjEnumerate(pl_Obj *obj, int (*func)(pl_Obj *obj, void *user), void *user)
+{
+	pl_Obj *child = obj->Children;
+	int r = 0;
+
+	if (!func)
+		return 0;
+
+	r = func(obj, user);
+	if (r != 0)
+		return r;
+
+	while (child)
+	{
+		pl_Obj *next = child->NextSibling;
+		r = plObjEnumerate(child, func, user);
+		if (r != 0)
+			return r;
+		child = next;
+	}
+
+	return r;
+}
+
+static int find_callback(pl_Obj *obj, void *user)
+{
+	void **in = (void **)user;
+
+	if (!obj->Name)
+		return 0;
+
+	if (strcmp(obj->Name, (const char *)in[0]) == 0)
+	{
+		*(pl_Obj **)in[1] = obj;
+		return 1;
+	}
+
+	return 0;
+}
+
+pl_Obj *plObjFind(pl_Obj *obj, const char *name)
+{
+	void *user[2];
+	pl_Obj *r = NULL;
+	user[0] = (void *)name;
+	user[1] = (void *)&r;
+	plObjEnumerate(obj, find_callback, user);
+	return r;
+}
