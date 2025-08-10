@@ -103,6 +103,11 @@ int main(int argc, char **argv) { // Main
       break;
     }
   }
+  plTexDelete(CubeMat->Texture);
+  plMatDelete(CubeMat);
+  plObjDelete(TheCube);
+  plCamDelete(TheCamera);
+  plLightDelete(TheLight);
   exSetText(); // Restore text mode
   return 0;          // Quit
 }

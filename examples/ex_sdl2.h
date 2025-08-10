@@ -45,7 +45,8 @@ static int exGetKey(void)
 		switch (event.type)
 		{
 			case SDL_QUIT:
-				exit(0);
+				lastkey = 27;
+				break;
 
 			case SDL_MOUSEBUTTONDOWN:
 				if (event.button.button == SDL_BUTTON_LEFT)
@@ -106,6 +107,8 @@ static void exSetPalette(uint8_t palette[768])
 	SDL_SetPaletteColors(exSurface->format->palette, colors, 0, 256);
 }
 
+static void exSetText(void);
+
 static void exSetGraphics(void)
 {
 	Uint32 format;
@@ -129,6 +132,8 @@ static void exSetGraphics(void)
 	exGraphMem = (uint8_t *)exSurface->pixels;
 
 	SDL_ShowWindow(exWindow);
+
+	atexit(exSetText);
 }
 
 static void exSetText(void)

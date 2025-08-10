@@ -102,6 +102,12 @@ int main(int argc, char **argv) { // Main
     exWaitVSync();                   // Sync with retrace
     memcpy(exGraphMem,TheFrameBuffer,W*H); // dump to screen
   }
+  plFree(TheFrameBuffer);
+  plFree(TheZBuffer);
+  plMatDelete(CubeMat);
+  plObjDelete(TheCube);
+  plCamDelete(TheCamera);
+  plLightDelete(TheLight);
   exSetText(); // Restore text mode
   return 0;          // Quit
 }

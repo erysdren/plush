@@ -126,7 +126,10 @@ int main(int argc, char **argv)
 	plObjDelete(ship);
 	plObjDelete(city);
 	for (int i = 0; i < num_materials; i++)
+	{
+		if (materials[i]->Texture) plTexDelete(materials[i]->Texture);
 		plMatDelete(materials[i]);
+	}
 
 	/* shut down video */
 	exSetText();

@@ -45,7 +45,8 @@ static int exGetKey(void)
 		switch (event.type)
 		{
 			case SDL_EVENT_QUIT:
-				exit(0);
+				lastkey = 27;
+				break;
 
 			case SDL_EVENT_MOUSE_BUTTON_DOWN:
 				if (event.button.button == SDL_BUTTON_LEFT)

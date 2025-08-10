@@ -103,6 +103,8 @@ int main(int argc, char **argv) {
       case '=': cam->Fov -= 1.0; if (cam->Fov < 10) cam->Fov = 10; break;
     }
   }
+  for (i = 0; i < NUM_ITERS; i++)
+      plMatDelete(mat[i]);
   plFree(framebuffer);
   plObjDelete(obj);
   plLightDelete(light);
