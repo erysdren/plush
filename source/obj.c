@@ -19,7 +19,6 @@ void plObjDelete(pl_Obj *o) {
       plObjDelete(child);
       child = next;
     }
-    if (o->Model) plMdlDelete(o->Model);
     plFree(o);
   }
 }
