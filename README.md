@@ -14,6 +14,8 @@ examples have also been ported to SDL2 and SDL3.
 
 Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 
+Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/http://nullsoft.com/plush/)
+
 ## Todo
 
 - Add more format loaders
