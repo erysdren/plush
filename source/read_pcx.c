@@ -7,22 +7,19 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
+#include "readio.h"
+
 /* texture.c */
 uint32_t _plHiBit(uint16_t x);
 uint32_t _plOptimizeImage(uint8_t *pal, uint8_t *data, uint32_t len);
-void _plRescaleImage(uint8_t *in, uint8_t *out, uint32_t inx,
-                            uint32_t iny, uint32_t outx, uint32_t outy);
+void _plRescaleImage(uint8_t *in, uint8_t *out, uint32_t inx, uint32_t iny, uint32_t outx, uint32_t outy);
 
 /* read_pcx.c */
-static int32_t _plReadPCX(const char *filename, uint16_t *width, uint16_t *height,
-                          uint8_t **pal, uint8_t **data);
+static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, uint8_t **pal, uint8_t **data);
 
-pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
-  uint8_t *data, *pal;
-  uint16_t x, y;
-  pl_Texture *t;
-  if (_plReadPCX(fn,&x,&y,&pal,&data) < 0) return 0;
-  t = (pl_Texture *) plMalloc(sizeof(pl_Texture));
+static pl_Texture *_plProcessPCX(uint16_t x, uint16_t y, uint8_t *data, uint8_t *pal, bool rescale, bool optimize)
+{
+  pl_Texture *t = (pl_Texture *) plMalloc(sizeof(pl_Texture));
   if (!t) return 0;
   t->Width = _plHiBit(x);
   t->Height = _plHiBit(y);
@@ -57,34 +54,57 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
   return t;
 }
 
-static int32_t _plReadPCX(const char *filename, uint16_t *width, uint16_t *height,
-                            uint8_t **pal, uint8_t **data) {
+pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
+  uint8_t *data, *pal;
+  uint16_t x, y;
+  int r;
+  FILE *fp = fopen(fn, "rb");
+  if (!fp) return 0;
+  r = _plReadPCX(&_plIOStdio,fp,&x,&y,&pal,&data);
+  fclose(fp);
+  if (r < 0) return 0;
+  return _plProcessPCX(x, y, data, pal, rescale, optimize);
+}
+
+pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize) {
+  uint8_t *data, *pal;
+  uint16_t x, y;
+  int r;
+  pl_IOMemCtx ctx;
+  ctx.buffer = buf;
+  ctx.len = len;
+  ctx.pos = 0;
+  r = _plReadPCX(&_plIOMem,&ctx,&x,&y,&pal,&data);
+  if (r < 0) return 0;
+  return _plProcessPCX(x, y, data, pal, rescale, optimize);
+}
+
+static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, uint8_t **pal, uint8_t **data)
+{
   uint16_t sx, sy, ex, ey;
-  FILE *fp = fopen(filename,"rb");
   uint8_t *data2;
-  if (!fp) return -1;
-  fgetc(fp);
-  if (fgetc(fp) != 5) { fclose(fp); return -2; }
-  if (fgetc(fp) != 1) { fclose(fp); return -2; }
-  if (fgetc(fp) != 8) { fclose(fp); return -3; }
-  sx = fgetc(fp); sx |= fgetc(fp)<<8;
-  sy = fgetc(fp); sy |= fgetc(fp)<<8;
-  ex = fgetc(fp); ex |= fgetc(fp)<<8;
-  ey = fgetc(fp); ey |= fgetc(fp)<<8;
+  io->getc(user);
+  if (io->getc(user) != 5) return -2;
+  if (io->getc(user) != 1) return -2;
+  if (io->getc(user) != 8) return -3;
+  sx = io->getc(user); sx |= io->getc(user)<<8;
+  sy = io->getc(user); sy |= io->getc(user)<<8;
+  ex = io->getc(user); ex |= io->getc(user)<<8;
+  ey = io->getc(user); ey |= io->getc(user)<<8;
   *width = ex - sx + 1;
   *height = ey - sy + 1;
-  fseek(fp,128,SEEK_SET);
-  if (feof(fp)) { fclose(fp); return -4; }
+  io->seek(user,128,SEEK_SET);
+  if (io->eof(user)) return -4;
   *data = (uint8_t *) plMalloc((*width) * (*height));
-  if (!*data) { fclose(fp); return -128; }
+  if (!*data) return -128;
   sx = *height;
   data2 = *data;
   do { 
     int xpos = 0;
     do {
-      char c = fgetc(fp);
+      char c = io->getc(user);
       if ((c & 192) == 192) {
-        char oc = fgetc(fp);
+        char oc = io->getc(user);
         c &= ~192;
         do {
           *(data2++) = oc;
@@ -96,12 +116,11 @@ static int32_t _plReadPCX(const char *filename, uint16_t *width, uint16_t *heigh
       }
     } while (xpos < *width);
   } while (--sx);
-  if (feof(fp)) { fclose(fp); plFree(*data); return -5; }
-  fseek(fp,-769,SEEK_END);
-  if (fgetc(fp) != 12) { fclose(fp); plFree(*data); return -6; }
+  if (io->eof(user)) { plFree(*data); return -5; }
+  io->seek(user,-769,SEEK_END);
+  if (io->getc(user) != 12) { plFree(*data); return -6; }
   *pal = (uint8_t *) plMalloc(768);
-  if (!*pal) { fclose(fp); plFree(*data); return -7; }
-  fread(*pal,3,256,fp);
-  fclose(fp);
+  if (!*pal) { plFree(*data); return -7; }
+  io->read(*pal,3,256,user);
   return 0;
 }

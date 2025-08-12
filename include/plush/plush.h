@@ -662,6 +662,22 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
 */
 pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 
+/*
+  plReadPCXTexFromMem() reads an 8bpp PCX texture from the provided buffer
+  Parameters:
+    buf: pcx file buffer
+    len: size of buf in bytes
+    rescale: will rescale image if not whole log2 dimensions (USE THIS)
+    optimize: will optimize colors (USE THIS TOO)
+  Returns:
+    pointer to texture
+  Notes:
+    The PCX must be a 8bpp zSoft version 5 PCX. The texture's palette will
+      be optimized, and the texture might be scaled up so that it's dimensions
+      will be a nice power of two.
+*/
+pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
+
 /******************************************************************************
 ** Math Code (math.c)
 ******************************************************************************/

@@ -7,6 +7,8 @@ Copyright (c) 2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#include "readio.h"
+
 #define FAST_OBJ_IMPLEMENTATION
 #include "fast_obj.h"
 

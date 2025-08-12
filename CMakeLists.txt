@@ -48,6 +48,7 @@ target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/read_jaw.c
 	${PROJECT_SOURCE_DIR}/source/read_obj.c
 	${PROJECT_SOURCE_DIR}/source/read_pcx.c
+	${PROJECT_SOURCE_DIR}/source/readio.c
 	${PROJECT_SOURCE_DIR}/source/render.c
 	${PROJECT_SOURCE_DIR}/source/spline.c
 	${PROJECT_SOURCE_DIR}/source/text.c
