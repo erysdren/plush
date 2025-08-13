@@ -10,6 +10,7 @@ Copyright (c) 2025, erysdren (it/its)
 
 typedef struct _pl_IO {
 	int (*getc)(void *user);
+	char *(*gets)(char *buf, size_t len, void *user);
 	size_t (*read)(void *buffer, size_t size, size_t count, void *user);
 	int (*seek)(void *user, long offset, int origin);
 	void (*rewind)(void *user);

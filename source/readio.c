@@ -14,6 +14,11 @@ static int _plIOStdioGetc(void *user)
 	return fgetc((FILE *)user);
 }
 
+static char *_plIOStdioGets(char *buf, size_t len, void *user)
+{
+	return fgets(buf, len, (FILE *)user);
+}
+
 static size_t _plIOStdioRead(void *buffer, size_t size, size_t count, void *user)
 {
 	return fread(buffer, size, count, (FILE *)user);
@@ -35,7 +40,7 @@ static int _plIOStdioEof(void *user)
 }
 
 pl_IO _plIOStdio = {
-	_plIOStdioGetc, _plIOStdioRead, _plIOStdioSeek, _plIOStdioRewind, _plIOStdioEof
+	_plIOStdioGetc, _plIOStdioGets, _plIOStdioRead, _plIOStdioSeek, _plIOStdioRewind, _plIOStdioEof
 };
 
 static int _plIOMemGetc(void *user)
@@ -44,6 +49,26 @@ static int _plIOMemGetc(void *user)
 	if (ctx->pos >= ctx->len)
 		return EOF;
 	return (int)((uint8_t *)ctx->buffer)[ctx->pos++];
+}
+
+static char *_plIOMemGets(char *buf, size_t len, void *user)
+{
+	size_t pos = 0;
+	if (!buf || len < 2)
+		return NULL;
+	while (pos < len - 1)
+	{
+		int c = _plIOMemGetc(user);
+		if (c == EOF)
+			break;
+		buf[pos++] = c;
+		if (c == '\n')
+			break;
+	}
+	if (pos == 0)
+		return NULL;
+	buf[pos] = '\0';
+	return buf;
 }
 
 static size_t _plIOMemRead(void *buffer, size_t size, size_t count, void *user)
@@ -89,5 +114,5 @@ static int _plIOMemEof(void *user)
 }
 
 pl_IO _plIOMem = {
-	_plIOMemGetc, _plIOMemRead, _plIOMemSeek, _plIOMemRewind, _plIOMemEof
+	_plIOMemGetc, _plIOMemGets, _plIOMemRead, _plIOMemSeek, _plIOMemRewind, _plIOMemEof
 };
