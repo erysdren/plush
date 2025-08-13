@@ -9,8 +9,8 @@ Copyright (c) 2025, erysdren (it/its)
 #define _READIO_H_
 
 typedef struct _pl_IO {
-	int (*getc)(void *user);
-	char *(*gets)(char *buf, size_t len, void *user);
+	int (*getchr)(void *user);
+	char *(*getstr)(char *buf, size_t len, void *user);
 	size_t (*read)(void *buffer, size_t size, size_t count, void *user);
 	int (*seek)(void *user, long offset, int origin);
 	void (*rewind)(void *user);

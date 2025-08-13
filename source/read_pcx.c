@@ -83,14 +83,14 @@ static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 {
   uint16_t sx, sy, ex, ey;
   uint8_t *data2;
-  io->getc(user);
-  if (io->getc(user) != 5) return -2;
-  if (io->getc(user) != 1) return -2;
-  if (io->getc(user) != 8) return -3;
-  sx = io->getc(user); sx |= io->getc(user)<<8;
-  sy = io->getc(user); sy |= io->getc(user)<<8;
-  ex = io->getc(user); ex |= io->getc(user)<<8;
-  ey = io->getc(user); ey |= io->getc(user)<<8;
+  io->getchr(user);
+  if (io->getchr(user) != 5) return -2;
+  if (io->getchr(user) != 1) return -2;
+  if (io->getchr(user) != 8) return -3;
+  sx = io->getchr(user); sx |= io->getchr(user)<<8;
+  sy = io->getchr(user); sy |= io->getchr(user)<<8;
+  ex = io->getchr(user); ex |= io->getchr(user)<<8;
+  ey = io->getchr(user); ey |= io->getchr(user)<<8;
   *width = ex - sx + 1;
   *height = ey - sy + 1;
   io->seek(user,128,SEEK_SET);
@@ -102,9 +102,9 @@ static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
   do { 
     int xpos = 0;
     do {
-      char c = io->getc(user);
+      char c = io->getchr(user);
       if ((c & 192) == 192) {
-        char oc = io->getc(user);
+        char oc = io->getchr(user);
         c &= ~192;
         do {
           *(data2++) = oc;
@@ -118,7 +118,7 @@ static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
   } while (--sx);
   if (io->eof(user)) { plFree(*data); return -5; }
   io->seek(user,-769,SEEK_END);
-  if (io->getc(user) != 12) { plFree(*data); return -6; }
+  if (io->getchr(user) != 12) { plFree(*data); return -6; }
   *pal = (uint8_t *) plMalloc(768);
   if (!*pal) { plFree(*data); return -7; }
   io->read(*pal,3,256,user);

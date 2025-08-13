@@ -9,7 +9,6 @@ Copyright (c) 1996-2000, Justin Frankel
 
 void plObjDelete(pl_Obj *o) {
   pl_Obj *child, *next;
-  uint32_t i;
   if (o) {
     if (o->Name) plFree(o->Name);
     plObjRemoveParent(o);
