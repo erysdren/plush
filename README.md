@@ -62,6 +62,7 @@ following compilers:
 - TinyCC 0.9.28rc
 - cproc #f66a6613
 - Open Watcom 1.9
+- MSVC 19.44.35207.1
 
 ## License
 
