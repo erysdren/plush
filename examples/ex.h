@@ -5,6 +5,8 @@
 #include "ex_sdl2.h"
 #elif defined(PLUSH_EXAMPLE_SDL3)
 #include "ex_sdl3.h"
+#elif defined(PLUSH_EXAMPLE_DOS)
+#include "ex_dos.h"
 #else
 #error please define a plush example backend!
 #endif

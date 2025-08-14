@@ -23,7 +23,7 @@ uint8_t TheFrameBuffer[W*H]; // Our framebuffer to render to
 uint8_t ThePalette[768];
 
 int main(int argc, char **argv) { // Main
-  int i, done;
+  int done;
   // Show user controls
   printf("Controls:\n"
          "  SPACE: toggle perspective correction\n"

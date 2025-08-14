@@ -25,6 +25,8 @@ size_t num_materials2 = 0;
 
 int main(int argc, char **argv)
 {
+	int i;
+
 	/* setup graphics mode */
 	exSetGraphics();
 
@@ -68,7 +70,7 @@ int main(int argc, char **argv)
 	num_materials = 2 + num_materials1 + num_materials2;
 	plMatInit(materials[0]);
 	plMatInit(materials[1]);
-	for (int i = 2; i < num_materials; i++)
+	for (i = 2; i < num_materials; i++)
 	{
 		materials[i]->ShadeType = PL_SHADE_GOURAUD;
 		materials[i]->Ambient[0] = materials[i]->Ambient[1] = materials[i]->Ambient[2] = 0;
@@ -78,7 +80,7 @@ int main(int argc, char **argv)
 	/* create palette */
 	plMatMakeOptPal(palette, 1, 255, materials, num_materials);
 	palette[0] = palette[1] = palette[2] = 0;
-	for (int i = 0; i < num_materials; i++)
+	for (i = 0; i < num_materials; i++)
 		plMatMapToPal(materials[i], palette, 0, 255);
 
 	exSetPalette(palette);
@@ -125,7 +127,7 @@ int main(int argc, char **argv)
 	plLightDelete(light);
 	plObjDelete(ship);
 	plObjDelete(city);
-	for (int i = 0; i < num_materials; i++)
+	for (i = 0; i < num_materials; i++)
 	{
 		if (materials[i]->Texture) plTexDelete(materials[i]->Texture);
 		plMatDelete(materials[i]);

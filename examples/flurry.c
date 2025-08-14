@@ -145,7 +145,6 @@ void makeBoxes(pl_Obj *obj, float s, pl_Mat **m, int i) {
 
 void rotateBoxes(pl_Obj *obj, float r) {
   pl_Obj *child;
-  int i;
   if (!obj) return;
   obj->Ya += r;
   obj->Xa += r;

@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
   int draw_sky = 1;                 // do we draw the sky?
   int wait_vsync = 1;               // do we wait for vsync?
   int frames, t;                    // for framerate counter
-  int i;
   int c;
 
   uint8_t *framebuffer;            // our doublebuffer
@@ -196,7 +195,6 @@ int main(int argc, char **argv) {
 }
 
 void setup_materials(pl_Mat **mat, uint8_t *pal) {
-  int i;
   // create our 3 materials, make the fourth null so that plMatMakeOptPal2() 
   // knows where to stop
   mat[0] = plMatCreate();

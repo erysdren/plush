@@ -101,7 +101,7 @@ if(PLUSH_BUILD_EXAMPLES)
 				)
 			endif()
 		endforeach()
-		# copy texture files
+		# copy assets
 		foreach(file IN LISTS files)
 			configure_file(${PROJECT_SOURCE_DIR}/examples/${file} ${PROJECT_BINARY_DIR}/${file} COPYONLY)
 		endforeach()
@@ -134,12 +134,24 @@ if(PLUSH_BUILD_EXAMPLES)
 				)
 			endif()
 		endforeach()
-		# copy texture files
+		# copy assets
 		foreach(file IN LISTS files)
 			configure_file(${PROJECT_SOURCE_DIR}/examples/${file} ${PROJECT_BINARY_DIR}/${file} COPYONLY)
 		endforeach()
 	else()
 		message(WARNING "Cannot build SDL3 Plush examples")
+	endif()
+	if(CMAKE_SYSTEM_NAME STREQUAL "DOS")
+		# build dos examples
+		foreach(example IN LISTS examples)
+			add_executable(${example}-dos ${PROJECT_SOURCE_DIR}/examples/${example}.c)
+			target_compile_definitions(${example}-dos PUBLIC PLUSH_EXAMPLE_DOS)
+			target_link_libraries(${example}-dos PUBLIC plush)
+		endforeach()
+		# copy assets
+		foreach(file IN LISTS files)
+			configure_file(${PROJECT_SOURCE_DIR}/examples/${file} ${PROJECT_BINARY_DIR}/${file} COPYONLY)
+		endforeach()
 	endif()
 endif()
 

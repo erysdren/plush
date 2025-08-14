@@ -94,9 +94,8 @@ int main(int argc, char **argv) {
 
 void SetUpColors() {
   uint8_t pal[768]; // Our rgb triplet palette
-  memset(pal,0,768);
-
   pl_Mat *AllMaterials[2];
+  memset(pal,0,768);
 
   //Material1->Priority = 0;  // setup material 1
   Material1->NumGradients = 200;

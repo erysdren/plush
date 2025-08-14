@@ -25,6 +25,8 @@ float light1_angle = 0;
 
 int main(int argc, char **argv)
 {
+	int i;
+
 	/* setup graphics mode */
 	exSetGraphics();
 
@@ -42,15 +44,16 @@ int main(int argc, char **argv)
 	/* create world */
 	world = plObjCreate(NULL);
 	world->Model = plMakeBox(128, 128, 8, materials[0]);
-	for (int i = 0; i < 6; i++)
+	for (i = 0; i < 6; i++)
 	{
+		float ang;
 		pl_Obj *cube = plObjCreate(world);
 		cube->Model = plMakeBox(16, 16, 64, materials[0]);
 
-		float ang = ((2 * M_PI) / 6) * i;
+		ang = ((2 * PL_PI) / 6) * i;
 		cube->Xp = 48 * cos(ang);
 		cube->Zp = 48 * sin(ang);
-		cube->Ya = 90 + atan2(cube->Zp, cube->Xp) * 180 / M_PI;
+		cube->Ya = 90 + atan2(cube->Zp, cube->Xp) * 180 / PL_PI;
 	}
 
 	/* create sprite */
@@ -59,13 +62,13 @@ int main(int argc, char **argv)
 	sprite->Yp += 16;
 
 	/* initialize materials */
-	for (int i = 0; i < NUM_MATERIALS; i++)
+	for (i = 0; i < NUM_MATERIALS; i++)
 		plMatInit(materials[i]);
 
 	/* create palette */
 	plMatMakeOptPal(palette, 1, 255, materials, NUM_MATERIALS);
 	palette[0] = palette[1] = palette[2] = 0;
-	for (int i = 0; i < NUM_MATERIALS; i++)
+	for (i = 0; i < NUM_MATERIALS; i++)
 		plMatMapToPal(materials[i], palette, 0, 255);
 
 	exSetPalette(palette);
@@ -90,7 +93,7 @@ int main(int argc, char **argv)
 		camera_angle += 0.01;
 		camera->X = 160 * cos(camera_angle);
 		camera->Z = 160 * sin(camera_angle);
-		camera->Pan = 90 + atan2(camera->Z, camera->X) * 180 / M_PI;
+		camera->Pan = 90 + atan2(camera->Z, camera->X) * 180 / PL_PI;
 
 		/* rotate sprite to face camera */
 		sprite->Xa = 90;
@@ -119,7 +122,7 @@ int main(int argc, char **argv)
 	plLightDelete(light1);
 	plLightDelete(light2);
 	plObjDelete(world);
-	for (int i = 0; i < NUM_MATERIALS; i++)
+	for (i = 0; i < NUM_MATERIALS; i++)
 		plMatDelete(materials[i]);
 
 	/* shut down video */

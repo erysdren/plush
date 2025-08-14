@@ -30,7 +30,6 @@ float *TheZBuffer;   // Our zbuffer
 uint8_t ThePalette[768];
 
 int main(int argc, char **argv) { // Main
-  int i;
 #if defined(DJGPP) || defined(__WATCOMC__)
    // Put the fpu in a low precision, no exception state
   _control87(MCW_EM|PC_24,MCW_EM|MCW_PC); 
