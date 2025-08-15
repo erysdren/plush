@@ -9,14 +9,19 @@ project(plush
 # options
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
-
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
+set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
+set(PLUSH_MAX_TRIANGLES "16384" CACHE STRING "Maximum number of triangles in a single render pass")
 
 # asan
 
 add_library(ASAN::ASAN IMPORTED INTERFACE)
 target_compile_options(ASAN::ASAN INTERFACE -fsanitize=address $<$<NOT:$<COMPILE_LANG_AND_ID:C,MSVC>>:-fno-omit-frame-pointer>)
 target_link_options(ASAN::ASAN INTERFACE -fsanitize=address)
+
+# configure options header
+
+configure_file(${PROJECT_SOURCE_DIR}/cmake/pl_conf.h.in ${PROJECT_SOURCE_DIR}/include/plush/pl_conf.h @ONLY)
 
 # library
 

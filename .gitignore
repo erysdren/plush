@@ -2,3 +2,4 @@ untracked*/
 cmake-build*/
 build*/
 *.blend1
+include/plush/pl_conf.h

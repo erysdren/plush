@@ -7,7 +7,7 @@ Copyright (c) 1996-2000, Justin Frankel
 
 #include <plush/plush.h>
 
-char plVersionString[] = "Plush 3D Version 1.2.0";
+char plVersionString[] = "Plush 3D Version " PL_VERSION;
 char plCopyrightString[] =
 "Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.";
 
