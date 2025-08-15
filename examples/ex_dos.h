@@ -2,12 +2,23 @@
 // example programs to use.
 
 #include <io.h>
-#include <i86.h>
 #include <dos.h>
-#include <graph.h>
 #include <fcntl.h>
 #include <conio.h>
 #include <time.h>
+
+#ifdef __DJGPP__
+#include <sys/nearptr.h>
+#define EXREGS_EAX exRegs.x.ax
+#define EXREGS_EBX exRegs.x.bx
+#define EXREGS_ECX exRegs.x.cx
+#define EXREGS_EDX exRegs.x.dx
+#else
+#define EXREGS_EAX exRegs.x.eax
+#define EXREGS_EBX exRegs.x.ebx
+#define EXREGS_ECX exRegs.x.ecx
+#define EXREGS_EDX exRegs.x.edx
+#endif
 
 #define W (320)
 #define H (200)
@@ -44,21 +55,21 @@ int exGetKey(void)
 	// like the sdl backend, we abuse this function to also read the mouse
 	if (!exHasMouse)
 	{
-		exRegs.x.eax = 0;
+		EXREGS_EAX = 0;
 		int386(0x33, &exRegs, &exRegs);
 		exHasMouse = 1;
 	}
 
-	exRegs.x.eax = 3;
+	EXREGS_EAX = 3;
 	int386(0x33, &exRegs, &exRegs);
 
-	exMouseDeltaX = exRegs.x.ecx - exMouseX;
-	exMouseDeltaY = exRegs.x.edx - exMouseY;
+	exMouseDeltaX = EXREGS_ECX - exMouseX;
+	exMouseDeltaY = EXREGS_EDX - exMouseY;
 
-	exMouseX = exRegs.x.ecx;
-	exMouseY = exRegs.x.edx;
+	exMouseX = EXREGS_ECX;
+	exMouseY = EXREGS_EDX;
 
-	exMouseButtons = exRegs.x.ebx;
+	exMouseButtons = EXREGS_EBX;
 
 	return kbhit() ? getch() : 0;
 }
@@ -86,7 +97,7 @@ void exSetGraphics(void)
 #ifdef __DJGPP__
 	__djgpp_nearptr_enable();
 #endif
-	exRegs.x.eax = 0x13;
+	EXREGS_EAX = 0x13;
 	int386(0x10, &exRegs, &exRegs);
 #ifdef __DJGPP__
 	exGraphMem = (uint8_t *)__djgpp_conventional_base + 0xA0000;
@@ -100,6 +111,6 @@ void exSetText(void)
 #ifdef __DJGPP__
 	__djgpp_nearptr_disable();
 #endif
-	exRegs.x.eax = 0x03;
+	EXREGS_EAX = 0x03;
 	int386(0x10, &exRegs, &exRegs);
 }
