@@ -16,12 +16,6 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 
 Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/http://nullsoft.com/plush/)
 
-## Todo
-
-- Add more format loaders
-- Allow library user to override what I/O functions it uses (rather than libc)
-- Run clang-format on the code
-
 ## Notes
 
 - [Eggbug model created by Xenon Fossil](https://xenonfossil.itch.io/low-poly-eggbug)
@@ -63,6 +57,7 @@ following compilers:
 - cproc #f66a6613
 - Open Watcom 1.9
 - MSVC 19.44.35207.1
+- DJGPP 12.2.0
 
 ## License
 
