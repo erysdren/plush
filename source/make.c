@@ -34,9 +34,9 @@ pl_Mdl *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad,
     al = 0.0;
     dal = 2*PL_PI/divrad;
     for (x = 0; x < divrad; x ++) {
-      v->x = (float) (cos((double) a)*(ravg + cos((double) al)*rt));
-      v->z = (float) (sin((double) a)*(ravg + cos((double) al)*rt));
-      v->y = (float) (sin((double) al)*rt);
+      v->x = (float) (plCos((double) a)*(ravg + plCos((double) al)*rt));
+      v->z = (float) (plSin((double) a)*(ravg + plCos((double) al)*rt));
+      v->y = (float) (plSin((double) al)*rt);
       v++;
       al += dal;
     }
@@ -99,13 +99,13 @@ pl_Mdl *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
   da = (PL_PI*2.0)/divr;
   for (y = 0; y < divh - 2; y ++) {
     ya += yda;
-    yp = cos((double) ya)*r;
-    yf = sin((double) ya)*r;
+    yp = plCos((double) ya)*r;
+    yf = plSin((double) ya)*r;
     a = 0.0;
     for (x = 0; x < divr; x ++) {
       v->y = (float) yp;
-      v->x = (float) (cos((double) a)*yf);
-      v->z = (float) (sin((double) a)*yf);
+      v->x = (float) (plCos((double) a)*yf);
+      v->z = (float) (plSin((double) a)*yf);
       v++;
       a += da;
     }
@@ -198,10 +198,10 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
   topverts = v;
   for (i = 0; i < divr; i ++) {
     v->y = h/2.0f; 
-    v->x = (float) (r*cos((double) a)); 
-    v->z = (float)(r*sin(a));
-    v->xformedx = (float) (32768.0 + (32768.0*cos((double) a))); // temp
-    v->xformedy = (float) (32768.0 + (32768.0*sin((double) a))); // use xf
+    v->x = (float) (r*plCos((double) a));
+    v->z = (float)(r*plSin(a));
+    v->xformedx = (float) (32768.0 + (32768.0*plCos((double) a))); // temp
+    v->xformedy = (float) (32768.0 + (32768.0*plSin((double) a))); // use xf
     v++; 
     a += da;
   }
@@ -209,10 +209,10 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
   a = 0.0;
   for (i = 0; i < divr; i ++) {
     v->y = -h/2.0f; 
-    v->x = (float) (r*cos((double) a)); 
-    v->z = (float) (r*sin(a));
-    v->xformedx = (float) (32768.0 + (32768.0*cos((double) a)));
-    v->xformedy = (float) (32768.0 + (32768.0*sin((double) a)));
+    v->x = (float) (r*plCos((double) a));
+    v->z = (float) (r*plSin(a));
+    v->xformedx = (float) (32768.0 + (32768.0*plCos((double) a)));
+    v->xformedy = (float) (32768.0 + (32768.0*plSin((double) a)));
     v++; a += da;
   }
   if (captop && divr != 3) {
@@ -320,10 +320,10 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
   da = (2.0*PL_PI)/div;
   for (i = 1; i <= div; i ++) {
     v->y = h/-2.0f;
-    v->x = (float) (r*cos((double) a));
-    v->z = (float) (r*sin((double) a));
-    v->xformedx = (float) (32768.0 + (cos((double) a)*32768.0));
-    v->xformedy = (float) (32768.0 + (sin((double) a)*32768.0));
+    v->x = (float) (r*plCos((double) a));
+    v->z = (float) (r*plSin((double) a));
+    v->xformedx = (float) (32768.0 + (plCos((double) a)*32768.0));
+    v->xformedy = (float) (32768.0 + (plSin((double) a)*32768.0));
     a += da;
     v++;
   }

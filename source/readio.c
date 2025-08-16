@@ -9,6 +9,8 @@ Copyright (c) 2025, erysdren (it/its)
 
 #include "readio.h"
 
+#if !PL_FREESTANDING
+
 static int _plIOStdioGetc(void *user)
 {
 	return fgetc((FILE *)user);
@@ -43,6 +45,8 @@ pl_IO _plIOStdio = {
 	_plIOStdioGetc, _plIOStdioGets, _plIOStdioRead, _plIOStdioSeek, _plIOStdioRewind, _plIOStdioEof
 };
 
+#endif // !PL_FREESTANDING
+
 static int _plIOMemGetc(void *user)
 {
 	pl_IOMemCtx *ctx = (pl_IOMemCtx *)user;
@@ -75,7 +79,7 @@ static size_t _plIOMemRead(void *buffer, size_t size, size_t count, void *user)
 {
 	pl_IOMemCtx *ctx = (pl_IOMemCtx *)user;
 	size_t len = (size * count) > (ctx->len - ctx->pos) ? (ctx->len - ctx->pos) : (size * count);
-	memcpy(buffer, (uint8_t *)ctx->buffer + ctx->pos, len);
+	plMemCpy(buffer, (uint8_t *)ctx->buffer + ctx->pos, len);
 	ctx->pos += len;
 	return len;
 }

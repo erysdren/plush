@@ -51,7 +51,7 @@ static void _hsort(_faceInfo *base, int nel, int dir);
 
 void plRenderBegin(pl_Cam *Camera) {
   float tempMatrix[16];
-  memset(plRender_TriStats,0,sizeof(plRender_TriStats));
+  plMemSet(plRender_TriStats,0,sizeof(plRender_TriStats));
   _cam = Camera;
   _numlights = 0;
   _numfaces = 0;
@@ -98,15 +98,15 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
     plMatrixMultiply(nMatrix,tempMatrix);
     plMatrixRotate(tempMatrix,3,obj->Za);
     plMatrixMultiply(nMatrix,tempMatrix);
-    memcpy(oMatrix,nMatrix,sizeof(float)*16);
-  } else memcpy(nMatrix,obj->RotMatrix,sizeof(float)*16);
+    plMemCpy(oMatrix,nMatrix,sizeof(float)*16);
+  } else plMemCpy(nMatrix,obj->RotMatrix,sizeof(float)*16);
 
   if (bnmatrix) plMatrixMultiply(nMatrix,bnmatrix);
 
   if (obj->GenMatrix) {
     plMatrixTranslate(tempMatrix, obj->Xp, obj->Yp, obj->Zp);
     plMatrixMultiply(oMatrix,tempMatrix);
-  } else memcpy(oMatrix,obj->Matrix,sizeof(float)*16);
+  } else plMemCpy(oMatrix,obj->Matrix,sizeof(float)*16);
   if (bmatrix) plMatrixMultiply(oMatrix,bmatrix);
 
   // erysdren

@@ -18,13 +18,13 @@ void plCamSetTarget(pl_Cam *c, float x, float y, float z) {
   dz = z - c->Z;
   c->Roll = 0;
   if (dz > 0.0001f) {
-    c->Pan = (float) (-atan(dx/dz)*(180.0/PL_PI));
-    dz /= cos(c->Pan*(PL_PI/180.0));
-    c->Pitch = (float) (atan(dy/dz)*(180.0/PL_PI));
+    c->Pan = (float) (-plATan(dx/dz)*(180.0/PL_PI));
+    dz /= plCos(c->Pan*(PL_PI/180.0));
+    c->Pitch = (float) (plATan(dy/dz)*(180.0/PL_PI));
   } else if (dz < -0.0001f) { 
-    c->Pan = (float) (180.0-atan(dx/dz)*(180.0/PL_PI));
-    dz /= cos((c->Pan-180.0f)*(PL_PI/180.0));
-    c->Pitch = (float) (-atan(dy/dz)*(180.0/PL_PI));
+    c->Pan = (float) (180.0-plATan(dx/dz)*(180.0/PL_PI));
+    dz /= plCos((c->Pan-180.0f)*(PL_PI/180.0));
+    c->Pitch = (float) (-plATan(dy/dz)*(180.0/PL_PI));
   } else {
     c->Pan = 0.0f;
     c->Pitch = -90.0f;
@@ -36,7 +36,7 @@ pl_Cam *plCamCreate(uint32_t sw, uint32_t sh, float ar, float fov,
   pl_Cam *c;
   c = (pl_Cam *)plMalloc(sizeof(pl_Cam));
   if (!c) return 0;
-  memset(c,0,sizeof(pl_Cam));
+  plMemSet(c,0,sizeof(pl_Cam));
   c->Fov = fov;
   c->AspectRatio = ar;
   c->ClipRight = c->ScreenWidth = sw;

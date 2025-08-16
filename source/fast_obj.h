@@ -360,7 +360,7 @@ char* string_copy(const char* s, const char* e)
     p = (char*)(memory_realloc(0, n + 1));
     if (p)
     {
-        memcpy(p, s, n);
+        plMemCpy(p, s, n);
         p[n] = '\0';
     }
 
@@ -382,14 +382,14 @@ char* string_concat(const char* a, const char* s, const char* e)
     size_t sn;
     char*  p;
         
-    an = a ? strlen(a) : 0;
+    an = a ? plStrLen(a) : 0;
     sn = (size_t)(e - s);
     p = (char*)(memory_realloc(0, an + sn + 1));
     if (p)
     {
         if (a)
-            memcpy(p, a, an);
-        memcpy(p + an, s, sn);
+            plMemCpy(p, a, an);
+        plMemCpy(p + an, s, sn);
         p[an + sn] = '\0';
     }
 
@@ -400,10 +400,10 @@ char* string_concat(const char* a, const char* s, const char* e)
 static
 int string_equal(const char* a, const char* s, const char* e)
 {
-    size_t an = strlen(a);
+    size_t an = plStrLen(a);
     size_t sn = (size_t)(e - s);
 
-    return an == sn && memcmp(a, s, an) == 0;
+    return an == sn && plMemCmp(a, s, an) == 0;
 }
 
 

@@ -21,7 +21,7 @@ uint32_t _plOptimizeImage(uint8_t *pal, uint8_t *data, uint32_t len) {
   uint8_t remap[256];
   int32_t lastused, firstunused;
   uint32_t x;
-  memset(colors,0,256);
+  plMemSet(colors,0,256);
   for (x = 0; x < len; x ++) colors[(uint32_t) *dd++] = 1;
   lastused = -1;
   for (x = 0; x < 256; x ++) remap[x] = (uint8_t)x;
@@ -70,7 +70,7 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 
 	/* create copy of palette data */
 	t->PaletteData = (uint8_t *)plMalloc(nc * 3);
-	memcpy(t->PaletteData, c, nc * 3);
+	plMemCpy(t->PaletteData, c, nc * 3);
 
 	/* rescale image */
 	t->Width = _plHiBit(w);
@@ -98,7 +98,7 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 	{
 		/* create copy of pixel data */
 		t->Data = (uint8_t *)plMalloc(w * h);
-		memcpy(t->Data, p, w * h);
+		plMemCpy(t->Data, p, w * h);
 	}
 
 	/* setup fields */

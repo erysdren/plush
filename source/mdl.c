@@ -60,7 +60,7 @@ void plMdlDelete(pl_Mdl *mdl) {
 pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf) {
   pl_Mdl *mdl;
   if (!(mdl = (pl_Mdl *) plMalloc(sizeof(pl_Mdl)))) return 0;
-  memset(mdl,0,sizeof(pl_Mdl));
+  plMemSet(mdl,0,sizeof(pl_Mdl));
   mdl->NumVertices = nv;
   mdl->NumFaces = nf;
   if (nv && !(mdl->Vertices=(pl_Vertex *) plMalloc(sizeof(pl_Vertex)*nv))) {
@@ -72,8 +72,8 @@ pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf) {
     plFree(mdl);
     return 0;
   }
-  memset(mdl->Vertices,0,sizeof(pl_Vertex)*nv);
-  memset(mdl->Faces,0,sizeof(pl_Face)*nf);
+  plMemSet(mdl->Vertices,0,sizeof(pl_Vertex)*nv);
+  plMemSet(mdl->Faces,0,sizeof(pl_Face)*nf);
   return mdl;
 }
 
@@ -129,7 +129,7 @@ pl_Mdl *plMdlClone(pl_Mdl *mdl) {
   uint32_t i;
   pl_Mdl *out;
   if (!(out = plMdlCreate(mdl->NumVertices,mdl->NumFaces))) return 0;
-  memcpy(out->Vertices, mdl->Vertices, sizeof(pl_Vertex) * mdl->NumVertices);
+  plMemCpy(out->Vertices, mdl->Vertices, sizeof(pl_Vertex) * mdl->NumVertices);
   iff = mdl->Faces;
   of = out->Faces;
   i = out->NumFaces;

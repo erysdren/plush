@@ -14,6 +14,9 @@ extern "C" {
 /* Library version */
 #define PL_VERSION "@CMAKE_PROJECT_VERSION@"
 
+/* Whether or not Plush was compiled as fully freestanding (no stdlib) */
+#define PL_FREESTANDING (@PLUSH_FREESTANDING@)
+
 /* Maximum lights per scene -- if you exceed this, they will be ignored */
 #define PL_MAX_LIGHTS (@PLUSH_MAX_LIGHTS@)
 

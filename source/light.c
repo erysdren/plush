@@ -37,7 +37,7 @@ pl_Light *plLightCreate(void) {
   pl_Light *l;
   l = (pl_Light *)plMalloc(sizeof(pl_Light));
   if (!l) return 0;
-  memset(l,0,sizeof(pl_Light));
+  plMemSet(l,0,sizeof(pl_Light));
   return (l);
 }
 

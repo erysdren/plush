@@ -40,11 +40,11 @@ static uint32_t _ClipToPlane(uint32_t numVerts, double *plane);
 void plClipSetFrustum(pl_Cam *cam) {
   m_adj_asp = 1.0 / cam->AspectRatio;
   m_fov = plMin(plMax(cam->Fov,1.0),179.0);
-  m_fov = (1.0/tan(m_fov*(PL_PI/360.0)))*(double) (cam->ClipRight-cam->ClipLeft);
+  m_fov = (1.0/plTan(m_fov*(PL_PI/360.0)))*(double) (cam->ClipRight-cam->ClipLeft);
   m_cx = cam->CenterX<<20;
   m_cy = cam->CenterY<<20;
   m_cam = cam;
-  memset(m_clipPlanes,0,sizeof(m_clipPlanes));
+  plMemSet(m_clipPlanes,0,sizeof(m_clipPlanes));
 
   /* Back */
   m_clipPlanes[0][2] = -1.0; 
@@ -128,11 +128,11 @@ void plClipRenderFace(pl_Face *face) {
   while (a < NUM_CLIP_PLANES && numVerts > 2)
   {
     numVerts = _ClipToPlane(numVerts, m_clipPlanes[a]);
-    memcpy(&m_cl[0],&m_cl[1],sizeof(m_cl)/2);
+    plMemCpy(&m_cl[0],&m_cl[1],sizeof(m_cl)/2);
     a++;
   }
   if (numVerts > 2) {
-    memcpy(&newface,face,sizeof(pl_Face));
+    plMemCpy(&newface,face,sizeof(pl_Face));
     for (k = 2; k < numVerts; k ++) {
       newface.fShade = plMax(0,plMin(face->fShade,1));
       for (a = 0; a < 3; a ++) {

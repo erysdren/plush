@@ -21,11 +21,11 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   if (!fp) return 0;
 
   fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  if (memcmp("Caligari",temp_string,8)) { fclose(fp); return 0; }
+  if (plMemCmp("Caligari",temp_string,8)) { fclose(fp); return 0; }
 
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("Transform",temp_string,9));
+  } while (!feof(fp) && plMemCmp("Transform",temp_string,9));
   if (feof(fp)) { fclose(fp); return 0; }
   fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
   sscanf(temp_string,"%f %f %f %f",
@@ -42,14 +42,14 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
 
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("World Vertices",temp_string,12));
+  } while (!feof(fp) && plMemCmp("World Vertices",temp_string,12));
   if (feof(fp) ||  sscanf(temp_string,"World Vertices %ld",&numVertices) != 1)
     { fclose(fp); return 0; }
 
   rewind(fp);
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("Texture Vertices",temp_string,16));
+  } while (!feof(fp) && plMemCmp("Texture Vertices",temp_string,16));
   if (feof(fp) ||
       sscanf(temp_string,"Texture Vertices %ld",&numMappingVertices) != 1) {
     fclose(fp); return 0;
@@ -58,7 +58,7 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   rewind(fp);
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("Faces",temp_string,5));
+  } while (!feof(fp) && plMemCmp("Faces",temp_string,5));
   if (feof(fp) || sscanf(temp_string,"Faces %ld",&numFaces) != 1) {
     fclose(fp); return 0;
   }
@@ -76,7 +76,7 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   rewind(fp);
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("World Vertices",temp_string,12));
+  } while (!feof(fp) && plMemCmp("World Vertices",temp_string,12));
   if (feof(fp)) { plMdlDelete(mdl); fclose(fp); return 0; }
   for (x = 0; x < numVertices; x ++) {
     float xp, yp, zp;
@@ -95,7 +95,7 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   rewind(fp);
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("Texture Vertices",temp_string,16));
+  } while (!feof(fp) && plMemCmp("Texture Vertices",temp_string,16));
   if (!feof(fp)) {
     MappingVertices = (int32_t *) 
       plMalloc(sizeof(int32_t) * numMappingVertices * 2);
@@ -114,7 +114,7 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   rewind(fp);
   do {
     fgets(temp_string,PL_COB_MAX_LINELENGTH,fp);
-  } while (!feof(fp) && memcmp("Faces",temp_string,5));
+  } while (!feof(fp) && plMemCmp("Faces",temp_string,5));
   if (feof(fp)) { 
     if (MappingVertices) plFree(MappingVertices); 
     plMdlDelete(mdl); fclose(fp); return 0;

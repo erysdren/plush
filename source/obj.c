@@ -26,7 +26,7 @@ void plObjDelete(pl_Obj *o) {
 pl_Obj *plObjCreate(pl_Obj *parent) {
   pl_Obj *o;
   if (!(o = (pl_Obj *) plMalloc(sizeof(pl_Obj)))) return 0;
-  memset(o,0,sizeof(pl_Obj));
+  plMemSet(o,0,sizeof(pl_Obj));
   o->GenMatrix = 1;
   o->BackfaceCull = 1;
   o->Parent = NULL;
@@ -68,13 +68,13 @@ void plObjSetName(pl_Obj *o, const char *name)
 	size_t len;
 	if (!o || !name)
 		return;
-	len = strlen(name);
+	len = plStrLen(name);
 	if (!len)
 		return;
 	if (o->Name)
 		plFree(o->Name);
 	o->Name = plMalloc(len + 1);
-	strncpy(o->Name, name, len);
+	plStrNCpy(o->Name, name, len);
 	o->Name[len] = 0;
 }
 

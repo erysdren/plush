@@ -21,7 +21,7 @@ pl_Mat *plMatCreate(void) {
   pl_Mat *m; 
   m = (pl_Mat *) plMalloc(sizeof(pl_Mat));
   if (!m) return 0;
-  memset(m,0,sizeof(pl_Mat));
+  plMemSet(m,0,sizeof(pl_Mat));
   m->EnvScaling = 1.0f;
   m->TexScaling = 1.0f;
   m->Ambient[0] = m->Ambient[1] = m->Ambient[2] = 0;
@@ -146,7 +146,7 @@ static void _plGeneratePhongPalette(pl_Mat *m) {
   do {
     if (m->NumGradients == 1) ca = 1;
     else {
-      ca = cos((double) a);
+      ca = plCos((double) a);
       a += da;
     }
     cb = pow((double) ca, (double) m->Shininess);
@@ -264,7 +264,7 @@ static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t) {
   i2 = num_shades;
   do {
     ppal = t->PaletteData;
-    ca = cos((double) a);
+    ca = plCos((double) a);
     a += da;
     cb = pow(ca, (double) m->Shininess);
     i = t->NumColors;
@@ -281,7 +281,7 @@ static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t) {
   addtable = m->_AddTable;
   i = 256;
   do {
-    a = sin(ca) * num_shades;
+    a = plSin(ca) * num_shades;
     ca += PL_PI/512.0;
     *addtable++ = ((int32_t) a)*t->NumColors;
   } while (--i);
@@ -383,14 +383,14 @@ void plMatMakeOptPal(uint8_t *p, int32_t pstart,
   for (x = 0; x < nmats; x ++) {
     if (materials[x]) {
       if (materials[x]->_RequestedColors) 
-        memcpy(allColors + (numColors*3), materials[x]->_RequestedColors,
+        plMemCpy(allColors + (numColors*3), materials[x]->_RequestedColors,
              materials[x]->_ColorsUsed*3);
       numColors += materials[x]->_ColorsUsed;
     }
   }
 
   if (numColors <= len) {
-    memcpy(p+pstart*3,allColors,numColors*3);
+    plMemCpy(p+pstart*3,allColors,numColors*3);
     plFree(allColors);
     return;
   } 
