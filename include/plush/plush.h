@@ -1,8 +1,8 @@
 /******************************************************************************
   plush.h
   PLUSH 3D VERSION 1.2 MAIN HEADER
-  Copyright (c) 1996-2000 Justin Frankel
-  Copyright (c) 1998-2000 Nullsoft, Inc.
+  Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.
+  Copyright (C) 2024-2025, erysdren (it/its)
 
   For more information on Plush and the latest updates, please visit
     http://www.nullsoft.com

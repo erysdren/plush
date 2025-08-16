@@ -61,8 +61,7 @@ following compilers:
 
 ## License
 
-Copyright (C) 1996-1998, Justin Frankel\
-Copyright (C) 1998-2000, Nullsoft, Inc.\
+Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.\
 Copyright (C) 2024-2025, erysdren (it/its)
 
 This software is provided 'as-is', without any express or implied warranty. In

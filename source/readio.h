@@ -2,7 +2,8 @@
 Plush Version 1.2
 readio.h
 I/O callback functions for read_*.c
-Copyright (c) 2025, erysdren (it/its)
+Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.
+Copyright (C) 2024-2025, erysdren (it/its)
 ******************************************************************************/
 
 #ifndef _READIO_H_

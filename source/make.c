@@ -2,7 +2,8 @@
 Plush Version 1.2
 make.c
 Model Primitives
-Copyright (c) 1996-2000, Justin Frankel
+Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.
+Copyright (C) 2024-2025, erysdren (it/its)
 *******************************************************************************
  Notes:
    Most of these routines are highly unoptimized.

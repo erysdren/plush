@@ -1,7 +1,8 @@
 /******************************************************************************
   pl_defs.h
   PLUSH 3D VERSION 1.2 CONSTANTS DEFINITION HEADER
-  Copyright (c) 1996-2000, Justin Frankel
+  Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.
+  Copyright (C) 2024-2025, erysdren (it/its)
 ******************************************************************************/
 
 #ifndef _PL_DEFS_H_
