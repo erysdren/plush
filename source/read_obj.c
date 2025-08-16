@@ -10,6 +10,8 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #include "readio.h"
 
+#define FAST_OBJ_FREE plFree
+#define FAST_OBJ_REALLOC plRealloc
 #define FAST_OBJ_IMPLEMENTATION
 #include "fast_obj.h"
 
