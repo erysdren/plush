@@ -75,6 +75,7 @@ pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf) {
   }
   plMemSet(mdl->Vertices,0,sizeof(pl_Vertex)*nv);
   plMemSet(mdl->Faces,0,sizeof(pl_Face)*nf);
+  plMemSet(&mdl->BoundingBox,0,sizeof(pl_BBox));
   return mdl;
 }
 
@@ -125,12 +126,38 @@ void plMdlCalcNormals(pl_Mdl *mdl) {
   } while (--i);
 }
 
+void plMdlCalcBoundingBox(pl_Mdl *mdl)
+{
+	uint32_t i;
+
+	plMemSet(&mdl->BoundingBox, 0, sizeof(pl_BBox));
+
+	for (i = 0; i < mdl->NumVertices; i++)
+	{
+		if (mdl->Vertices[i].x < mdl->BoundingBox.Min[0])
+			mdl->BoundingBox.Min[0] = mdl->Vertices[i].x;
+		if (mdl->Vertices[i].x > mdl->BoundingBox.Max[0])
+			mdl->BoundingBox.Max[0] = mdl->Vertices[i].x;
+
+		if (mdl->Vertices[i].y < mdl->BoundingBox.Min[1])
+			mdl->BoundingBox.Min[1] = mdl->Vertices[i].y;
+		if (mdl->Vertices[i].y > mdl->BoundingBox.Max[1])
+			mdl->BoundingBox.Max[1] = mdl->Vertices[i].y;
+
+		if (mdl->Vertices[i].z < mdl->BoundingBox.Min[2])
+			mdl->BoundingBox.Min[2] = mdl->Vertices[i].z;
+		if (mdl->Vertices[i].z > mdl->BoundingBox.Max[2])
+			mdl->BoundingBox.Max[2] = mdl->Vertices[i].z;
+	}
+}
+
 pl_Mdl *plMdlClone(pl_Mdl *mdl) {
   pl_Face *iff, *of;
   uint32_t i;
   pl_Mdl *out;
   if (!(out = plMdlCreate(mdl->NumVertices,mdl->NumFaces))) return 0;
   plMemCpy(out->Vertices, mdl->Vertices, sizeof(pl_Vertex) * mdl->NumVertices);
+  plMemCpy(&out->BoundingBox, &mdl->BoundingBox, sizeof(pl_BBox));
   iff = mdl->Faces;
   of = out->Faces;
   i = out->NumFaces;

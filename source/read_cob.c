@@ -177,6 +177,7 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   }
   if (MappingVertices) plFree(MappingVertices);
   plMdlCalcNormals(mdl);
+  plMdlCalcBoundingBox(mdl);
   fclose(fp);
   return mdl;
 }
