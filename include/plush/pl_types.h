@@ -12,6 +12,11 @@
 extern "C" {
 #endif
 
+/*
+** Allocator
+*/
+typedef void *(*pl_Alloc)(void *user, void *ptr, size_t sz);
+
 /* 
 ** Texture type. Read textures with plReadPCXTex(), and assign them to
 ** plMat.Environment or plMat.Texture. 

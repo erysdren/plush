@@ -271,25 +271,56 @@ uint8_t plText_DefaultFont[256*16] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-// putting these here so they can be easily modified to suit your needs
-// --erysdren
+#if !PL_FREESTANDING
+void *_plStdlibAllocator(void *user, void *ptr, size_t sz)
+{
+	if (sz == 0)
+	{
+		free(ptr);
+		return NULL;
+	}
+	else
+	{
+		return realloc(ptr, sz);
+	}
+}
+static pl_Alloc plCurrentAllocatorFunc = _plStdlibAllocator;
+static void *plCurrentAllocatorUser = NULL;
+#else
+static pl_Alloc plCurrentAllocatorFunc = NULL;
+static void *plCurrentAllocatorUser = NULL;
+#endif
 
 void *plMalloc(size_t sz)
 {
-	return malloc(sz);
+	return plCurrentAllocatorFunc(plCurrentAllocatorUser, NULL, sz);
 }
 
 void plFree(void *ptr)
 {
-	free(ptr);
+	plCurrentAllocatorFunc(plCurrentAllocatorUser, ptr, 0);
 }
 
 void *plRealloc(void *ptr, size_t sz)
 {
-	return realloc(ptr, sz);
+	return plCurrentAllocatorFunc(plCurrentAllocatorUser, ptr, sz);
 }
 
 void *plCalloc(size_t n, size_t sz)
 {
-	return calloc(n, sz);
+	void *ptr = plCurrentAllocatorFunc(plCurrentAllocatorUser, NULL, n * sz);
+	return plMemSet(ptr, 0, n * sz);
 }
+
+void plAllocatorSet(pl_Alloc func, void *user)
+{
+	plCurrentAllocatorFunc = func;
+	plCurrentAllocatorUser = user;
+}
+
+pl_Alloc plAllocatorGet(void **user)
+{
+	if (user) *user = plCurrentAllocatorUser;
+	return plCurrentAllocatorFunc;
+}
+

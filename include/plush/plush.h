@@ -67,6 +67,9 @@ void plFree(void *ptr);
 void *plRealloc(void *ptr, size_t sz);
 void *plCalloc(size_t n, size_t sz);
 
+void plAllocatorSet(pl_Alloc func, void *user);
+pl_Alloc plAllocatorGet(void **user);
+
 /******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/
