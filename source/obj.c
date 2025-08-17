@@ -110,7 +110,7 @@ static int find_callback(pl_Obj *obj, void *user)
 	if (!obj->Name)
 		return 0;
 
-	if (strcmp(obj->Name, (const char *)in[0]) == 0)
+	if (plStrCmp(obj->Name, (const char *)in[0]) == 0)
 	{
 		*(pl_Obj **)in[1] = obj;
 		return 1;
