@@ -34,6 +34,21 @@ extern "C" {
 #define plATan(v) atan(v)
 #endif
 
+/* Fixed point stuff */
+#if PL_FIXED_POINT
+typedef int32_t pl_Scalar;
+#define PL_ONE (1 << 16)
+#define PL_SCALAR(a) ((pl_Scalar)(PL_ONE * (a)))
+#define PL_MUL(a, b) (((int64_t)(a) * (b)) >> 16)
+#define PL_DIV(a, b) (((int64_t)(a) << 16) / (b))
+#else
+typedef float pl_Scalar;
+#define PL_ONE (1.0f)
+#define PL_SCALAR(a) ((pl_Scalar)(a))
+#define PL_MUL(a, b) ((a) * (b))
+#define PL_DIV(a, b) ((a) / (b))
+#endif
+
 /* Utility min() and max() functions */
 #define plMin(x,y) (( ( x ) > ( y ) ? ( y ) : ( x )))
 #define plMax(x,y) (( ( x ) < ( y ) ? ( y ) : ( x )))
