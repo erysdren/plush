@@ -45,6 +45,17 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 - Easy to use, cross-platform API
 - Architecture that makes it simple to add new rasterizers
 
+## CMake Configuration Variables
+
+- `PLUSH_BUILD_EXAMPLES`: Set to `OFF` to disable building the example applications
+- `PLUSH_USE_ASAN`: Set to `ON` to enable Address Sanitizer on the library and examples
+- `PLUSH_MAX_LIGHTS`: Set to any numberic value defining how many lights can be
+added to a scene. This value is accessible in code with the `PL_MAX_LIGHTS`
+preprocessor macro. Default: 32
+- `PLUSH_MAX_TRIANGLES`: Set to any numberic value defining how many triangles
+can be rendered in a scene. This value is accessible in code with the
+`PL_MAX_TRIANGLES` preprocessor macro. Default: 16384
+
 ## Portability
 
 Plush is designed to be highly portable. It has been tested to work with the
