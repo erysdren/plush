@@ -59,6 +59,20 @@ extern uint32_t plRender_TriStats[4]; /* Three different triangle counts from
                                        */
 
 /******************************************************************************
+** Freestanding Functions (plush.c)
+******************************************************************************/
+
+#if PL_FREESTANDING
+void *plMemSet(void *ptr, int val, size_t sz);
+void *plMemCpy(void *dst, void *src, size_t sz);
+int plMemCmp(void *a, void *b, size_t n);
+size_t plStrLen(const char *s);
+int plStrCmp(const char *a, const char *b);
+char *plStrCpy(char *dst, const char *src);
+char *plStrNCpy(char *dst, const char *src, size_t n);
+#endif
+
+/******************************************************************************
 ** Memory Functions (plush.c)
 ******************************************************************************/
 

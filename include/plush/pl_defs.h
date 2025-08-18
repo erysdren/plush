@@ -28,10 +28,17 @@ extern "C" {
 #define plStrCmp(a, b) strcmp(a, b)
 #define plStrCpy(a, b) strcpy(a, b)
 #define plStrNCpy(a, b, n) strncpy(a, b, n)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+#define plSin(v) sinf(v)
+#define plCos(v) cosf(v)
+#define plTan(v) tanf(v)
+#define plATan(v) atanf(v)
+#else
 #define plSin(v) sin(v)
 #define plCos(v) cos(v)
 #define plTan(v) tan(v)
 #define plATan(v) atan(v)
+#endif
 #endif
 
 /* Utility min() and max() functions */
