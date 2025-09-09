@@ -28,7 +28,7 @@ extern "C" {
 #define plStrCmp(a, b) strcmp(a, b)
 #define plStrCpy(a, b) strcpy(a, b)
 #define plStrNCpy(a, b, n) strncpy(a, b, n)
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) && !defined(__DJGPP__)
 #define plSin(v) sinf(v)
 #define plCos(v) cosf(v)
 #define plTan(v) tanf(v)
