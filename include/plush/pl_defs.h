@@ -26,6 +26,7 @@ extern "C" {
 #define plMemCmp(a, b, n) memcmp(a, b, n)
 #define plStrLen(str) strlen(str)
 #define plStrCmp(a, b) strcmp(a, b)
+#define plStrNCmp(a, b, len) strncmp(a, b, len)
 #define plStrCpy(a, b) strcpy(a, b)
 #define plStrNCpy(a, b, n) strncpy(a, b, n)
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) && !defined(__DJGPP__)
