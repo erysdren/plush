@@ -33,11 +33,13 @@ extern "C" {
 #define plCos(v) cosf(v)
 #define plTan(v) tanf(v)
 #define plATan(v) atanf(v)
+#define plSqrt(v) sqrtf(v)
 #else
 #define plSin(v) sin(v)
 #define plCos(v) cos(v)
 #define plTan(v) tan(v)
 #define plATan(v) atan(v)
+#define plSqrt(v) sqrt(v)
 #endif
 #endif
 

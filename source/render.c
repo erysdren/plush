@@ -30,7 +30,7 @@ typedef struct {
   double length; \
   length = ( x )*( x )+( y )*( y )+( z )*( z ); \
   if (length > 0.0000000001) { \
-    float l = (float) sqrt(length); \
+    float l = (float) plSqrt(length); \
     ( x ) /= l; \
     ( y ) /= l; \
     ( z ) /= l; \

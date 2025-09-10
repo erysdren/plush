@@ -66,7 +66,7 @@ void plNormalizeVector(float *x, float *y, float *z) {
   double length;
   length = (*x)*(*x)+(*y)*(*y)+(*z)*(*z);
   if (length > 0.0000000001) {
-    float t = (float)sqrt(length);
+    float t = (float)plSqrt(length);
     *x /= t;
     *y /= t;
     *z /= t;
