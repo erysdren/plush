@@ -42,8 +42,13 @@ static int _plIOStdioEof(void *user)
 	return feof((FILE *)user);
 }
 
+static int _plIOStdioTell(void *user)
+{
+	return ftell((FILE *)user);
+}
+
 pl_IO _plIOStdio = {
-	_plIOStdioGetc, _plIOStdioGets, _plIOStdioRead, _plIOStdioSeek, _plIOStdioRewind, _plIOStdioEof
+	_plIOStdioGetc, _plIOStdioGets, _plIOStdioRead, _plIOStdioSeek, _plIOStdioRewind, _plIOStdioEof, _plIOStdioTell
 };
 
 #endif // !PL_FREESTANDING
@@ -118,6 +123,12 @@ static int _plIOMemEof(void *user)
 	return ctx->pos >= ctx->len ? 1 : 0;
 }
 
+static int _plIOMemTell(void *user)
+{
+	pl_IOMemCtx *ctx = (pl_IOMemCtx *)user;
+	return ctx->pos;
+}
+
 pl_IO _plIOMem = {
-	_plIOMemGetc, _plIOMemGets, _plIOMemRead, _plIOMemSeek, _plIOMemRewind, _plIOMemEof
+	_plIOMemGetc, _plIOMemGets, _plIOMemRead, _plIOMemSeek, _plIOMemRewind, _plIOMemEof, _plIOMemTell
 };

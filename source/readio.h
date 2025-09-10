@@ -16,6 +16,7 @@ typedef struct _pl_IO {
 	int (*seek)(void *user, long offset, int origin);
 	void (*rewind)(void *user);
 	int (*eof)(void *user);
+	int (*tell)(void *user);
 } pl_IO;
 
 typedef struct _pl_IOMemCtx {
