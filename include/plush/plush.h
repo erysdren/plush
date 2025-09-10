@@ -775,6 +775,17 @@ void plNormalizeVector(float *x, float *y, float *z);
 float plDotProduct(float x1, float y1, float z1,
                       float x2, float y2, float z2);
 
+/*
+  plDotProductEx() returns the dot product of two vectors of arbitrary length
+  Parameters:
+    v1: pointer to tightly packed float array
+    v2: pointer to tightly packed float array
+    n: number of floats in each array
+  Returns:
+    the dot product of the two vectors
+*/
+float plDotProductEx(float *v1, float *v2, int n);
+
 /******************************************************************************
 ** Spline Interpolation (spline.c)
 ******************************************************************************/

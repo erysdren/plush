@@ -55,6 +55,13 @@ float plDotProduct(float x1, float y1, float z1,
   return ((x1*x2)+(y1*y2)+(z1*z2));
 }
 
+float plDotProductEx(float *v1, float *v2, int n)
+{
+	float r = 0;
+	while (--n) r += v1[n] * v2[n];
+	return r;
+}
+
 void plNormalizeVector(float *x, float *y, float *z) {
   double length;
   length = (*x)*(*x)+(*y)*(*y)+(*z)*(*z);
