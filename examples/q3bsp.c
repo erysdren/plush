@@ -169,6 +169,9 @@ pl_Mdl **ProcessIBSPModels(ibsp_t *bsp, uint32_t *n_models, pl_Mat *material)
 			num_tris += bspfaces[j].num_meshverts / 3;
 		}
 
+		if (!num_verts || !num_tris)
+			continue;
+
 		printf("model %03d: num_verts=%d num_tris=%d\n", i, num_verts, num_tris);
 
 		/* setup model name */
