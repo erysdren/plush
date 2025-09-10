@@ -29,6 +29,46 @@ enum {
 	IBSP_NUM_LUMPS = 17
 };
 
+typedef struct ibsp_plane {
+	float normal[3];
+	float dist;
+} ibsp_plane_t;
+
+typedef struct ibsp_node {
+	int32_t plane;
+	int32_t children[2];
+	int32_t mins[3];
+	int32_t maxs[3];
+} ibsp_node_t;
+
+typedef struct ibsp_leaf {
+	int32_t cluster;
+	int32_t area;
+	int32_t mins[3];
+	int32_t maxs[3];
+	int32_t first_leafface;
+	int32_t num_leaffaces;
+	int32_t first_leafbrush;
+	int32_t num_leafbrushes;
+} ibsp_leaf_t;
+
+typedef struct ibsp_brush {
+	int32_t first_brushside;
+	int32_t num_brushsides;
+	int32_t texture;
+} ibsp_brush_t;
+
+typedef struct ibsp_brushside {
+	int32_t plane;
+	int32_t texture;
+} ibsp_brushside_t;
+
+typedef struct ibsp_visdata {
+	int32_t num_vecs;
+	int32_t len_vec;
+	uint8_t vecs[];
+} ibsp_visdata_t;
+
 typedef struct ibsp_face {
 	int32_t texture;
 	int32_t effect;
