@@ -20,21 +20,33 @@ uint8_t stored_framebuffer[W * H];
 float stored_zbuffer[W * H];
 uint8_t palette[768];
 
+#if (W == 640) && (H == 480)
+#define STORED_FRAMEBUFFER "scene640.col"
+#define STORED_ZBUFFER "scene640.dph"
+#define STORED_PALETTE "scene640.pal"
+#elif (W == 320) && (H == 200)
+#define STORED_FRAMEBUFFER "scene320.col"
+#define STORED_ZBUFFER "scene320.dph"
+#define STORED_PALETTE "scene320.pal"
+#else
+#error no stored buffers for provided resolution
+#endif
+
 int main(int argc, char **argv)
 {
 	FILE *file;
 	int i;
 
 	/* load prerendered assets */
-	file = fopen("scene640.col", "rb");
+	file = fopen(STORED_FRAMEBUFFER, "rb");
 	fread(stored_framebuffer, sizeof(stored_framebuffer), 1, file);
 	fclose(file);
 
-	file = fopen("scene640.dph", "rb");
+	file = fopen(STORED_ZBUFFER, "rb");
 	fread(stored_zbuffer, sizeof(stored_zbuffer), 1, file);
 	fclose(file);
 
-	file = fopen("scene640.pal", "rb");
+	file = fopen(STORED_PALETTE, "rb");
 	fread(palette, sizeof(palette), 1, file);
 	fclose(file);
 
