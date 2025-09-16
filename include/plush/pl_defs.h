@@ -48,6 +48,10 @@ extern "C" {
 #define plMin(x,y) (( ( x ) > ( y ) ? ( y ) : ( x )))
 #define plMax(x,y) (( ( x ) < ( y ) ? ( y ) : ( x )))
 
+/* Utility rad/deg functions */
+#define plRadToDeg(r) ( ( r ) * 180.0 / PL_PI )
+#define plDegToRad(d) ( ( d ) * PL_PI / 180.0 )
+
 /* 
 ** Shade modes. Used with plMat.ShadeType
 ** Note that (PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE) and
