@@ -84,8 +84,75 @@ target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
 # examples
 
 if(PLUSH_BUILD_EXAMPLES)
-	set(examples duckdemo eggbug ex1 ex2 ex3 ex4 flurry fly model q3bsp scene ship sprite teapot texenv texture triangle)
-	set(files chrome1.pcx citybbk.mtl citybbk.obj duckdemo.3ds eggbug.3ds eggbug.pcx fork.3ds ground.pcx scene320.col scene320.dph scene320.pal scene640.col scene640.dph scene640.pal ship.mtl ship.obj sky.pcx sky2.pcx teapot.obj texture1.pcx)
+	set(examples
+		duckdemo
+		eggbug
+		ex1
+		ex2
+		ex3
+		ex4
+		flurry
+		fly
+		model
+		polyrobo
+		q3bsp
+		scene
+		ship
+		sprite
+		teapot
+		texenv
+		texture
+		triangle
+	)
+	set(files
+		# polyrobo.c
+		black.pcx
+		chrome_grayr.pcx
+		chrome_steel1.pcx
+		droid_legmap.pcx
+		ears.pcx
+		eye.pcx
+		polyrobo.mtl
+		polyrobo.obj
+
+		# texenv.c
+		chrome1.pcx
+
+		# ship.c
+		citybbk.mtl
+		citybbk.obj
+		ship.mtl
+		ship.obj
+
+		# duckdemo.c
+		duckdemo.3ds
+
+		# eggbug.c
+		eggbug.3ds
+		eggbug.pcx
+
+		# model.c
+		fork.3ds
+
+		# fly.c
+		ground.pcx
+		sky.pcx
+		sky2.pcx
+
+		# scene.c
+		scene320.col
+		scene320.dph
+		scene320.pal
+		scene640.col
+		scene640.dph
+		scene640.pal
+
+		# teapot.c
+		teapot.obj
+
+		# ex4.c
+		texture1.pcx
+	)
 	find_package(SDL2)
 	if(SDL2_FOUND)
 		# build sdl2 examples
