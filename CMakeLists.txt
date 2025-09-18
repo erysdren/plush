@@ -97,6 +97,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		polyrobo
 		polyrobo2
 		q3bsp
+		reflection
 		scene
 		ship
 		sprite
@@ -129,6 +130,10 @@ if(PLUSH_BUILD_EXAMPLES)
 		concrt1d.pcx
 		measure.pcx
 		steel2.pcx
+
+		# reflection.c
+		earth.pcx
+		moon.pcx
 
 		# texenv.c
 		chrome1.pcx

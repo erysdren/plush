@@ -70,6 +70,7 @@ can be rendered in a scene. This value is accessible in code with the
 - [`polyrobo.c`](./examples/polyrobo.c) - high polycount robot model
 - [`polyrobo2.c`](./examples/polyrobo2.c) - high polycount robot model in a large lit scene
 - [`q3bsp.c`](./examples/q3bsp.c) - quake 3 bsp loader and renderer
+- [`reflection.c`](./examples/reflection.c) - real time reflections the old fashioned way
 - [`scene.c`](./examples/scene.c) - pre-rendered background and depth buffer example
 - [`ship.c`](./examples/ship.c) - a small spaceship tumbling through a sci-fi city's airspace
 - [`sprite.c`](./examples/sprite.c) - a transparent plane that always faces the camera (like a sprite)
