@@ -124,6 +124,8 @@ static void exSetGraphics(void)
 
 	exTexture = SDL_CreateTexture(exRenderer, format, SDL_TEXTUREACCESS_STREAMING, W, H);
 
+	SDL_SetTextureScaleMode(exTexture, SDL_SCALEMODE_NEAREST);
+
 	exWindowSurface = SDL_CreateSurfaceFrom(W, H, format, NULL, 0);
 
 	exSurface = SDL_CreateSurface(W, H, SDL_PIXELFORMAT_INDEX8);
