@@ -95,6 +95,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		fly
 		model
 		polyrobo
+		polyrobo2
 		q3bsp
 		scene
 		ship
@@ -105,7 +106,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		triangle
 	)
 	set(files
-		# polyrobo.c
+		# polyrobo.c and polyrobo2.c
 		black.pcx
 		chrome_grayr.pcx
 		chrome_steel1.pcx
@@ -114,6 +115,20 @@ if(PLUSH_BUILD_EXAMPLES)
 		eye.pcx
 		polyrobo.mtl
 		polyrobo.obj
+
+		# polyrobo2.c
+		polyrobo.bsp
+		susan.obj
+		-0lcon0.pcx
+		-3lcon0.pcx
+		+0~fifties_lgt2.pcx
+		cncrt2.pcx
+		concrt1.pcx
+		concrt1b.pcx
+		concrt1c.pcx
+		concrt1d.pcx
+		measure.pcx
+		steel2.pcx
 
 		# texenv.c
 		chrome1.pcx
