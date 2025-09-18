@@ -56,6 +56,28 @@ preprocessor macro. Default: 32
 can be rendered in a scene. This value is accessible in code with the
 `PL_MAX_TRIANGLES` preprocessor macro. Default: 16384
 
+# Example Programs
+
+- [`duckdemo.c`](./examples/duckdemo.c) - .3DS model loading demo
+- [`eggbug.c`](./examples/eggbug.c) - the last migration of the eggbugs
+- [`ex1.c`](./examples/ex1.c) - **the most basic example**: an untextured white cube in a black void
+- [`ex2.c`](./examples/ex2.c) - an untextured purple cube
+- [`ex3.c`](./examples/ex3.c) - a purple cube and a green torus
+- [`ex4.c`](./examples/ex4.c) - a texture mapped cube
+- [`flurry.c`](./examples/flurry.c) - transparent material showcase
+- [`fly.c`](./examples/fly.c) - interactive flight environment
+- [`model.c`](./examples/model.c) - another .3DS model loading demo
+- [`polyrobo.c`](./examples/polyrobo.c) - high polycount robot model
+- [`polyrobo2.c`](./examples/polyrobo2.c) - high polycount robot model in a large lit scene
+- [`q3bsp.c`](./examples/q3bsp.c) - quake 3 bsp loader and renderer
+- [`scene.c`](./examples/scene.c) - pre-rendered background and depth buffer example
+- [`ship.c`](./examples/ship.c) - a small spaceship tumbling through a sci-fi city's airspace
+- [`sprite.c`](./examples/sprite.c) - a transparent plane that always faces the camera (like a sprite)
+- [`teapot.c`](./examples/teapot.c) - obligatory utah teapot
+- [`texenv.c`](./examples/texenv.c) - environment mapping example
+- [`texture.c`](./examples/texture.c) - static texture buffer loading example
+- [`triangle.c`](./examples/triangle.c) - a single triangle with gouraud shading and pre-lit vertex intensity
+
 ## Portability
 
 Plush is designed to be highly portable. It has been tested to work with the
