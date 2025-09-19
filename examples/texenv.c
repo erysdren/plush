@@ -45,7 +45,7 @@ int main(int argc, char **argv) { // Main
                                  1, // Rescale the texture if necessary
                                  1  // Tell it to optimize the texture's palette
                                 );
-  CubeMat->Environment = plReadPCXTex("chrome1.pcx",
+  CubeMat->Environment = plReadPCXTex("chrome_steel1.pcx",
                                  1, // Rescale the texture if necessary
                                  1  // Tell it to optimize the texture's palette
                                 );

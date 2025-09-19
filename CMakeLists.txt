@@ -135,9 +135,6 @@ if(PLUSH_BUILD_EXAMPLES)
 		earth.pcx
 		moon.pcx
 
-		# texenv.c
-		chrome1.pcx
-
 		# ship.c
 		citybbk.mtl
 		citybbk.obj
