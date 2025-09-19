@@ -53,6 +53,7 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 - Vertex colours
 - Coloured lights
 - Write usage docs
+- Unify all examples to use main loop callbacks for better Emscripten support
 
 ## CMake Configuration Variables
 
