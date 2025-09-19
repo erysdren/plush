@@ -45,6 +45,15 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 - Easy to use, cross-platform API
 - Architecture that makes it simple to add new rasterizers
 
+# TODO
+
+- Re-work .3DS file loader to match the OBJ file loader in terms of syntax
+- Add .BMP file loader
+- Run `clang-format` on all source files
+- Vertex colours
+- Coloured lights
+- Write usage docs
+
 ## CMake Configuration Variables
 
 - `PLUSH_BUILD_EXAMPLES`: Set to `OFF` to disable building the example applications
