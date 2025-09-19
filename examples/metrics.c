@@ -18,7 +18,7 @@ uint8_t framebuffer[W * H];
 float zbuffer[W * H];
 uint8_t palette[768];
 
-void drawFPS() {
+void drawFPS() { /* CyanBun96 */
 	static int framecount = 0; /* replace with a global if you have one */
 	static int old_framecount = 0;
 	static int old_tick = 0;
@@ -38,7 +38,7 @@ void drawFPS() {
 	plTextPrintf(camera, xpos, ypos, 0, color, string);
 }
 
-void drawFrameGraph() {
+void drawFrameGraph() { /* CyanBun96 */
 	static int framecount = 0; /* replace with a global if you have one */
 	static int frametimes[100];
 	static int time_n = sizeof(frametimes) / sizeof(int);
@@ -67,6 +67,36 @@ void drawFrameGraph() {
 			cur_color -= fade_speed;
 		}
 	}
+}
+
+int int_comp(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+void drawFrameMinMax5pLow() { /* CyanBun96 */
+	static int framecount = 0; /* replace with a global if you have one */
+	static int frametimes[100];
+	static int time_n = sizeof(frametimes) / sizeof(int);
+	static int old_tick = 0;
+	static uint8_t string[64] = "Min: ... Max: ... 5%Low: ...";
+
+	frametimes[framecount % time_n] = exClock() - old_tick;
+	old_tick = exClock();
+	if (framecount % time_n == 0) {
+		qsort(frametimes, time_n, sizeof(int), int_comp);
+		int fivePcLow = 0;
+		for (int i = 0; i < time_n * 0.05; i++)
+			fivePcLow += frametimes[time_n - 1 - i];
+		fivePcLow /= time_n * 0.05;
+		snprintf(string, sizeof(string), "Min: %d\nMax: %d\n5pLow: %d",
+			frametimes[0], frametimes[time_n - 1], fivePcLow);
+	}
+	framecount++; /* remove if incremented globally */
+
+	int xpos = camera->ClipLeft + 5;
+	int ypos = camera->ClipTop + 135;
+	int color = 50;
+	plTextPrintf(camera, xpos, ypos, 0, color, string);
 }
 
 int main(int argc, char **argv)
@@ -130,9 +160,7 @@ int main(int argc, char **argv)
 
 		drawFPS();
 		drawFrameGraph();
-		/*float dummy = 0; // time waster loop 
-		for (int i = 1; i < 10000000; i++)
-			dummy += sqrt(i);*/
+		drawFrameMinMax5pLow();
 		/* wait for vsync, then copy to screen */
 		exWaitVSync();
 		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
