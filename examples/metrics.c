@@ -78,7 +78,7 @@ void drawFrameMinMax5pLow() { /* CyanBun96 */
 	static int frametimes[100];
 	static int time_n = sizeof(frametimes) / sizeof(int);
 	static int old_tick = 0;
-	static uint8_t string[64] = "Min: ... Max: ... 5%Low: ...";
+	static uint8_t string[64] = "Min: ...\nMax: ...\n5pLow: ...";
 
 	frametimes[framecount % time_n] = exClock() - old_tick;
 	old_tick = exClock();
@@ -95,6 +95,41 @@ void drawFrameMinMax5pLow() { /* CyanBun96 */
 
 	int xpos = camera->ClipLeft + 5;
 	int ypos = camera->ClipTop + 135;
+	int color = 50;
+	plTextPrintf(camera, xpos, ypos, 0, color, string);
+}
+
+void drawTriStatsAvg() { /* CyanBun96 */
+	static int framecount = 0; /* replace with a global if you have one */
+	static int tristats[100 * 4];
+	static int stat_n = sizeof(tristats) / sizeof(int) / 4;
+	static int old_tick = 0;
+	static uint8_t string[128]="Tris: ...\nCull: ...\nClip: ...\nTssl: ...";
+
+	tristats[framecount % stat_n] = plRender_TriStats[0];
+	tristats[framecount % stat_n + stat_n] = plRender_TriStats[1];
+	tristats[framecount % stat_n + stat_n * 2] = plRender_TriStats[2];
+	tristats[framecount % stat_n + stat_n * 3] = plRender_TriStats[3];
+	if (framecount % stat_n == 0) {
+		int tris, cull, clip, tssl = 0;
+		for (int i = 0; i < stat_n; i++) {
+			tris += tristats[i];
+			cull += tristats[i + stat_n];
+			clip += tristats[i + stat_n * 2];
+			tssl += tristats[i + stat_n * 3];
+		}
+		tris /= stat_n;
+		cull /= stat_n;
+		clip /= stat_n;
+		tssl /= stat_n;
+		snprintf(string, sizeof(string),
+			"Tris: %d\nCull: %d\nClip: %d\nTssl: %d",
+			tris, cull, clip, tssl);
+	}
+	framecount++; /* remove if incremented globally */
+
+	int xpos = camera->ClipLeft + 5;
+	int ypos = camera->ClipTop + 195;
 	int color = 50;
 	plTextPrintf(camera, xpos, ypos, 0, color, string);
 }
@@ -161,6 +196,7 @@ int main(int argc, char **argv)
 		drawFPS();
 		drawFrameGraph();
 		drawFrameMinMax5pLow();
+		drawTriStatsAvg();
 		/* wait for vsync, then copy to screen */
 		exWaitVSync();
 		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
