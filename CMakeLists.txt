@@ -9,6 +9,7 @@ project(plush
 # options
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
+option(PLUSH_BUILD_EDITOR "Build Plush Editor" ON)
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
 set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
 set(PLUSH_MAX_TRIANGLES "16384" CACHE STRING "Maximum number of triangles in a single render pass")
@@ -76,6 +77,19 @@ if(MATH)
 endif()
 
 target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
+
+# editor
+
+if(PLUSH_BUILD_EDITOR)
+	find_package(SDL3 CONFIG COMPONENTS SDL3)
+	if (SDL3_FOUND)
+		add_executable(plush-editor)
+		target_sources(plush-editor PRIVATE
+			${PROJECT_SOURCE_DIR}/editor/main.c
+		)
+		target_link_libraries(plush-editor PUBLIC plush SDL3::SDL3)
+	endif()
+endif()
 
 # examples
 
