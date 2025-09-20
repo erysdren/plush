@@ -93,6 +93,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		ex4
 		flurry
 		fly
+		metrics
 		model
 		polyrobo
 		polyrobo2
@@ -164,7 +165,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		scene640.dph
 		scene640.pal
 
-		# teapot.c
+		# teapot.c and metrics.c 
 		teapot.obj
 
 		# ex4.c

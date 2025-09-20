@@ -76,6 +76,7 @@ can be rendered in a scene. This value is accessible in code with the
 - [`ex4.c`](./examples/ex4.c) - a texture mapped cube
 - [`flurry.c`](./examples/flurry.c) - transparent material showcase
 - [`fly.c`](./examples/fly.c) - interactive flight environment
+- [`metrics.c`](./examples/metrics.c) - portable performance metrics
 - [`model.c`](./examples/model.c) - another .3DS model loading demo
 - [`polyrobo.c`](./examples/polyrobo.c) - high polycount robot model
 - [`polyrobo2.c`](./examples/polyrobo2.c) - high polycount robot model in a large lit scene
