@@ -42,8 +42,8 @@ void drawFPS() { /* CyanBun96 */
 	static uint8_t string[16] = "... FPS";
 
 	if (exClock() - old_tick > exClockPerSecond()) {
-		old_tick = exClock();
 		int frames_drawn = framecount - old_framecount;
+		old_tick = exClock();
 		old_framecount = framecount;
 		snprintf(string, sizeof(string), "%d FPS", frames_drawn);
 	}
@@ -53,12 +53,12 @@ void drawFPS() { /* CyanBun96 */
 }
 
 void drawFrameGraph() { /* CyanBun96 */
+	int i, j;
 	int xpos = camera->ClipLeft + 5;
 	int ypos = camera->ClipTop + 25;
 	int color = 50; /* top color, fades down */
 	float fade_speed = 1.5; /* color fade speed, set to 0 for solid */
 	float scale = 2.5; /* applied before clipping */
-	int clip = 200; /* to prevent the graph from going too far right */
 	static int frametimes[100]; /* less = shorter graph */
 	static int framecount = 0; /* replace with a global if you have one */
 
@@ -69,14 +69,14 @@ void drawFrameGraph() { /* CyanBun96 */
 	frametimes[framecount % time_n] = (int)(frametime * scale) % 200;
 	framecount++; /* remove if incremented globally */
 
-	for (int i = 0; i < time_n; i++) { /* right-to-left, bright-to-dark */
+	for (i = 0; i < time_n; i++) { /* right-to-left, bright-to-dark */
 		int len;
+		float cur_color = color;
 		if (fade_speed > 0 && (color * fade_speed) < frametimes[i])
 			len = color * fade_speed;
 		else 
 			len = frametimes[i];
-		float cur_color = color;
-		for (int j = 0; j < len; j++) {
+		for (j = 0; j < len; j++) {
 			int xcoord = xpos + len - j;
 			int ycoord = W * (ypos + i);
 			framebuffer[xcoord + ycoord] = (int)cur_color;
@@ -90,6 +90,7 @@ static int int_comp(const void *a, const void *b) { /* required for qsort */
 }
 
 void drawFrameMinMax5pLow() { /* CyanBun96 */
+	int i;
 	int text_xpos = camera->ClipLeft + 5;
 	int text_ypos = camera->ClipTop + 135;
 	int text_color = 50;
@@ -103,9 +104,9 @@ void drawFrameMinMax5pLow() { /* CyanBun96 */
 	frametimes[framecount % time_n] = exClock() - old_tick;
 	old_tick = exClock();
 	if (framecount % time_n == 0) {
-		qsort(frametimes, time_n, sizeof(int), int_comp);
 		int fivePcLow = 0;
-		for (int i = 0; i < time_n * 0.05; i++)
+		qsort(frametimes, time_n, sizeof(int), int_comp);
+		for (i = 0; i < time_n * 0.05; i++)
 			fivePcLow += frametimes[time_n - 1 - i];
 		fivePcLow /= time_n * 0.05;
 		snprintf(string, sizeof(string), "Min: %d\nMax: %d\n5pLow: %d",
@@ -117,6 +118,7 @@ void drawFrameMinMax5pLow() { /* CyanBun96 */
 }
 
 void drawTriStatsAvg() { /* CyanBun96 */
+	int i;
 	int text_xpos = camera->ClipLeft + 5;
 	int text_ypos = camera->ClipTop + 195;
 	int text_color = 50;
@@ -125,7 +127,6 @@ void drawTriStatsAvg() { /* CyanBun96 */
 	/* tristats size must be a multiple of 4 */
 
 	static int stat_n = sizeof(tristats) / sizeof(int) / 4;
-	static int old_tick = 0;
 	static uint8_t string[128]="Tris: ...\nCull: ...\nClip: ...\nTssl: ...";
 
 	tristats[framecount % stat_n] = plRender_TriStats[0];
@@ -133,8 +134,8 @@ void drawTriStatsAvg() { /* CyanBun96 */
 	tristats[framecount % stat_n + stat_n * 2] = plRender_TriStats[2];
 	tristats[framecount % stat_n + stat_n * 3] = plRender_TriStats[3];
 	if (framecount % stat_n == 0) {
-		int tris, cull, clip, tssl = 0;
-		for (int i = 0; i < stat_n; i++) {
+		int tris = 0, cull = 0, clip = 0, tssl = 0;
+		for (i = 0; i < stat_n; i++) {
 			tris += tristats[i];
 			cull += tristats[i + stat_n];
 			clip += tristats[i + stat_n * 2];
@@ -154,6 +155,7 @@ void drawTriStatsAvg() { /* CyanBun96 */
 }
 
 void drawJitter() { /* CyanBun96 */
+	int i;
 	int text_xpos = camera->ClipLeft + 5;
 	int text_ypos = camera->ClipTop + 275;
 	int text_color = 50;
@@ -168,17 +170,18 @@ void drawJitter() { /* CyanBun96 */
 	old_tick = exClock();
 
 	if (framecount % time_n == 0) {
+		float stdev, avg, var;
 		int sum = 0;
-		for (int i = 0; i < time_n; i++)
+		for (i = 0; i < time_n; i++)
 			sum += frametimes[i];
-		float avg = (float)sum / time_n;
-		float var = 0.0f;
-		for (int i = 0; i < time_n; i++) {
+		avg = (float)sum / time_n;
+		var = 0.0f;
+		for (i = 0; i < time_n; i++) {
 			float d = frametimes[i] - avg;
 			var += d * d;
 		}
 		var /= time_n;
-		float stdev = sqrtf(var);
+		stdev = plSqrt(var);
 		snprintf((char*)string, sizeof(string), "Jitter: %.2f", stdev);
 	}
 	framecount++; /* remove if incremented globally */
