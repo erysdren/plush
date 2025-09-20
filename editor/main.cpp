@@ -14,6 +14,14 @@
 #define SDL_MAIN_USE_CALLBACKS 1
 #include <SDL3/SDL_main.h>
 
+static void quit()
+{
+	SDL_Event event;
+	event.quit.type = SDL_EVENT_QUIT;
+	event.quit.timestamp = SDL_GetTicksNS();
+	SDL_PushEvent(&event);
+}
+
 static SDL_AppResult die(const char *fmt, ...)
 {
 	va_list ap;
@@ -33,6 +41,45 @@ class app_t {
 public:
 	void EditorMain()
 	{
+		// setup flags
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+
+		// setup size
+		int screen_w, screen_h;
+		SDL_GetRenderOutputSize(renderer, &screen_w, &screen_h);
+		ImGui::SetNextWindowSize(ImVec2(screen_w, screen_h), ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+
+		// do it
+		if (ImGui::Begin("Main Menu", nullptr, window_flags))
+		{
+			// main menu bar
+			if (ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("File"))
+				{
+					if (ImGui::MenuItem("Load"))
+						;
+
+					if (ImGui::MenuItem("Save", "Ctrl+S"))
+						;
+
+					if (ImGui::MenuItem("Save As"))
+						;
+
+					if (ImGui::MenuItem("Quit", "Alt+F4"))
+						quit();
+
+					ImGui::EndMenu();
+				}
+
+				ImGui::EndMenuBar();
+			}
+
+			ImGui::End();
+		}
+
 		ImGui::ShowDemoWindow(nullptr);
 	}
 
