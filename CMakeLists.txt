@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 project(plush
 	DESCRIPTION "A neat, portable, realtime 3D rendering library."
 	HOMEPAGE_URL "https://github.com/erysdren/plush"
-	LANGUAGES C
+	LANGUAGES C CXX
 	VERSION 1.2.0
 )
 
@@ -83,11 +83,33 @@ target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
 if(PLUSH_BUILD_EDITOR)
 	find_package(SDL3 CONFIG COMPONENTS SDL3)
 	if (SDL3_FOUND)
+		include(FetchContent)
+		FetchContent_Declare(
+			imgui
+			GIT_REPOSITORY https://github.com/ocornut/imgui.git
+			GIT_TAG v1.92.3
+		)
+		FetchContent_MakeAvailable(imgui)
+		add_library(imgui STATIC
+			${imgui_SOURCE_DIR}/imgui_demo.cpp
+			${imgui_SOURCE_DIR}/imgui_draw.cpp
+			${imgui_SOURCE_DIR}/imgui_tables.cpp
+			${imgui_SOURCE_DIR}/imgui_widgets.cpp
+			${imgui_SOURCE_DIR}/imgui.cpp
+			${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
+			${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+		)
+		target_include_directories(imgui PUBLIC
+			${imgui_SOURCE_DIR}
+			${imgui_SOURCE_DIR}/backends
+		)
 		add_executable(plush-editor)
 		target_sources(plush-editor PRIVATE
-			${PROJECT_SOURCE_DIR}/editor/main.c
+			${PROJECT_SOURCE_DIR}/editor/main.cpp
 		)
-		target_link_libraries(plush-editor PUBLIC plush SDL3::SDL3)
+		target_link_libraries(plush-editor PUBLIC plush SDL3::SDL3 imgui)
+	else()
+		message(WARNING "SDL3 not found, cannot build editor")
 	endif()
 endif()
 
