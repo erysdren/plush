@@ -85,6 +85,10 @@ void drawFrameGraph() { /* CyanBun96 */
 	}
 }
 
+static int int_comp(const void *a, const void *b) { /* required for qsort */
+	return (*(int *)a - *(int *)b);
+}
+
 void drawFrameMinMax5pLow() { /* CyanBun96 */
 	int text_xpos = camera->ClipLeft + 5;
 	int text_ypos = camera->ClipTop + 135;
@@ -95,10 +99,6 @@ void drawFrameMinMax5pLow() { /* CyanBun96 */
 	static int time_n = sizeof(frametimes) / sizeof(int);
 	static int old_tick = 0;
 	static uint8_t string[64] = "Min: ...\nMax: ...\n5pLow: ...";
-
-	int int_comp(const void *a, const void *b) { /* required for qsort */
-	    return (*(int *)a - *(int *)b);
-	}
 
 	frametimes[framecount % time_n] = exClock() - old_tick;
 	old_tick = exClock();
