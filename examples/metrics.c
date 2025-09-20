@@ -134,6 +134,38 @@ void drawTriStatsAvg() { /* CyanBun96 */
 	plTextPrintf(camera, xpos, ypos, 0, color, string);
 }
 
+void drawJitter() { /* CyanBun96 */
+	static int framecount = 0; /* replace with a global if you have one */
+	static int frametimes[100];
+	static int time_n = sizeof(frametimes) / sizeof(int);
+	static int old_tick = 0;
+	static uint8_t string[64] = "Jitter: ...";
+
+	frametimes[framecount % time_n] = exClock() - old_tick;
+	old_tick = exClock();
+
+	if (framecount % time_n == 0) {
+		int sum = 0;
+		for (int i = 0; i < time_n; i++)
+			sum += frametimes[i];
+		float avg = (float)sum / time_n;
+		float var = 0.0f;
+		for (int i = 0; i < time_n; i++) {
+			float d = frametimes[i] - avg;
+			var += d * d;
+		}
+		var /= time_n;
+		float stdev = sqrtf(var);
+		snprintf((char*)string, sizeof(string), "Jitter: %.2f", stdev);
+	}
+	framecount++; /* remove if incremented globally */
+
+	int xpos = camera->ClipLeft + 5;
+	int ypos = camera->ClipTop + 275;
+	int color = 50;
+	plTextPrintf(camera, xpos, ypos, 0, color, string);
+}
+
 int main(int argc, char **argv)
 {
 	/* setup graphics mode */
@@ -197,6 +229,7 @@ int main(int argc, char **argv)
 		drawFrameGraph();
 		drawFrameMinMax5pLow();
 		drawTriStatsAvg();
+		drawJitter();
 		/* wait for vsync, then copy to screen */
 		exWaitVSync();
 		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
