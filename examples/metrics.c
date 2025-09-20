@@ -1,6 +1,19 @@
-// teapot.c: OBJ model loading example
-// owo
-
+/* CyanBun96 - a few basic performance metric displays.
+ * Designed to be easily portable - just copy-paste the ones you need and adjust
+ * the variables at the top!
+ * The camera must be a global for the ones that print text.
+ * Framebuffer must be global for the frame graph.
+ *
+ * drawFPS (line 34) - simple FPS counter, updates once per second.
+ * drawFrameGraph (line 55) - frame time graph
+ * drawFrameMinMax5pLow (line 88) - frame time stats, including shortest time to
+ *                                 render, longest time to render, and 5% lows
+ * drawTriStatsAvg (line 119) - the average number of triangles at different
+ *                                 points in the rendering process
+ * drawJitter (line 156) - frame jitter, less means smoother rendering with less
+ *                         stutters
+ * Insert calls right before the frame is copied to the screen (here line 248)
+ */
 #include <float.h>
 #include <time.h>
 #include <stdio.h>
@@ -19,7 +32,11 @@ float zbuffer[W * H];
 uint8_t palette[768];
 
 void drawFPS() { /* CyanBun96 */
+	int text_xpos = camera->ClipLeft + 5;
+	int text_ypos = camera->ClipTop + 5;
+	int text_color = 50;
 	static int framecount = 0; /* replace with a global if you have one */
+
 	static int old_framecount = 0;
 	static int old_tick = 0;
 	static uint8_t string[16] = "... FPS";
@@ -32,53 +49,56 @@ void drawFPS() { /* CyanBun96 */
 	}
 	framecount++; /* remove if incremented globally */
 
-	int xpos = camera->ClipLeft + 5;
-	int ypos = camera->ClipTop + 5;
-	int color = 50;
-	plTextPrintf(camera, xpos, ypos, 0, color, string);
+	plTextPrintf(camera, text_xpos, text_ypos, 0, text_color, string);
 }
 
 void drawFrameGraph() { /* CyanBun96 */
-	static int framecount = 0; /* replace with a global if you have one */
-	static int frametimes[100];
-	static int time_n = sizeof(frametimes) / sizeof(int);
-	static int old_tick = 0;
-
+	int xpos = camera->ClipLeft + 5;
+	int ypos = camera->ClipTop + 25;
+	int color = 50; /* top color, fades down */
+	float fade_speed = 1.5; /* color fade speed, set to 0 for solid */
 	float scale = 2.5; /* applied before clipping */
 	int clip = 200; /* to prevent the graph from going too far right */
+	static int frametimes[100]; /* less = shorter graph */
+	static int framecount = 0; /* replace with a global if you have one */
 
+	static int time_n = sizeof(frametimes) / sizeof(int);
+	static int old_tick = 0;
 	int frametime = exClock() - old_tick;
 	old_tick = exClock();
 	frametimes[framecount % time_n] = (int)(frametime * scale) % 200;
 	framecount++; /* remove if incremented globally */
 
-	int xpos = camera->ClipLeft + 5;
-	int ypos = camera->ClipTop + 25;
-	int color = 50;
-	float fade_speed = 2;
 	for (int i = 0; i < time_n; i++) { /* right-to-left, bright-to-dark */
-		int len = color * fade_speed < frametimes[i] ?
-			color * fade_speed : frametimes[i];
+		int len;
+		if (fade_speed > 0 && (color * fade_speed) < frametimes[i])
+			len = color * fade_speed;
+		else 
+			len = frametimes[i];
 		float cur_color = color;
 		for (int j = 0; j < len; j++) {
 			int xcoord = xpos + len - j;
 			int ycoord = W * (ypos + i);
-			framebuffer[xcoord + ycoord] = cur_color;
+			framebuffer[xcoord + ycoord] = (int)cur_color;
 			cur_color -= fade_speed;
 		}
 	}
 }
 
-int int_comp(const void *a, const void *b) {
-    return (*(int *)a - *(int *)b);
-}
-
 void drawFrameMinMax5pLow() { /* CyanBun96 */
+	int text_xpos = camera->ClipLeft + 5;
+	int text_ypos = camera->ClipTop + 135;
+	int text_color = 50;
 	static int framecount = 0; /* replace with a global if you have one */
-	static int frametimes[100];
+	static int frametimes[100]; /* less = more frequent updates */
+
 	static int time_n = sizeof(frametimes) / sizeof(int);
 	static int old_tick = 0;
 	static uint8_t string[64] = "Min: ...\nMax: ...\n5pLow: ...";
+
+	int int_comp(const void *a, const void *b) { /* required for qsort */
+	    return (*(int *)a - *(int *)b);
+	}
 
 	frametimes[framecount % time_n] = exClock() - old_tick;
 	old_tick = exClock();
@@ -93,15 +113,17 @@ void drawFrameMinMax5pLow() { /* CyanBun96 */
 	}
 	framecount++; /* remove if incremented globally */
 
-	int xpos = camera->ClipLeft + 5;
-	int ypos = camera->ClipTop + 135;
-	int color = 50;
-	plTextPrintf(camera, xpos, ypos, 0, color, string);
+	plTextPrintf(camera, text_xpos, text_ypos, 0, text_color, string);
 }
 
 void drawTriStatsAvg() { /* CyanBun96 */
+	int text_xpos = camera->ClipLeft + 5;
+	int text_ypos = camera->ClipTop + 195;
+	int text_color = 50;
 	static int framecount = 0; /* replace with a global if you have one */
-	static int tristats[100 * 4];
+	static int tristats[100 * 4]; /* less = more frequent updates */
+	/* tristats size must be a multiple of 4 */
+
 	static int stat_n = sizeof(tristats) / sizeof(int) / 4;
 	static int old_tick = 0;
 	static uint8_t string[128]="Tris: ...\nCull: ...\nClip: ...\nTssl: ...";
@@ -128,15 +150,16 @@ void drawTriStatsAvg() { /* CyanBun96 */
 	}
 	framecount++; /* remove if incremented globally */
 
-	int xpos = camera->ClipLeft + 5;
-	int ypos = camera->ClipTop + 195;
-	int color = 50;
-	plTextPrintf(camera, xpos, ypos, 0, color, string);
+	plTextPrintf(camera, text_xpos, text_ypos, 0, text_color, string);
 }
 
 void drawJitter() { /* CyanBun96 */
+	int text_xpos = camera->ClipLeft + 5;
+	int text_ypos = camera->ClipTop + 275;
+	int text_color = 50;
 	static int framecount = 0; /* replace with a global if you have one */
-	static int frametimes[100];
+	static int frametimes[100]; /* less = more frequent updates */
+
 	static int time_n = sizeof(frametimes) / sizeof(int);
 	static int old_tick = 0;
 	static uint8_t string[64] = "Jitter: ...";
@@ -160,10 +183,7 @@ void drawJitter() { /* CyanBun96 */
 	}
 	framecount++; /* remove if incremented globally */
 
-	int xpos = camera->ClipLeft + 5;
-	int ypos = camera->ClipTop + 275;
-	int color = 50;
-	plTextPrintf(camera, xpos, ypos, 0, color, string);
+	plTextPrintf(camera, text_xpos, text_ypos, 0, text_color, string);
 }
 
 int main(int argc, char **argv)
