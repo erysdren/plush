@@ -21,8 +21,6 @@ uint8_t palette[768];
 
 int main(int argc, char **argv)
 {
-	int i;
-
 	/* setup graphics mode */
 	exSetGraphics();
 
