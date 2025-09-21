@@ -93,6 +93,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		ex4
 		flurry
 		fly
+		masked
 		metrics
 		model
 		polyrobo
@@ -168,7 +169,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		# teapot.c and metrics.c 
 		teapot.obj
 
-		# ex4.c
+		# ex4.c and masked.c
 		texture1.pcx
 	)
 	find_package(SDL2 CONFIG COMPONENTS SDL2)
