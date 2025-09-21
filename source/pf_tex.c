@@ -242,11 +242,14 @@ void plPF_TexF(pl_Cam *cam, pl_Face *TriFace) {
   int32_t Y1, Y2, Y0, dY;
   bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
   int32_t shade;
+  bool masked;
+  uint8_t texel;
 
   if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
   else Texture = TriFace->Material->Texture;
 
   if (!Texture) return;
+  masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
   remap = TriFace->Material->_ReMapTable;
   if (TriFace->Material->_AddTable)
   {
@@ -376,8 +379,10 @@ void plPF_TexF(pl_Cam *cam, pl_Face *TriFace) {
           VL += dVL;
         } while (--XL2);
       else do {
-          *gmem++ = remap[bc + texture[((UL >> 16)&MappingU_AND) +
-                                ((VL>>vshift)&MappingV_AND)]];
+          texel = texture[((UL >> 16)&MappingU_AND) + ((VL>>vshift)&MappingV_AND)];
+          if (!masked || (masked && texel != Texture->ClearColor))
+            *gmem = remap[bc + texel];
+          gmem++;
           UL += dUL;
           VL += dVL;
         } while (--XL2);
