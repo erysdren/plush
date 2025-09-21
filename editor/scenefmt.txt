@@ -18,8 +18,8 @@ camera
 	Fov = 90;
 	zBuffer = true;
 
-	Origin = "64 64 -384";
-	Angles = "15 10 0";
+	Origin = [64, 64, -384];
+	Angles = [15, 10, 0];
 
 	Palette = 0;
 }
@@ -30,9 +30,9 @@ material
 	Name = "Fallback Material";
 	Fallback = true;
 
-	Ambient = "44 8 8";
-	Diffuse = "156 25 25";
-	Specular = "185 159 159";
+	Ambient = [44, 8, 8];
+	Diffuse = [156, 25, 25];
+	Specular = [185, 159, 159];
 }
 
 // mesh 0
