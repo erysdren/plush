@@ -15,30 +15,39 @@
 #include "ex.h" 
 
 #include "texture2.h"
+#include "sky.h"
 
 pl_Light *light;
-pl_Obj *model;
+pl_Obj *cube1;
+pl_Obj *cube2;
 pl_Obj *sky;
 pl_Mat *materials[2];
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
+float zbuffer[W * H];
 uint8_t palette[768];
 
 static void main_loop(void)
 {
-	/* rotate model */
-	model->Xa += 1.0;
-	model->Ya += 1.0;
-	model->Za += 1.0;
+	/* rotate cubes */
+	cube1->Xa += 1.0;
+	cube1->Ya += 1.0;
+	cube1->Za += 1.0;
 
-	/* clear back buffer */
-	memset(framebuffer, 0, W * H);
+	cube2->Xa += 1.0;
+	cube2->Ya -= 1.0;
+	cube2->Za -= 1.0;
+
+	/* clear framebuffer and zbuffer */
+	memset(framebuffer, 0, sizeof(framebuffer));
+	memset(zbuffer, 0, sizeof(zbuffer));
 
 	/* render frame */
 	plRenderBegin(camera);
 	plRenderLight(light);
 	plRenderObj(sky);
-	plRenderObj(model);
+	plRenderObj(cube2);
+	plRenderObj(cube1);
 	plRenderEnd();
 
 	/* wait for vsync, then copy to screen */
@@ -54,10 +63,11 @@ int main(int argc, char **argv)
 	/* create masked material */
 	materials[0] = plMatCreate();
 	materials[0]->NumGradients = 256;
-	materials[0]->ShadeType = PL_SHADE_FLAT;
+	materials[0]->ShadeType = PL_SHADE_GOURAUD;
 	materials[0]->Texture = plTexCreate(64, 64, texture2_pixels, 256, texture2_palette);
 	materials[0]->Diffuse[0] = materials[0]->Diffuse[1] = materials[0]->Diffuse[2] = 0;
 	materials[0]->Texture->ClearColor = 255;
+	materials[0]->PerspectiveCorrect = 2;
 	plMatInit(materials[0]);
 
 	/* create sky material */
@@ -65,7 +75,7 @@ int main(int argc, char **argv)
 	materials[1]->Ambient[0] = materials[1]->Ambient[1] = materials[1]->Ambient[2] = 0;
 	materials[1]->ShadeType = PL_SHADE_NONE;
 	materials[1]->Shininess = 1;
-	materials[1]->Texture = plReadPCXTex("sky.pcx", true, true);
+	materials[1]->Texture = plTexCreate(96, 96, sky_pixels, 256, sky_palette);
 	materials[1]->TexScaling = 20.0;
 	materials[1]->PerspectiveCorrect = 2;
 	plMatInit(materials[1]);
@@ -78,9 +88,13 @@ int main(int argc, char **argv)
 
 	exSetPalette(palette);
 
-	/* create cube */
-	model = plObjCreate(NULL);
-	model->Model = plMakeBox(100, 100, 100, materials[0]);
+	/* create cubes */
+	cube1 = plObjCreate(NULL);
+	cube1->Model = plMakeBox(128, 128, 128, materials[0]);
+
+	cube2 = plObjCreate(NULL);
+	cube2->Model = plMakeBox(64, 64, 64, materials[0]);
+	cube2->Zp += 128;
 
 	/* create sky */
 	sky = plObjCreate(NULL);
@@ -88,8 +102,8 @@ int main(int argc, char **argv)
 	plMdlFlipNormals(sky->Model);
 
 	/* create camera */
-	camera = plCamCreate(W, H, W * 3.0 / (H * 4.0), 90.0, framebuffer, NULL);
-	camera->Z = -300;
+	camera = plCamCreate(W, H, W * 3.0 / (H * 4.0), 90.0, framebuffer, zbuffer);
+	camera->Z = -384;
 
 	/* create light */
 	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
@@ -105,9 +119,11 @@ int main(int argc, char **argv)
 	/* clean up */
 	plCamDelete(camera);
 	plLightDelete(light);
-	plMdlDelete(model->Model);
+	plMdlDelete(cube1->Model);
+	plMdlDelete(cube2->Model);
 	plMdlDelete(sky->Model);
-	plObjDelete(model);
+	plObjDelete(cube1);
+	plObjDelete(cube2);
 	plObjDelete(sky);
 	plTexDelete(materials[0]->Texture);
 	plTexDelete(materials[1]->Texture);
