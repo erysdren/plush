@@ -169,8 +169,11 @@ if(PLUSH_BUILD_EXAMPLES)
 		# teapot.c and metrics.c 
 		teapot.obj
 
-		# ex4.c and masked.c
+		# ex4.c
 		texture1.pcx
+
+		# masked.c
+		texture2.pcx
 	)
 	find_package(SDL2 CONFIG COMPONENTS SDL2)
 	find_package(SDL2 CONFIG COMPONENTS SDL2main)
