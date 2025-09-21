@@ -30,14 +30,9 @@ material
 	Name = "Fallback Material";
 	Fallback = true;
 
-	Ambient = "0.1745 0.03175 0.03175";
-	AmbientScale = 255;
-
-	Diffuse = "0.61424 0.10136 0.10136";
-	DiffuseScale = 255;
-
-	Specular = "0.727811 0.626959 0.626959";
-	SpecularScale = 255;
+	Ambient = "44 8 8";
+	Diffuse = "156 25 25";
+	Specular = "185 159 159";
 }
 
 // mesh 0
