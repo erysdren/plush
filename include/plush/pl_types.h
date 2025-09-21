@@ -28,6 +28,7 @@ typedef struct _pl_Texture {
   uint32_t iWidth, iHeight;   /* Integer dimensions */
   float uScale, vScale;   /* Scaling (usually 2**Width, 2**Height) */
   uint32_t NumColors;         /* Number of colors used in texture */
+  int32_t ClearColor;         /* Clear color (or -1 for unused) */
 } pl_Texture;
 
 /* 

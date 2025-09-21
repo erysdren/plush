@@ -52,6 +52,7 @@ static pl_Texture *_plProcessPCX(uint16_t x, uint16_t y, uint8_t *data, uint8_t 
   else t->NumColors = 256;
   t->Data = data;
   t->PaletteData = pal;
+  t->ClearColor = -1;
   return t;
 }
 

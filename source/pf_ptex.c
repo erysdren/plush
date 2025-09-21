@@ -33,6 +33,8 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   float Z1, dZ1=0, dZ2=0, Z2, dZL=0, ZL, pZL, pdZL;
   int32_t Y1, Y2, Y0, dY;
   uint8_t stat;
+  bool masked;
+  uint8_t texel;
 
   bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
  
@@ -40,6 +42,7 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   else Texture = TriFace->Material->Texture;
 
   if (!Texture) return;
+  masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
   texture = Texture->Data;
   iShade = (int32_t)(TriFace->fShade*256.0);
   if (iShade < 0) iShade=0;
@@ -186,10 +189,10 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
         Xlen -= n; 
         if (Xlen < 0) n += Xlen;
         if (zb) do {
-            if (*zbuf < ZL) {
+            texel = texture[((iUL>>16)&MappingU_AND) + ((iVL>>vshift)&MappingV_AND)];
+            if ((*zbuf < ZL) && (!masked || (masked && texel != Texture->ClearColor))) {
               *zbuf = ZL;
-              *gmem = remap[bc + texture[((iUL>>16)&MappingU_AND) +
-                                   ((iVL>>vshift)&MappingV_AND)]];
+              *gmem = remap[bc + texel];
             }
             zbuf++;
             gmem++;
@@ -198,8 +201,10 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
             iVL += idVL;
           } while (--n);
         else do {
-            *gmem++ = remap[bc + texture[((iUL>>16)&MappingU_AND) +
-                                   ((iVL>>vshift)&MappingV_AND)]];
+            texel = texture[((iUL>>16)&MappingU_AND) + ((iVL>>vshift)&MappingV_AND)];
+            if (!masked || (masked && texel != Texture->ClearColor))
+              *gmem = remap[bc + texel];
+            gmem++;
             iUL += idUL;
             iVL += idVL;
           } while (--n);
@@ -239,6 +244,8 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   int32_t XL1, Xlen;
   int32_t C2, dC2=0, CL, dCL=0;
   float ZL, Z2, dZ2=0, dZL=0, pdZL, pZL;
+  bool masked;
+  uint8_t texel;
 
   int32_t Y2, dY;
   uint8_t stat;
@@ -257,6 +264,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   else Texture = TriFace->Material->Texture;
 
   if (!Texture) return;
+  masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
   texture = Texture->Data;
   addtable = TriFace->Material->_AddTable;
   if (!addtable) return;
@@ -414,15 +422,14 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
         Xlen -= n;  
         if (Xlen < 0) n += Xlen;
         if (zb) do {
-            if (*zbuf < ZL) {
+            texel = texture[((iUL>>16)&MappingU_AND) + ((iVL>>vshift)&MappingV_AND)];
+            if ((*zbuf < ZL) && (!masked || (masked && texel != Texture->ClearColor))) {
               int av;
               if (CL < 0) av=addtable[0];
               else if (CL > (255<<8)) av=addtable[255];
               else av=addtable[CL>>8];
               *zbuf = ZL;
-              *gmem = remap[av +
-                      texture[((iUL>>16)&MappingU_AND) +
-                              ((iVL>>vshift)&MappingV_AND)]];
+              *gmem = remap[av + texel];
             }
             zbuf++;
             gmem++;
@@ -436,9 +443,10 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
             if (CL < 0) av=addtable[0];
             else if (CL > (255<<8)) av=addtable[255];
             else av=addtable[CL>>8];
-            *gmem++ = remap[av +
-                      texture[((iUL>>16)&MappingU_AND) +
-                              ((iVL>>vshift)&MappingV_AND)]];
+            texel = texture[((iUL>>16)&MappingU_AND) + ((iVL>>vshift)&MappingV_AND)];
+            if (!masked || (masked && texel != Texture->ClearColor))
+              *gmem = remap[av + texel];
+            gmem++;
             CL += dCL;
             iUL += idUL;
             iVL += idVL;
