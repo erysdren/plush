@@ -108,6 +108,7 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 	t->uScale = (float)(1 << t->Width);
 	t->vScale = (float)(1 << t->Height);
 	t->NumColors = nc;
+	t->ClearColor = -1;
 
 	return t;
 }
