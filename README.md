@@ -54,6 +54,7 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 - Coloured lights
 - Write usage docs
 - Unify all examples to use main loop callbacks for better Emscripten support
+- Make `SavePCX()` from `polyrobo2.c` a library API function
 
 ## CMake Configuration Variables
 
