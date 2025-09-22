@@ -129,6 +129,7 @@ static void Shade_Pal(uint8_t *pal, int s, int e, int r1, int g1, int b1, int r2
 
 int main(int argc, char **argv)
 {
+	int first_renderframe = 0;
 	int num_renderframes = 30;
 	int renderframe = 0;
 	bool rendermode = false;
@@ -141,12 +142,15 @@ int main(int argc, char **argv)
 		{
 			rendermode = true;
 
-			if (i < argc - 1)
+			if (i < argc - 2)
 			{
-				num_renderframes = atoi(argv[i + 1]);
-				i++;
+				first_renderframe = atoi(argv[i + 1]);
+				num_renderframes = atoi(argv[i + 2]);
+				i += 2;
 			}
 
+			if (first_renderframe < 0 || first_renderframe >= 1024)
+				first_renderframe = 0;
 			if (num_renderframes < 1 || num_renderframes > 1024)
 				num_renderframes = 30;
 		}
@@ -276,7 +280,7 @@ int main(int argc, char **argv)
 	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
 
 	/* main loop */
-	while ((rendermode && renderframe < num_renderframes) || (!rendermode && !exGetKey()))
+	while ((rendermode && renderframe < first_renderframe + num_renderframes) || (!rendermode && !exGetKey()))
 	{
 		/* clear framebuffer and zbuffer */
 		memset(framebuffer, 0, sizeof(framebuffer));
@@ -301,13 +305,25 @@ int main(int argc, char **argv)
 		}
 
 		/* move skull around */
-		skull->Zp -= dir * 2;
-		if (skull->Zp < -64)
-			dir = -1;
-		if (skull->Zp > 64)
-			dir = 1;
+		if (rendermode && renderframe >= first_renderframe)
+		{
+			float Zp = (256.0f / (float)num_renderframes) * (float)(renderframe - first_renderframe);
+			if (Zp > 128.0f)
+				skull->Zp = fmod(-Zp, 128.0f) + 64.0f;
+			else
+				skull->Zp = fmod(Zp, 128.0f) - 64.0f;
+			skull->Ya = plRadToDeg(((2 * PL_PI) / (float)num_renderframes) * (float)(renderframe - first_renderframe) * 2.0f) + 180.0f;
+		}
+		else
+		{
+			skull->Zp -= dir * 2;
+			if (skull->Zp < -64)
+				dir = -1;
+			if (skull->Zp > 64)
+				dir = 1;
 
-		skull->Ya += 4;
+			skull->Ya += 4;
+		}
 
 		/* shake text around */
 		text[0]->Xp = -64 + rand() % 6;
@@ -347,10 +363,13 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			char name[64];
-			snprintf(name, sizeof(name), "fire%04d.pcx", renderframe);
-			SavePCX(name, W, H, W, framebuffer, palette);
-			printf("wrote %s\n", name);
+			if (renderframe >= first_renderframe)
+			{
+				char name[64];
+				snprintf(name, sizeof(name), "fire%04d.pcx", renderframe - first_renderframe);
+				SavePCX(name, W, H, W, framebuffer, palette);
+				printf("wrote %s\n", name);
+			}
 			renderframe++;
 		}
 	}
