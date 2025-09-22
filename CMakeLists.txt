@@ -177,6 +177,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		texture2.pcx
 
 		# fire.c
+		brick.pcx
 		skull.obj
 		skull.pcx
 		text01.pcx
