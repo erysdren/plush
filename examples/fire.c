@@ -12,17 +12,94 @@
 
 #include "ex.h" 
 
+#pragma pack(push, 1)
+
+typedef struct pcx_header {
+	uint8_t manufacturer;
+	uint8_t version;
+	uint8_t encoding;
+	uint8_t bits_per_pixel;
+	uint16_t xmin, ymin, xmax, ymax;
+	uint16_t hres, vres;
+	uint8_t palette[48];
+	uint8_t reserved;
+	uint8_t color_planes;
+	uint16_t bytes_per_line;
+	uint16_t palette_type;
+	uint16_t swidth, sheight;
+	uint8_t filler[54];
+} pcx_header_t;
+
+#pragma pack(pop)
+
+static void SavePCX(const char *filename, int w, int h, int stride, uint8_t *screen, uint8_t *palette)
+{
+	int i, x, y;
+	FILE *file;
+	uint8_t *ptr;
+	pcx_header_t *pcx = (pcx_header_t *)malloc(w * h * 2 + 1024);
+
+	pcx->manufacturer = 0x0A;
+	pcx->version = 5;
+	pcx->encoding = 1;
+	pcx->bits_per_pixel = 8;
+	pcx->xmin = 0;
+	pcx->ymin = 0;
+	pcx->xmax = w - 1;
+	pcx->ymax = h - 1;
+	pcx->hres = w;
+	pcx->vres = h;
+	memset(pcx->palette, 0, sizeof(pcx->palette));
+	pcx->color_planes = 1;
+	pcx->bytes_per_line = w;
+	pcx->palette_type = 2;
+	memset(pcx->filler, 0, sizeof(pcx->filler));
+
+	ptr = (uint8_t *)(pcx + 1);
+
+	/* write image data */
+	for (y = 0; y < h; y++)
+	{
+		for (x = 0; x < w; x++)
+		{
+			if ((*screen & 0xC0) != 0xC0)
+			{
+				*ptr++ = *screen++;
+			}
+			else
+			{
+				*ptr++ = 0xC1;
+				*ptr++ = *screen++;
+			}
+		}
+
+		screen += stride - w;
+	}
+
+	/* write palette */
+	*ptr++ = 0x0C;
+	for (i = 0; i < 768; i++)
+		*ptr++ = *palette++;
+
+	file = fopen(filename, "wb");
+	fwrite(pcx, ptr - (uint8_t *)pcx,  1, file);
+	fclose(file);
+
+	free(pcx);
+}
+
 /* 0 - fire
  * 1 - skull
  * 2 - crazy
  * 3 - fucking
  * 4 - skeleton
  * 5 - moment
+ * 6 - brick
  */
-#define NUM_MATERIALS (6)
+#define NUM_MATERIALS (7)
 
 pl_Light *light;
-pl_Obj *firewall, *skull, *text[4];
+pl_Obj *firewall, *brickwall, *skull, *text[4];
 pl_Mat *materials[NUM_MATERIALS];
 pl_Cam *camera;
 uint8_t framebuffer[W * H];
@@ -52,11 +129,36 @@ static void Shade_Pal(uint8_t *pal, int s, int e, int r1, int g1, int b1, int r2
 
 int main(int argc, char **argv)
 {
+	int first_renderframe = 0;
+	int num_renderframes = 30;
+	int renderframe = 0;
+	bool rendermode = false;
 	int i, x, y;
 	int dir = 1;
 
+	for (i = 1; i < argc; i++)
+	{
+		if (strcmp(argv[i], "-render") == 0)
+		{
+			rendermode = true;
+
+			if (i < argc - 2)
+			{
+				first_renderframe = atoi(argv[i + 1]);
+				num_renderframes = atoi(argv[i + 2]);
+				i += 2;
+			}
+
+			if (first_renderframe < 0 || first_renderframe >= 1024)
+				first_renderframe = 0;
+			if (num_renderframes < 1 || num_renderframes > 1024)
+				num_renderframes = 30;
+		}
+	}
+
 	/* setup graphics mode */
-	exSetGraphics();
+	if (!rendermode)
+		exSetGraphics();
 
 	/* setup fire palette */
 	Shade_Pal(fire_palette, 0, (FIRE_NUM_COLORS / 8) - 1, 0, 0, 0, 0, 0, 127);
@@ -96,12 +198,14 @@ int main(int argc, char **argv)
 	materials[1] = plMatCreate();
 	materials[1]->ShadeType = PL_SHADE_GOURAUD;
 	materials[1]->Texture = plReadPCXTex("skull.pcx", true, true);
+	materials[1]->Environment = &fire_texture;
+	materials[1]->TexEnvMode = PL_TEXENV_ADD;
 	materials[1]->Ambient[0] = materials[1]->Ambient[1] = materials[1]->Ambient[2] = -128;
 	materials[1]->Diffuse[0] = materials[1]->Diffuse[1] = materials[1]->Diffuse[2] = 0;
 	materials[1]->NumGradients = 2500;
 
 	/* create text materials */
-	for (i = 2; i < NUM_MATERIALS; i++)
+	for (i = 2; i < 6; i++)
 	{
 		char filename[64];
 		sprintf(filename, "text%02d.pcx", i - 1);
@@ -111,6 +215,16 @@ int main(int argc, char **argv)
 		materials[i]->Texture = plReadPCXTex(filename, true, false);
 		materials[i]->Texture->ClearColor = 216;
 	}
+
+	/* create brick material */
+	materials[6] = plMatCreate();
+	materials[6]->ShadeType = PL_SHADE_GOURAUD;
+	materials[6]->Texture = plReadPCXTex("brick.pcx", true, true);
+	materials[6]->Texture->uScale = 1024;
+	materials[6]->Texture->vScale = 512;
+	materials[6]->Ambient[0] = materials[6]->Ambient[1] = materials[6]->Ambient[2] = -144;
+	materials[6]->Diffuse[0] = materials[6]->Diffuse[1] = materials[6]->Diffuse[2] = 0;
+	materials[6]->NumGradients = 2500;
 
 	/* initialize materials */
 	for (i = 0; i < NUM_MATERIALS; i++)
@@ -124,13 +238,21 @@ int main(int argc, char **argv)
 	for (i = 0; i < NUM_MATERIALS; i++)
 		plMatMapToPal(materials[i], palette, 0, 255);
 
-	exSetPalette(palette);
+	if (!rendermode)
+		exSetPalette(palette);
 
 	/* create firewall */
 	firewall = plObjCreate(NULL);
 	firewall->Model = plMakePlane(512, 256, 1, materials[0]);
 	firewall->Xa = 90;
 	firewall->Za = 180;
+
+	/* create brickwall */
+	brickwall = plObjCreate(NULL);
+	brickwall->Model = plMakePlane(1024, 512, 16, materials[6]);
+	brickwall->Xa = 90;
+	brickwall->Za = 180;
+	brickwall->Zp = 256;
 
 	/* create skull */
 	skull = plObjCreate(NULL);
@@ -158,7 +280,7 @@ int main(int argc, char **argv)
 	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
 
 	/* main loop */
-	while (!exGetKey())
+	while ((rendermode && renderframe < first_renderframe + num_renderframes) || (!rendermode && !exGetKey()))
 	{
 		/* clear framebuffer and zbuffer */
 		memset(framebuffer, 0, sizeof(framebuffer));
@@ -183,13 +305,25 @@ int main(int argc, char **argv)
 		}
 
 		/* move skull around */
-		skull->Zp -= dir * 2;
-		if (skull->Zp < -64)
-			dir = -1;
-		if (skull->Zp > 64)
-			dir = 1;
+		if (rendermode && renderframe >= first_renderframe)
+		{
+			float Zp = (256.0f / (float)num_renderframes) * (float)(renderframe - first_renderframe);
+			if (Zp > 128.0f)
+				skull->Zp = fmod(-Zp, 128.0f) + 64.0f;
+			else
+				skull->Zp = fmod(Zp, 128.0f) - 64.0f;
+			skull->Ya = plRadToDeg(((2 * PL_PI) / (float)num_renderframes) * (float)(renderframe - first_renderframe) * 2.0f) + 180.0f;
+		}
+		else
+		{
+			skull->Zp -= dir * 2;
+			if (skull->Zp < -64)
+				dir = -1;
+			if (skull->Zp > 64)
+				dir = 1;
 
-		skull->Ya += 4;
+			skull->Ya += 4;
+		}
 
 		/* shake text around */
 		text[0]->Xp = -64 + rand() % 6;
@@ -208,6 +342,7 @@ int main(int argc, char **argv)
 		plRenderBegin(camera);
 		plRenderLight(light);
 		plRenderObj(skull);
+		plRenderObj(brickwall);
 		plRenderObj(firewall);
 		plRenderEnd();
 
@@ -221,8 +356,22 @@ int main(int argc, char **argv)
 		plRenderEnd();
 
 		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, W * H);
+		if (!rendermode)
+		{
+			exWaitVSync();
+			memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
+		}
+		else
+		{
+			if (renderframe >= first_renderframe)
+			{
+				char name[64];
+				snprintf(name, sizeof(name), "fire%04d.pcx", renderframe - first_renderframe);
+				SavePCX(name, W, H, W, framebuffer, palette);
+				printf("wrote %s\n", name);
+			}
+			renderframe++;
+		}
 	}
 
 	/* clean up */
@@ -230,12 +379,14 @@ int main(int argc, char **argv)
 	plLightDelete(light);
 	plMdlDelete(skull->Model);
 	plMdlDelete(firewall->Model);
+	plMdlDelete(brickwall->Model);
 	plMdlDelete(text[0]->Model);
 	plMdlDelete(text[1]->Model);
 	plMdlDelete(text[2]->Model);
 	plMdlDelete(text[3]->Model);
 	plObjDelete(skull);
 	plObjDelete(firewall);
+	plObjDelete(brickwall);
 	plObjDelete(text[0]);
 	plObjDelete(text[1]);
 	plObjDelete(text[2]);
@@ -249,7 +400,8 @@ int main(int argc, char **argv)
 		plMatDelete(materials[i]);
 
 	/* shut down video */
-	exSetText();
+	if (!rendermode)
+		exSetText();
 
 	return 0;
 }
