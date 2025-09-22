@@ -75,6 +75,7 @@ can be rendered in a scene. This value is accessible in code with the
 - [`ex2.c`](./examples/ex2.c) - an untextured purple cube
 - [`ex3.c`](./examples/ex3.c) - a purple cube and a green torus
 - [`ex4.c`](./examples/ex4.c) - a texture mapped cube
+- [`fire.c`](./examples/fire.c) - procedurally animated fire texture and a skull
 - [`flurry.c`](./examples/flurry.c) - transparent material showcase
 - [`fly.c`](./examples/fly.c) - interactive flight environment
 - [`metrics.c`](./examples/metrics.c) - portable performance metrics
