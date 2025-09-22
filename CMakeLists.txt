@@ -91,6 +91,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		ex2
 		ex3
 		ex4
+		fire
 		flurry
 		fly
 		masked
@@ -174,6 +175,14 @@ if(PLUSH_BUILD_EXAMPLES)
 
 		# masked.c
 		texture2.pcx
+
+		# fire.c
+		skull.obj
+		skull.pcx
+		text01.pcx
+		text02.pcx
+		text03.pcx
+		text04.pcx
 	)
 	find_package(SDL2 CONFIG COMPONENTS SDL2)
 	find_package(SDL2 CONFIG COMPONENTS SDL2main)
