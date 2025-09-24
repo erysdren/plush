@@ -255,26 +255,6 @@ pl_Mdl **ProcessIBSPModels(ibsp_t *bsp, size_t *n_models, pl_Mat **materials, si
 	return models;
 }
 
-#pragma pack(push, 1)
-
-typedef struct pcx_header {
-	uint8_t manufacturer;
-	uint8_t version;
-	uint8_t encoding;
-	uint8_t bits_per_pixel;
-	uint16_t xmin, ymin, xmax, ymax;
-	uint16_t hres, vres;
-	uint8_t palette[48];
-	uint8_t reserved;
-	uint8_t color_planes;
-	uint16_t bytes_per_line;
-	uint16_t palette_type;
-	uint16_t swidth, sheight;
-	uint8_t filler[54];
-} pcx_header_t;
-
-#pragma pack(pop)
-
 #define MAX_MATERIALS (64)
 
 uint8_t framebuffer[W * H];
@@ -310,62 +290,6 @@ static void SetupPolyRoboMaterials(pl_Mat *materials[6])
 	materials[4]->Texture = plReadPCXTex("ears.pcx", true, true);
 
 	materials[5]->Texture = plReadPCXTex("eye.pcx", true, true);
-}
-
-static void SavePCX(const char *filename, int w, int h, int stride, uint8_t *screen, uint8_t *palette)
-{
-	int i, x, y;
-	FILE *file;
-	uint8_t *ptr;
-	pcx_header_t *pcx = (pcx_header_t *)malloc(w * h * 2 + 1024);
-
-	pcx->manufacturer = 0x0A;
-	pcx->version = 5;
-	pcx->encoding = 1;
-	pcx->bits_per_pixel = 8;
-	pcx->xmin = 0;
-	pcx->ymin = 0;
-	pcx->xmax = w - 1;
-	pcx->ymax = h - 1;
-	pcx->hres = w;
-	pcx->vres = h;
-	memset(pcx->palette, 0, sizeof(pcx->palette));
-	pcx->color_planes = 1;
-	pcx->bytes_per_line = w;
-	pcx->palette_type = 2;
-	memset(pcx->filler, 0, sizeof(pcx->filler));
-
-	ptr = (uint8_t *)(pcx + 1);
-
-	/* write image data */
-	for (y = 0; y < h; y++)
-	{
-		for (x = 0; x < w; x++)
-		{
-			if ((*screen & 0xC0) != 0xC0)
-			{
-				*ptr++ = *screen++;
-			}
-			else
-			{
-				*ptr++ = 0xC1;
-				*ptr++ = *screen++;
-			}
-		}
-
-		screen += stride - w;
-	}
-
-	/* write palette */
-	*ptr++ = 0x0C;
-	for (i = 0; i < 768; i++)
-		*ptr++ = *palette++;
-
-	file = fopen(filename, "wb");
-	fwrite(pcx, ptr - (uint8_t *)pcx,  1, file);
-	fclose(file);
-
-	free(pcx);
 }
 
 int main(int argc, char **argv)
@@ -534,7 +458,7 @@ int main(int argc, char **argv)
 		{
 			char name[64];
 			snprintf(name, sizeof(name), "polyrobo%04d.pcx", renderframe);
-			SavePCX(name, W, H, W, framebuffer, palette);
+			plWritePCX(name, W, H, W, framebuffer, palette);
 			printf("wrote %s\n", name);
 			renderframe++;
 		}
