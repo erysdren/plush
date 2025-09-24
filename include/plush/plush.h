@@ -705,6 +705,23 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
 
 /******************************************************************************
+** File Writers (write_*.c)
+******************************************************************************/
+
+/*
+  plWritePCX() write an 8bpp PCX image
+  Parameters:
+    fn: filename of image to write
+    w,h: pixel dimensions of the image
+    stride: byte stride of the image
+    pixels: source pixel pointer
+    palette: 256*3 bytes of palette data
+  Returns:
+    true on success, false on failure
+*/
+bool plWritePCX(const char *fn, int w, int h, int stride, uint8_t *pixels, uint8_t *palette);
+
+/******************************************************************************
 ** Math Code (math.c)
 ******************************************************************************/
 
