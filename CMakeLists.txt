@@ -9,6 +9,7 @@ project(plush
 # options
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
+option(PLUSH_BUILD_EDITOR "Build Plush Editor" ON)
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
 option(PLUSH_FREESTANDING "Disable stdlib dependency" OFF)
 set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
@@ -81,6 +82,17 @@ if(MATH)
 endif()
 
 target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
+
+# editor
+
+if(PLUSH_BUILD_EDITOR)
+	find_package(SDL3 CONFIG COMPONENTS SDL3)
+	if(SDL3_FOUND)
+		add_subdirectory(editor)
+	else()
+		message(WARNING "SDL3 not found, cannot build editor")
+	endif()
+endif()
 
 # examples
 
