@@ -95,6 +95,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		fire
 		flurry
 		fly
+		logo
 		masked
 		metrics
 		model
@@ -185,6 +186,10 @@ if(PLUSH_BUILD_EXAMPLES)
 		text02.pcx
 		text03.pcx
 		text04.pcx
+
+		# logo.c
+		logo.pcx
+		logo.obj
 	)
 	find_package(SDL2 CONFIG COMPONENTS SDL2)
 	find_package(SDL2 CONFIG COMPONENTS SDL2main)
