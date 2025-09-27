@@ -721,6 +721,16 @@ pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimi
 */
 bool plWritePCX(const char *fn, int w, int h, int stride, uint8_t *pixels, uint8_t *palette);
 
+/*
+  plWritePCXTex() write an 8bpp PCX image from a pl_Texture
+  Parameters:
+    fn: filename of image to write
+    tex: texture to write
+  Returns:
+    true on success, false on failure
+*/
+bool plWritePCXTex(const char *fn, pl_Texture *tex);
+
 /******************************************************************************
 ** Math Code (math.c)
 ******************************************************************************/

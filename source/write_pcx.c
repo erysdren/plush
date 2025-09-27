@@ -91,3 +91,11 @@ bool plWritePCX(const char *fn, int w, int h, int stride, uint8_t *pixels, uint8
 
 	return true;
 }
+
+bool plWritePCXTex(const char *fn, pl_Texture *tex)
+{
+	uint8_t palette[768];
+	plMemSet(palette, 0, sizeof(palette));
+	plMemCpy(palette, tex->PaletteData, tex->NumColors > 256 ? 256 * 3 : tex->NumColors * 3);
+	return plWritePCX(fn, tex->iWidth, tex->iHeight, tex->iWidth, tex->Data, palette);
+}
