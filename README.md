@@ -18,8 +18,67 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 
 ## Notes
 
-- [Eggbug model created by Xenon Fossil](https://xenonfossil.itch.io/low-poly-eggbug)
-- The Plush logo font is [Ashley](https://www.dafont.com/ashley.font?text=PLUSH)
+| File | Author | Source |
+|---|---|---|
+| `brick.pcx` | necrolavigne | |
+| `steel2.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `measure.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `concrt1d.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `concrt1c.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `concrt1b.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `concrt1.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `cncrt2.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `+0~fifties_lgt2.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `-3lcon0.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `-0lcon0.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `eye.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `ears.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `droid_legmap.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `chrome_steel1.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `chrome_grayr.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `black.pcx` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `polyrobo.blend` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `polyrobo.mtl` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `polyrobo.obj` | Valve Software | [Half-Life Alpha](https://combineoverwiki.net/wiki/Half-Life_Alpha) |
+| `skull.obj` | Valve Software | [Half-Life](https://store.steampowered.com/app/70/HalfLife/) |
+| `skull.pcx` | Valve Software | [Half-Life](https://store.steampowered.com/app/70/HalfLife/) |
+| `texture2.pcx` | Valve Software | [Half-Life](https://store.steampowered.com/app/70/HalfLife/) |
+| `polyrobo.bsp` | erysdren | |
+| `citybbk.mtl` | Future Crew | [Second Reality](https://github.com/mtuomi/SecondReality) |
+| `citybbk.obj` | Future Crew | [Second Reality](https://github.com/mtuomi/SecondReality) |
+| `ship.blend` | Future Crew | [Second Reality](https://github.com/mtuomi/SecondReality) |
+| `ship.mtl` | Future Crew | [Second Reality](https://github.com/mtuomi/SecondReality) |
+| `ship.obj` | Future Crew | [Second Reality](https://github.com/mtuomi/SecondReality) |
+| `duckdemo.3ds` | Justin Frankel | [duckdemo.zip](./archive/duckdemo.zip) |
+| `eggbug.3ds` | Xenon Fossil | [low poly eggbug](https://xenonfossil.itch.io/low-poly-eggbug) |
+| `eggbug.pcx` | Xenon Fossil | [low poly eggbug](https://xenonfossil.itch.io/low-poly-eggbug) |
+| `fork.3ds` | Argonaut Technologies Ltd. | |
+| `earth.pcx` | Argonaut Technologies Ltd. | |
+| `moon.pcx` | Argonaut Technologies Ltd. | |
+| `ground.pcx` | Justin Frankel | [fly30src.zip](./archive/fly30src.zip) |
+| `sky.pcx` | Justin Frankel | [fly30src.zip](./archive/fly30src.zip) |
+| `sky2.pcx` | Justin Frankel | [fly30src.zip](./archive/fly30src.zip) |
+| `texture1.pcx` | Justin Frankel | [ex01.zip](./archive/ex01.zip) |
+| `logo.obj` | erysdren | |
+| `logo.pcx` | erysdren | |
+| `scene.blend` | erysdren | |
+| `scene320.col` | erysdren | |
+| `scene320.dph` | erysdren | |
+| `scene320.exr` | erysdren | |
+| `scene320.pal` | erysdren | |
+| `scene320.png` | erysdren | |
+| `scene640.col` | erysdren | |
+| `scene640.dph` | erysdren | |
+| `scene640.exr` | erysdren | |
+| `scene640.pal` | erysdren | |
+| `scene640.png` | erysdren | |
+| `susan.blend` | erysdren | |
+| `susan.obj` | erysdren | |
+| `teapot.obj` | Martin Newell | [The University of Utah](https://graphics.cs.utah.edu/teapot/) |
+| `text01.pcx` | erysdren | |
+| `text02.pcx` | erysdren | |
+| `text03.pcx` | erysdren | |
+| `text04.pcx` | erysdren | |
 
 ## Features
 
