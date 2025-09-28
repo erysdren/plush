@@ -271,7 +271,6 @@ uint8_t plText_DefaultFont[256*16] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-#if !PL_FREESTANDING
 void *_plStdlibAllocator(void *user, void *ptr, size_t sz)
 {
 	if (sz == 0)
@@ -286,10 +285,6 @@ void *_plStdlibAllocator(void *user, void *ptr, size_t sz)
 }
 static pl_Alloc plCurrentAllocatorFunc = _plStdlibAllocator;
 static void *plCurrentAllocatorUser = NULL;
-#else
-static pl_Alloc plCurrentAllocatorFunc = NULL;
-static void *plCurrentAllocatorUser = NULL;
-#endif
 
 void *plMalloc(size_t sz)
 {
@@ -323,74 +318,3 @@ pl_Alloc plAllocatorGet(void **user)
 	if (user) *user = plCurrentAllocatorUser;
 	return plCurrentAllocatorFunc;
 }
-
-#if PL_FREESTANDING
-
-#ifndef __has_builtin
-#define __has_builtin(x) 0
-#endif
-
-void *plMemSet(void *ptr, int val, size_t sz)
-{
-#if __has_builtin(__builtin_memset)
-	return __builtin_memset(ptr, val, sz);
-#else
-
-#endif
-}
-
-void *plMemCpy(void *dst, void *src, size_t sz)
-{
-#if __has_builtin(__builtin_memcpy)
-	return __builtin_memcpy(dst, src, sz);
-#else
-
-#endif
-}
-
-int plMemCmp(void *a, void *b, size_t n)
-{
-#if __has_builtin(__builtin_memcmp)
-	return __builtin_memcmp(a, b, n);
-#else
-
-#endif
-}
-
-size_t plStrLen(const char *s)
-{
-#if __has_builtin(__builtin_strlen)
-	return __builtin_strlen(s);
-#else
-
-#endif
-}
-
-int plStrCmp(const char *a, const char *b)
-{
-#if __has_builtin(__builtin_strcmp)
-	return __builtin_strcmp(a, b);
-#else
-
-#endif
-}
-
-char *plStrCpy(char *dst, const char *src)
-{
-#if __has_builtin(__builtin_strcpy)
-	return __builtin_strcpy(dst, src);
-#else
-
-#endif
-}
-
-char *plStrNCpy(char *dst, const char *src, size_t n)
-{
-#if __has_builtin(__builtin_strncpy)
-	return __builtin_strncpy(dst, src, n);
-#else
-
-#endif
-}
-
-#endif // PL_FREESTANDING
