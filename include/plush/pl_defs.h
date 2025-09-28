@@ -19,8 +19,6 @@ extern "C" {
 #define PL_PI 3.14159265359
 #endif
 
-/* Freestanding stuff */
-#if !PL_FREESTANDING
 #define plMemSet(ptr, val, sz) memset(ptr, val, sz)
 #define plMemCpy(dst, src, sz) memcpy(dst, src, sz)
 #define plMemCmp(a, b, n) memcmp(a, b, n)
@@ -29,20 +27,11 @@ extern "C" {
 #define plStrNCmp(a, b, len) strncmp(a, b, len)
 #define plStrCpy(a, b) strcpy(a, b)
 #define plStrNCpy(a, b, n) strncpy(a, b, n)
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) && !defined(__DJGPP__)
-#define plSin(v) sinf(v)
-#define plCos(v) cosf(v)
-#define plTan(v) tanf(v)
-#define plATan(v) atanf(v)
-#define plSqrt(v) sqrtf(v)
-#else
 #define plSin(v) sin(v)
 #define plCos(v) cos(v)
 #define plTan(v) tan(v)
 #define plATan(v) atan(v)
 #define plSqrt(v) sqrt(v)
-#endif
-#endif
 
 /* Utility min() and max() functions */
 #define plMin(x,y) (( ( x ) > ( y ) ? ( y ) : ( x )))

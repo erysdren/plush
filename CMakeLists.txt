@@ -10,7 +10,6 @@ project(plush
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
-option(PLUSH_FREESTANDING "Disable stdlib dependency" OFF)
 set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
 set(PLUSH_MAX_TRIANGLES "16384" CACHE STRING "Maximum number of triangles in a single render pass")
 
@@ -22,11 +21,6 @@ target_link_options(ASAN::ASAN INTERFACE -fsanitize=address)
 
 # configure options header
 
-if(PLUSH_FREESTANDING)
-	set(PLUSH_FREESTANDING 1)
-else()
-	set(PLUSH_FREESTANDING 0)
-endif()
 configure_file(${PROJECT_SOURCE_DIR}/cmake/pl_conf.h.in ${PROJECT_SOURCE_DIR}/include/plush/pl_conf.h @ONLY)
 
 # library
