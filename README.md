@@ -19,6 +19,7 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 ## Notes
 
 - [Eggbug model created by Xenon Fossil](https://xenonfossil.itch.io/low-poly-eggbug)
+- The Plush logo font is [Ashley](https://www.dafont.com/ashley.font?text=PLUSH)
 
 ## Features
 
