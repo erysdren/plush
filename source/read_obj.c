@@ -88,8 +88,6 @@ pl_Mdl *plReadWavefrontMdl(const char *filename, pl_Mat *material)
 	if (calcnorms)
 		plMdlCalcNormals(mdl);
 
-	plMdlCalcBoundingBox(mdl);
-
 	fast_obj_destroy(mesh);
 	return mdl;
 }
@@ -142,8 +140,6 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
 
 	if (calcnorms)
 		plMdlCalcNormals(mdl);
-
-	plMdlCalcBoundingBox(mdl);
 
 	fast_obj_destroy(mesh);
 	return mdl;

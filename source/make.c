@@ -78,7 +78,6 @@ pl_Mdl *plMakeTorus(float r1, float r2, uint32_t divrot, uint32_t divrad,
     U += dU;
   }
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return (mdl);
 }
 
@@ -179,7 +178,6 @@ pl_Mdl *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
     U += dU;
   }
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return (mdl);
 }
 
@@ -300,7 +298,6 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
     }
   }
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return (mdl);
 }
 
@@ -382,7 +379,6 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
     }
   }
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return (mdl);
 }
 
@@ -434,7 +430,6 @@ pl_Mdl *plMakeBox(float w, float d, float h, pl_Mat *m) {
   }
 
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return (mdl);
 }
 
@@ -482,6 +477,5 @@ pl_Mdl *plMakePlane(float w, float d, uint32_t res, pl_Mat *m) {
     }
   }
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return (mdl);
 }

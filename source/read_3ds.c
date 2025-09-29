@@ -139,7 +139,6 @@ static void _pl3DSTriMeshReader(FILE *f, uint32_t p) {
     face++;
   }
   plMdlCalcNormals(obj->Model);
-  plMdlCalcBoundingBox(obj->Model);
   if (currentobj == 0) {
     currentobj = 1;
     lobj = bobj = obj;
