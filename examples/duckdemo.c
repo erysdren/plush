@@ -54,8 +54,8 @@ int main(int argc, char **argv) {
   Light = plLightCreate();        // Create a lightsource
   plLightSet(Light,PL_LIGHT_VECTOR,0,0,0,1.0,1.0); // Vector light, 1.0 intensity
 
-  if ((argc > 1 && !strcasecmp(argv[1],"-nozb")) ||
-      (argc > 2 && !strcasecmp(argv[2],"-nozb"))) zbuffer = 0;
+  if ((argc > 1 && !strcmp(argv[1],"-nozb")) ||
+      (argc > 2 && !strcmp(argv[2],"-nozb"))) zbuffer = 0;
   else 
     zbuffer = (float *) plMalloc(sizeof(float)*W*H);
 
