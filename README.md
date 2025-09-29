@@ -52,9 +52,9 @@ Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/htt
 | `duckdemo.3ds` | Justin Frankel | [duckdemo.zip](./archive/duckdemo.zip) |
 | `eggbug.3ds` | Xenon Fossil | [low poly eggbug](https://xenonfossil.itch.io/low-poly-eggbug) |
 | `eggbug.pcx` | Xenon Fossil | [low poly eggbug](https://xenonfossil.itch.io/low-poly-eggbug) |
-| `fork.3ds` | Argonaut Technologies Ltd. | |
-| `earth.pcx` | Argonaut Technologies Ltd. | |
-| `moon.pcx` | Argonaut Technologies Ltd. | |
+| `fork.3ds` | Argonaut Technologies Ltd. | [BRender Evaluation Kit 1.2](https://archive.org/details/brender25) |
+| `earth.pcx` | Argonaut Technologies Ltd. | [BRender Evaluation Kit 1.2](https://archive.org/details/brender25) |
+| `moon.pcx` | Argonaut Technologies Ltd. | [BRender Evaluation Kit 1.2](https://archive.org/details/brender25) |
 | `ground.pcx` | Justin Frankel | [fly30src.zip](./archive/fly30src.zip) |
 | `sky.pcx` | Justin Frankel | [fly30src.zip](./archive/fly30src.zip) |
 | `sky2.pcx` | Justin Frankel | [fly30src.zip](./archive/fly30src.zip) |
