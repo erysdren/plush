@@ -66,6 +66,5 @@ pl_Mdl *plReadJAWMdl(const char *filename, pl_Mat *m) {
   }
   fclose(jawfile);
   plMdlCalcNormals(mdl);
-  plMdlCalcBoundingBox(mdl);
   return mdl;
 }	

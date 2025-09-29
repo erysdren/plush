@@ -116,7 +116,6 @@ typedef struct _pl_Mdl {
   uint32_t NumFaces;               /* Number of faces */
   pl_Vertex *Vertices;             /* Array of vertices */
   pl_Face *Faces;                  /* Array of faces */
-  pl_BBox BoundingBox;             /* Bounding box in model space */
 } pl_Mdl;
 
 /* 
@@ -138,7 +137,6 @@ typedef struct _pl_Obj {
                                          X then Y then Z. Measured in degrees */
   float Matrix[16];                /* Transformation matrix */
   float RotMatrix[16];             /* Rotation only matrix (for normals) */
-  pl_BBox BoundingBox;             /* Bounding box in object space, including all children */
 } pl_Obj;
 
 /*

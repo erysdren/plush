@@ -170,13 +170,14 @@ void plMdlDelete(pl_Mdl *mdl);
 void plMdlCalcNormals(pl_Mdl *mdl);
 
 /*
-   plMdlCalcBoundingBox() calculates the model's bounding box from its vertices
+   plMdlCalcBoundingBox() calculates a model's bounding box from its vertices
    Paramters:
      mdl: the model
+     bbox: the bounding box to fill in
    Returns:
      nothing
 */
-void plMdlCalcBoundingBox(pl_Mdl *mdl);
+void plMdlCalcBoundingBox(pl_Mdl *mdl, pl_BBox *bbox);
 
 /*
   plMdlSetMat() sets the material of all faces in a model
