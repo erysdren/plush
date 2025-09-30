@@ -11,29 +11,29 @@
 #define H (480)
 #endif
 
-static uint8_t *exGraphMem = NULL;
-static SDL_Window *exWindow = NULL;
-static SDL_Renderer *exRenderer = NULL;
-static SDL_Texture *exTexture = NULL;
-static SDL_Surface *exWindowSurface = NULL;
-static SDL_Surface *exSurface = NULL;
-static int exMouseButtons = 0;
-static int exMouseX = 0;
-static int exMouseY = 0;
-static int exMouseDeltaX = 0;
-static int exMouseDeltaY = 0;
+uint8_t *exGraphMem = NULL;
+SDL_Window *exWindow = NULL;
+SDL_Renderer *exRenderer = NULL;
+SDL_Texture *exTexture = NULL;
+SDL_Surface *exWindowSurface = NULL;
+SDL_Surface *exSurface = NULL;
+int exMouseButtons = 0;
+int exMouseX = 0;
+int exMouseY = 0;
+int exMouseDeltaX = 0;
+int exMouseDeltaY = 0;
 
-static int exClockPerSecond(void)
+int exClockPerSecond(void)
 {
 	return 1000;
 }
 
-static int exClock(void)
+int exClock(void)
 {
 	return (int)SDL_GetTicks();
 }
 
-static int exGetKey(void)
+int exGetKey(void)
 {
 	SDL_Event event;
 	int lastkey = 0;
@@ -78,20 +78,7 @@ static int exGetKey(void)
 	return lastkey;
 }
 
-static void exWaitVSync(void)
-{
-	if (SDL_LockTexture(exTexture, NULL, &exWindowSurface->pixels, &exWindowSurface->pitch))
-	{
-		SDL_BlitSurface(exSurface, NULL, exWindowSurface, NULL);
-		SDL_UnlockTexture(exTexture);
-	}
-
-	SDL_RenderClear(exRenderer);
-	SDL_RenderTexture(exRenderer, exTexture, NULL, NULL);
-	SDL_RenderPresent(exRenderer);
-}
-
-static void exSetPalette(uint8_t palette[768])
+void exSetPalette(uint8_t palette[768])
 {
 	int i;
 	SDL_Color colors[256];
@@ -107,40 +94,78 @@ static void exSetPalette(uint8_t palette[768])
 	SDL_SetPaletteColors(SDL_CreateSurfacePalette(exSurface), colors, 0, 256);
 }
 
-static void exSetGraphics(void)
+int exBegin(int argc, char **argv, const char *title)
 {
-	uint32_t format;
+	int r = PL_EXIT_CONTINUE;
+	void *appstate = NULL;
 
-	SDL_Init(SDL_INIT_VIDEO);
+	if ((r = exInit(&appstate, argc, argv)) != PL_EXIT_CONTINUE)
+		return r;
 
-	exWindow = SDL_CreateWindow("Plush Example", W, H, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
+	if (!SDL_Init(SDL_INIT_VIDEO))
+		return 1;
 
-	exRenderer = SDL_CreateRenderer(exWindow, NULL);
+	if (!SDL_CreateWindowAndRenderer(title, W, H, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE, &exWindow, &exRenderer))
+		return 1;
+
 	SDL_SetRenderVSync(exRenderer, 1);
 
 	SDL_SetRenderLogicalPresentation(exRenderer, W, H, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
-	format = SDL_GetWindowPixelFormat(exWindow);
-
-	exTexture = SDL_CreateTexture(exRenderer, format, SDL_TEXTUREACCESS_STREAMING, W, H);
+	exTexture = SDL_CreateTexture(exRenderer, SDL_GetWindowPixelFormat(exWindow), SDL_TEXTUREACCESS_STREAMING, W, H);
+	if (!exTexture)
+		return 1;
 
 	SDL_SetTextureScaleMode(exTexture, SDL_SCALEMODE_NEAREST);
 
-	exWindowSurface = SDL_CreateSurfaceFrom(W, H, format, NULL, 0);
+	exWindowSurface = SDL_CreateSurfaceFrom(W, H, SDL_GetWindowPixelFormat(exWindow), NULL, 0);
+	if (!exWindowSurface)
+		return 1;
 
 	exSurface = SDL_CreateSurface(W, H, SDL_PIXELFORMAT_INDEX8);
+	if (!exSurface)
+		return 1;
 
 	exGraphMem = (uint8_t *)exSurface->pixels;
 
 	SDL_ShowWindow(exWindow);
-}
 
-static void exSetText(void)
-{
+	while (r == PL_EXIT_CONTINUE)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+				case SDL_EVENT_QUIT:
+					goto done;
+
+				case SDL_EVENT_KEY_DOWN:
+					r = exKeyEvent(appstate, event.key.key);
+					break;
+			}
+		}
+
+		r = exIterate(appstate);
+
+		if (SDL_LockTexture(exTexture, NULL, &exWindowSurface->pixels, &exWindowSurface->pitch))
+		{
+			SDL_BlitSurface(exSurface, NULL, exWindowSurface, NULL);
+			SDL_UnlockTexture(exTexture);
+		}
+
+		SDL_RenderClear(exRenderer);
+		SDL_RenderTexture(exRenderer, exTexture, NULL, NULL);
+		SDL_RenderPresent(exRenderer);
+	}
+
+done:
+	exQuit(appstate, r);
 	SDL_DestroySurface(exWindowSurface);
 	SDL_DestroySurface(exSurface);
 	SDL_DestroyTexture(exTexture);
 	SDL_DestroyRenderer(exRenderer);
 	SDL_DestroyWindow(exWindow);
 	SDL_Quit();
+	return r;
 }
