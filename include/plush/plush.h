@@ -718,6 +718,16 @@ bool plWritePCX(const char *fn, int w, int h, int stride, uint8_t *pixels, uint8
 */
 bool plWritePCXTex(const char *fn, pl_Texture *tex);
 
+/*
+  plWriteWavefrontMdl() write an Wavefront OBJ object
+  Parameters:
+    fn: filename of obj to write
+    mdl: the model
+  Returns:
+    true on success, false on failure
+*/
+bool plWriteWavefrontMdl(const char *fn, pl_Mdl *mdl);
+
 /******************************************************************************
 ** Math Code (math.c)
 ******************************************************************************/
