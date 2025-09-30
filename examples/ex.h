@@ -13,9 +13,9 @@
 
 /* return codes from ex* functions */
 enum {
-	PL_EXIT_FAILURE = -1,
-	PL_EXIT_CONTINUE = 0,
-	PL_EXIT_SUCCESS = 1
+	PL_EXIT_CONTINUE = -1,
+	PL_EXIT_SUCCESS = 0,
+	PL_EXIT_FAILURE = 1
 };
 
 /* load your files and allocate your buffers here */
