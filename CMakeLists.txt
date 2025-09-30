@@ -58,6 +58,7 @@ target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/spline.c
 	${PROJECT_SOURCE_DIR}/source/text.c
 	${PROJECT_SOURCE_DIR}/source/texture.c
+	${PROJECT_SOURCE_DIR}/source/write_obj.c
 	${PROJECT_SOURCE_DIR}/source/write_pcx.c
 )
 
