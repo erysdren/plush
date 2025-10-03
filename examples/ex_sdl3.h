@@ -130,7 +130,7 @@ int exBegin(int argc, char **argv, const char *title)
 
 	SDL_ShowWindow(exWindow);
 
-	while (r == PL_EXIT_CONTINUE)
+	while (true)
 	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -141,12 +141,14 @@ int exBegin(int argc, char **argv, const char *title)
 					goto done;
 
 				case SDL_EVENT_KEY_DOWN:
-					r = exKeyEvent(appstate, event.key.key);
+					if ((r = exKeyEvent(appstate, event.key.key)) != PL_EXIT_CONTINUE)
+						goto done;
 					break;
 			}
 		}
 
-		r = exIterate(appstate);
+		if ((r = exIterate(appstate)) != PL_EXIT_CONTINUE)
+			goto done;
 
 		if (SDL_LockTexture(exTexture, NULL, &exWindowSurface->pixels, &exWindowSurface->pitch))
 		{
