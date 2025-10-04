@@ -56,7 +56,6 @@ int exIterate(void *appstate)
 	plRenderLight(TheLight); // Render our light
 	plRenderObj(TheCube); // Render our object
 	plRenderEnd(); // Finish rendering
-	exWaitVSync(); // Sync with retrace
 	memcpy(exGraphMem,TheFrameBuffer,W*H); // dump to screen
 	return PL_EXIT_CONTINUE;
 }
@@ -74,4 +73,9 @@ void exQuit(void *appstate, int code)
 	plObjDelete(TheCube);
 	plCamDelete(TheCamera);
 	plLightDelete(TheLight);
+}
+
+int main(int argc, char **argv)
+{
+	return exBegin(argc, argv, "ex1: Simple Plush example");
 }
