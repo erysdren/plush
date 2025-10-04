@@ -33,51 +33,6 @@ int exClock(void)
 	return (int)SDL_GetTicks();
 }
 
-int exGetKey(void)
-{
-	SDL_Event event;
-	int lastkey = 0;
-
-	exMouseDeltaX = exMouseDeltaY = 0;
-
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-			case SDL_EVENT_QUIT:
-				lastkey = 27;
-				break;
-
-			case SDL_EVENT_MOUSE_BUTTON_DOWN:
-				if (event.button.button == SDL_BUTTON_LEFT)
-					exMouseButtons |= 1;
-				if (event.button.button == SDL_BUTTON_RIGHT)
-					exMouseButtons |= 2;
-				break;
-
-			case SDL_EVENT_MOUSE_BUTTON_UP:
-				if (event.button.button == SDL_BUTTON_LEFT)
-					exMouseButtons &= ~1;
-				if (event.button.button == SDL_BUTTON_RIGHT)
-					exMouseButtons &= ~2;
-				break;
-
-			case SDL_EVENT_MOUSE_MOTION:
-				exMouseX = event.motion.x;
-				exMouseY = event.motion.y;
-				exMouseDeltaX = event.motion.xrel;
-				exMouseDeltaY = event.motion.yrel;
-				break;
-
-			case SDL_EVENT_KEY_DOWN:
-				lastkey = event.key.key;
-				break;
-		}
-	}
-
-	return lastkey;
-}
-
 void exSetPalette(uint8_t palette[768])
 {
 	int i;
@@ -98,9 +53,6 @@ int exBegin(int argc, char **argv, const char *title)
 {
 	int r = PL_EXIT_CONTINUE;
 	void *appstate = NULL;
-
-	if ((r = exInit(&appstate, argc, argv)) != PL_EXIT_CONTINUE)
-		return r;
 
 	if (!SDL_Init(SDL_INIT_VIDEO))
 		return 1;
@@ -130,8 +82,13 @@ int exBegin(int argc, char **argv, const char *title)
 
 	SDL_ShowWindow(exWindow);
 
+	if ((r = exInit(&appstate, argc, argv)) != PL_EXIT_CONTINUE)
+		return r;
+
 	while (true)
 	{
+		exMouseDeltaX = exMouseDeltaY = 0;
+
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
@@ -139,6 +96,27 @@ int exBegin(int argc, char **argv, const char *title)
 			{
 				case SDL_EVENT_QUIT:
 					goto done;
+
+				case SDL_EVENT_MOUSE_BUTTON_DOWN:
+					if (event.button.button == SDL_BUTTON_LEFT)
+						exMouseButtons |= 1;
+					if (event.button.button == SDL_BUTTON_RIGHT)
+						exMouseButtons |= 2;
+					break;
+
+				case SDL_EVENT_MOUSE_BUTTON_UP:
+					if (event.button.button == SDL_BUTTON_LEFT)
+						exMouseButtons &= ~1;
+					if (event.button.button == SDL_BUTTON_RIGHT)
+						exMouseButtons &= ~2;
+					break;
+
+				case SDL_EVENT_MOUSE_MOTION:
+					exMouseX = event.motion.x;
+					exMouseY = event.motion.y;
+					exMouseDeltaX = event.motion.xrel;
+					exMouseDeltaY = event.motion.yrel;
+					break;
 
 				case SDL_EVENT_KEY_DOWN:
 					if ((r = exKeyEvent(appstate, event.key.key)) != PL_EXIT_CONTINUE)
