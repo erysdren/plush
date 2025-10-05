@@ -4,26 +4,16 @@
 // note: not actually rainbow colored until i implement vertex colour support
 // -- erysdren
 
-#include <float.h>
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
-
-#include <plush/plush.h>
-
 #include "ex.h"
 
-pl_Obj *triangle;
-pl_Mat *material;
-pl_Cam *camera;
-uint8_t framebuffer[W * H];
-uint8_t palette[768];
+static pl_Obj *triangle;
+static pl_Mat *material;
+static pl_Cam *camera;
+static uint8_t framebuffer[W * H];
+static uint8_t palette[768];
 
-int main(int argc, char **argv)
+int exInit(void **appstate, int argc, char **argv)
 {
-	/* setup graphics mode */
-	exSetGraphics();
-
 	/* create triangle model */
 	triangle = plObjCreate(NULL);
 	triangle->Model = plMdlCreate(3, 1);
@@ -75,29 +65,40 @@ int main(int argc, char **argv)
 	camera->Y = 96;
 	camera->Z = -300;
 
-	/* main loop */
-	while (!exGetKey())
-	{
-		/* clear framebuffer */
-		memset(framebuffer, 0, sizeof(framebuffer));
+	return PL_EXIT_CONTINUE;
+}
 
-		/* render frame */
-		plRenderBegin(camera);
-		plRenderObj(triangle);
-		plRenderEnd();
+int exIterate(void *appstate)
+{
+	/* clear framebuffer */
+	plMemSet(framebuffer, 0, sizeof(framebuffer));
 
-		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
-	}
+	/* render frame */
+	plRenderBegin(camera);
+	plRenderObj(triangle);
+	plRenderEnd();
 
+	/* copy to screen */
+	plMemCpy(exGraphMem, framebuffer, sizeof(framebuffer));
+
+	return PL_EXIT_CONTINUE;
+}
+
+int exKeyEvent(void *appstate, int key)
+{
+	// any keypress will trigger an exit
+	return PL_EXIT_SUCCESS;
+}
+
+void exQuit(void *appstate, int code)
+{
 	/* clean up */
 	plCamDelete(camera);
 	plObjDelete(triangle);
 	plMatDelete(material);
+}
 
-	/* shut down video */
-	exSetText();
-
-	return 0;
+int main(int argc, char **argv)
+{
+	return exBegin(argc, argv, "triangle: obligatory rainbow colored triangle");
 }
