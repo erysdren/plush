@@ -81,6 +81,7 @@ target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
 
 if(PLUSH_BUILD_EXAMPLES)
 	set(examples
+		wacredits
 		duckdemo
 		eggbug
 		ex1
