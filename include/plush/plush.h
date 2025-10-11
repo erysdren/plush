@@ -71,6 +71,31 @@ void plAllocatorSet(pl_Alloc func, void *user);
 pl_Alloc plAllocatorGet(void **user);
 
 /******************************************************************************
+** Resource Functions (resource.c)
+******************************************************************************/
+
+/*
+  plResCreate() allocate a new resource buffer with the given parent pointer
+  Parameters:
+    parent: a parent pointer also allocated with plResCreate() or NULL
+    size: requested size in bytes
+  Returns:
+    a pointer to the buffer on success, NULL on failure
+  Notes:
+    the returned pointer will be aligned to PL_RESOURCE_ALIGNMENT bytes
+*/
+void *plResCreate(void *parent, size_t size);
+
+/*
+  plResDelete() free a resource buffer and all its children
+  Parameters:
+    user: a pointer to a resource buffer allocated with plResCreate()
+  Returns:
+    nothing
+*/
+void plResDelete(void *user);
+
+/******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/
 
