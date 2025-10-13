@@ -12,36 +12,41 @@ static const size_t _plResAlign = PL_RESOURCE_ALIGNMENT;
 static const size_t _plResMagic = 0xBEEFCAFE;
 
 typedef struct _pl_Res {
-	size_t Magic;
 	struct _pl_Res *Parent;
 	struct _pl_Res *PrevSibling;
 	struct _pl_Res *NextSibling;
 	struct _pl_Res *Children;
+	size_t Free;
 	size_t Size;
 	void *User;
 } pl_Res;
 
-static pl_Res *_plResUserToResource(void *user)
+static int _plResUserToResource(void *user, pl_Res **res)
 {
-	pl_Res *res;
+	size_t magic;
+	pl_Res *_res;
 
 	if (!user)
-		return NULL;
+		return PL_RESOURCE_ERROR_NONE;
 
 	/* muahaha */
-	res = (pl_Res *)*(void **)((uint8_t *)user - sizeof(void *));
+	magic = *(size_t *)((uint8_t *)user - sizeof(size_t));
+	if (magic != _plResMagic)
+		return PL_RESOURCE_ERROR_NOT_RESOURCE;
 
-	/* FIXME: add better error handling or reporting */
-	if (res->Magic != _plResMagic)
-		return NULL;
-	if (res->User != user)
-		return NULL;
+	_res = (pl_Res *)*(void **)((uint8_t *)user - (sizeof(void *) * 2));
 
-	return res;
+	if (_res->Free != 0)
+		return PL_RESOURCE_ERROR_DOUBLE_FREE;
+
+	*res = _res;
+
+	return PL_RESOURCE_ERROR_NONE;
 }
 
 void *plResCreate(void *parent, size_t size)
 {
+	int err;
 	pl_Res *res;
 	uint8_t *user;
 	size_t padding, total_size, alignment;
@@ -56,7 +61,7 @@ void *plResCreate(void *parent, size_t size)
 
 	/* calculate total allocation size */
 	/* FIXME: check for overflows */
-	total_size = size + alignment + sizeof(pl_Res) + sizeof(void *) + padding;
+	total_size = size + alignment + sizeof(pl_Res) + sizeof(void *) + sizeof(size_t) + padding;
 
 	/* allocate resource */
 	res = plMalloc(total_size);
@@ -64,22 +69,28 @@ void *plResCreate(void *parent, size_t size)
 		return NULL;
 
 	/* align user pointer */
-	user = (uint8_t *)res + sizeof(pl_Res) + sizeof(void *);
+	user = (uint8_t *)res + sizeof(pl_Res) + sizeof(void *) + sizeof(size_t);
 	user += alignment - (((size_t)user) % alignment);
 
 	/* initialize the leader area to zero */
 	plMemSet(res, 0, user - (uint8_t *)res);
 
-	/* store the original pointer right before the returned value */
-	*(void **)(user - sizeof(void *)) = (void *)res;
+	/* store a magic identifier and the original pointer right before the returned value */
+	*(size_t *)(user - sizeof(size_t)) = _plResMagic;
+	*(void **)(user - (sizeof(void *) * 2)) = (void *)res;
 
 	/* setup fields */
 	res->Size = size;
 	res->User = (void *)user;
-	res->Magic = _plResMagic;
+	res->Free = 0;
+	res->Parent = NULL;
+	res->Children = NULL;
 
 	/* add to parent */
-	res->Parent = _plResUserToResource(parent);
+	err = _plResUserToResource(parent, &res->Parent);
+	if (err != PL_RESOURCE_ERROR_NONE)
+		return NULL;
+
 	if (res->Parent)
 	{
 		res->NextSibling = res->Parent->Children;
@@ -106,34 +117,54 @@ static void _plResRemoveParent(pl_Res *res)
 	res->NextSibling = NULL;
 }
 
-static void _plResDelete(pl_Res *res)
+static int _plResDelete(pl_Res *res, int mode)
 {
 	pl_Res *child, *next;
 
+	/* test for null */
 	if (!res)
-		return;
+		return PL_RESOURCE_ERROR_NONE;
+
+	/* check if already free */
+	if (res->Free != 0)
+		return PL_RESOURCE_ERROR_DOUBLE_FREE;
+
+	/* test if we can free children */
+	if (mode == PL_RESOURCE_DELETE_PARENT_ONLY && res->Children)
+		return PL_RESOURCE_ERROR_CANT_FREE;
 
 	/* free any children */
 	child = res->Children;
 	while (child)
 	{
 		next = child->NextSibling;
-		_plResDelete(child);
+		_plResDelete(child, PL_RESOURCE_DELETE_ALL);
 		child = next;
 	}
+
+	res->Children = NULL;
+
+	/* test if we should delete parent */
+	if (mode == PL_RESOURCE_DELETE_CHILDREN_ONLY)
+		return PL_RESOURCE_ERROR_NONE;
 
 	/* remove from any parent list */
 	_plResRemoveParent(res);
 
-	/* untag memory */
-	plMemSet(res, 0, sizeof(pl_Res));
+	/* mark as free */
+	res->Free = 1;
 
 	/* finally free memory */
 	plFree(res);
+
+	return PL_RESOURCE_ERROR_NONE;
 }
 
-void plResDelete(void *user)
+int plResDelete(void *user, int mode)
 {
-	pl_Res *res = _plResUserToResource(user);
-	_plResDelete(res);
+	int err;
+	pl_Res *res;
+	if ((err = _plResUserToResource(user, &res)) != PL_RESOURCE_ERROR_NONE)
+		return err;
+	return _plResDelete(res, mode);
 }

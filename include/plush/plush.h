@@ -90,10 +90,11 @@ void *plResCreate(void *parent, size_t size);
   plResDelete() free a resource buffer and all its children
   Parameters:
     user: a pointer to a resource buffer allocated with plResCreate()
+    mode: PL_RESOURCE_DELETE_* option
   Returns:
-    nothing
+    PL_RESOURCE_ERROR_* code
 */
-void plResDelete(void *user);
+int plResDelete(void *user, int mode);
 
 /******************************************************************************
 ** Material Functions (mat.c)
