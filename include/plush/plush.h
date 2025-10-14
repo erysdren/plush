@@ -96,6 +96,25 @@ void *plResCreate(void *parent, size_t size);
 */
 int plResDelete(void *user, int mode);
 
+/*
+  plResAddChild() adds an resource as a child of the given parent resource
+  Paramters:
+    parent: parent resource
+    child: resource to add as child
+  Returns:
+    PL_RESOURCE_ERROR_* code
+*/
+int plResAddChild(void *parent, void *child);
+
+/*
+  plResRemoveParent() removes a given resource from its parent hierarchy
+  Paramters:
+    user: resource pointer to remove from parent hierarchy
+  Returns:
+    PL_RESOURCE_ERROR_* code
+*/
+int plResRemoveParent(void *user);
+
 /******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/

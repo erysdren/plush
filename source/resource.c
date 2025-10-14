@@ -102,7 +102,7 @@ void *plResCreate(void *parent, size_t size)
 	return res->User;
 }
 
-static void _plResRemoveParent(pl_Res *res)
+static int _plResRemoveParent(pl_Res *res)
 {
 	if (res->Parent && res->Parent->Children == res)
 		res->Parent->Children = res->NextSibling;
@@ -115,6 +115,35 @@ static void _plResRemoveParent(pl_Res *res)
 	res->Parent = NULL;
 	res->PrevSibling = NULL;
 	res->NextSibling = NULL;
+
+	return PL_RESOURCE_ERROR_NONE;
+}
+
+int plResAddChild(void *parent, void *child)
+{
+	int err;
+	pl_Res *resparent, *reschild;
+	if ((err = _plResUserToResource(parent, &resparent)) != PL_RESOURCE_ERROR_NONE)
+		return err;
+	if ((err = _plResUserToResource(child, &reschild)) != PL_RESOURCE_ERROR_NONE)
+		return err;
+	if ((err = _plResRemoveParent(reschild)) != PL_RESOURCE_ERROR_NONE)
+		return err;
+	reschild->Parent = resparent;
+	reschild->NextSibling = resparent->Children;
+	if (resparent->Children)
+		resparent->Children->PrevSibling = reschild;
+	resparent->Children = reschild;
+	return PL_RESOURCE_ERROR_NONE;
+}
+
+int plResRemoveParent(void *user)
+{
+	int err;
+	pl_Res *res;
+	if ((err = _plResUserToResource(user, &res)) != PL_RESOURCE_ERROR_NONE)
+		return err;
+	return _plResRemoveParent(res);
 }
 
 static int _plResDelete(pl_Res *res, int mode)
