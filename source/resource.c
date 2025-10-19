@@ -18,24 +18,23 @@ typedef struct _pl_Res {
 	struct _pl_Res *Children;
 	size_t Free;
 	size_t Size;
-	void *User;
+	void *Original;
+	size_t Magic;
 } pl_Res;
 
 static int _plResUserToResource(void *user, pl_Res **res)
 {
-	size_t magic;
 	pl_Res *_res;
 
 	if (!user)
 		return PL_RESOURCE_ERROR_NONE;
 
 	/* muahaha */
-	magic = *(size_t *)((uint8_t *)user - sizeof(size_t));
-	if (magic != _plResMagic)
+	_res = (pl_Res *)((uint8_t *)user - sizeof(pl_Res));
+	if (_res->Magic != _plResMagic)
 		return PL_RESOURCE_ERROR_NOT_RESOURCE;
 
-	_res = (pl_Res *)*(void **)((uint8_t *)user - (sizeof(void *) * 2));
-
+	/* check if free */
 	if (_res->Free != 0)
 		return PL_RESOURCE_ERROR_DOUBLE_FREE;
 
@@ -48,7 +47,7 @@ void *plResCreate(void *parent, size_t size)
 {
 	int err;
 	pl_Res *res;
-	uint8_t *user;
+	uint8_t *user, *original;
 	size_t padding, total_size, alignment;
 
 	/* calculate alignment */
@@ -61,30 +60,32 @@ void *plResCreate(void *parent, size_t size)
 
 	/* calculate total allocation size */
 	/* FIXME: check for overflows */
-	total_size = size + alignment + sizeof(pl_Res) + sizeof(void *) + sizeof(size_t) + padding;
+	total_size = size + alignment + sizeof(pl_Res) + padding;
 
 	/* allocate resource */
-	res = plMalloc(total_size);
-	if (!res)
+	original = (uint8_t *)plMalloc(total_size);
+	if (!original)
 		return NULL;
 
 	/* align user pointer */
-	user = (uint8_t *)res + sizeof(pl_Res) + sizeof(void *) + sizeof(size_t);
+	user = (uint8_t *)original + sizeof(pl_Res);
 	user += alignment - (((size_t)user) % alignment);
 
-	/* initialize the leader area to zero */
-	plMemSet(res, 0, user - (uint8_t *)res);
+	/* setup resource structure pointer */
+	res = (pl_Res *)(user - sizeof(pl_Res));
 
-	/* store a magic identifier and the original pointer right before the returned value */
-	*(size_t *)(user - sizeof(size_t)) = _plResMagic;
-	*(void **)(user - (sizeof(void *) * 2)) = (void *)res;
+	/* initialize the leader area to zero */
+	plMemSet(original, 0, user - (uint8_t *)original);
 
 	/* setup fields */
+	res->Magic = _plResMagic;
 	res->Size = size;
-	res->User = (void *)user;
+	res->Original = (void *)original;
 	res->Free = 0;
 	res->Parent = NULL;
 	res->Children = NULL;
+	res->NextSibling = NULL;
+	res->PrevSibling = NULL;
 
 	/* add to parent */
 	err = _plResUserToResource(parent, &res->Parent);
@@ -99,7 +100,7 @@ void *plResCreate(void *parent, size_t size)
 		res->Parent->Children = res;
 	}
 
-	return res->User;
+	return (void *)user;
 }
 
 static int _plResRemoveParent(pl_Res *res)
