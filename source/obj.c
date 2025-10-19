@@ -52,7 +52,7 @@ pl_Obj *plObjAddChild(pl_Obj *parent, pl_Obj *child)
 pl_Obj *plObjRemoveParent(pl_Obj *o)
 {
 	if (o->Parent && o->Parent->Children == o)
-		o->Parent->Children = NULL;
+		o->Parent->Children = o->NextSibling;
 
 	if (o->NextSibling)
 		o->NextSibling->PrevSibling = o->PrevSibling;
