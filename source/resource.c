@@ -185,7 +185,7 @@ static int _plResDelete(pl_Res *res, int mode)
 	res->Free = 1;
 
 	/* finally free memory */
-	plFree(res);
+	plFree(res->Original);
 
 	return PL_RESOURCE_ERROR_NONE;
 }
