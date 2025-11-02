@@ -20,40 +20,58 @@ static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 
 static pl_Texture *_plProcessPCX(uint16_t x, uint16_t y, uint8_t *data, uint8_t *pal, bool rescale, bool optimize)
 {
-  pl_Texture *t = (pl_Texture *) plMalloc(sizeof(pl_Texture));
-  if (!t) return 0;
-  t->Width = _plHiBit(x);
-  t->Height = _plHiBit(y);
-  if (rescale && (1 << t->Width != x || 1 << t->Height != y)) {
-    uint8_t nx, ny, *newdata;
-    nx = t->Width;
-    if ((1 << t->Width) != x) nx++;
-    ny = t->Height;
-    if ((1 << t->Height) != y) ny++;
-    newdata = (uint8_t *) plMalloc((1<<nx)*(1<<ny));
-    if (!newdata) {
-      plFree(t);
-      plFree(data);
-      plFree(pal);
-      return 0;
-    }
-    _plRescaleImage(data,newdata,x,y,1<<nx,1<<ny);
-    plFree(data);
-    data = newdata;
-    t->Width = nx;
-    t->Height = ny;
-    x = 1<<nx; y = 1<<ny;
-  }
-  t->iWidth = x;
-  t->iHeight = y;
-  t->uScale = (float) (1<<t->Width);
-  t->vScale = (float) (1<<t->Height);
-  if (optimize) t->NumColors = _plOptimizeImage(pal, data,x*y);
-  else t->NumColors = 256;
-  t->Data = data;
-  t->PaletteData = pal;
-  t->ClearColor = -1;
-  return t;
+	pl_Texture *t = plResCreate(NULL, sizeof(pl_Texture));
+
+	t->Width = _plHiBit(x);
+	t->Height = _plHiBit(y);
+
+	if (rescale && (1 << t->Width != x || 1 << t->Height != y))
+	{
+		uint8_t nx, ny, *newdata;
+
+		nx = t->Width;
+		if ((1 << t->Width) != x)
+			nx++;
+
+		ny = t->Height;
+		if ((1 << t->Height) != y)
+			ny++;
+
+		newdata = plMalloc((1 << nx) * (1 << ny));
+
+		_plRescaleImage(data, newdata, x, y, 1<<nx, 1<<ny);
+
+		plFree(data);
+		data = newdata;
+
+		t->Width = nx;
+		t->Height = ny;
+
+		x = 1 << nx;
+		y = 1 << ny;
+	}
+
+	t->iWidth = x;
+	t->iHeight = y;
+	t->uScale = (float)(1 << t->Width);
+	t->vScale = (float)(1 << t->Height);
+
+	if (optimize)
+		t->NumColors = _plOptimizeImage(pal, data, t->iWidth * t->iHeight);
+	else
+		t->NumColors = 256;
+
+	t->Data = plResCreate(t, t->iWidth * t->iHeight);
+	plMemCpy(t->Data, data, t->iWidth * t->iHeight);
+	plFree(data);
+
+	t->PaletteData = plResCreate(t, 768);
+	plMemCpy(t->PaletteData, pal, 768);
+	plFree(pal);
+
+	t->ClearColor = -1;
+
+	return t;
 }
 
 pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
