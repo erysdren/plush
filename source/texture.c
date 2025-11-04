@@ -115,5 +115,5 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 
 void plTexDelete(pl_Texture *t)
 {
-	plResDelete(t, PL_RESOURCE_DELETE_ALL);
+	plResDelete(t);
 }

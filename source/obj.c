@@ -19,7 +19,7 @@ void plObjDelete(pl_Obj *o) {
       plObjDelete(child);
       child = next;
     }
-    plResDelete(o, PL_RESOURCE_DELETE_ALL);
+    plResDelete(o);
   }
 }
 
@@ -71,7 +71,7 @@ void plObjSetName(pl_Obj *o, const char *name)
 	if (!len)
 		return;
 	if (o->Name)
-		plResDelete(o->Name, PL_RESOURCE_DELETE_ALL);
+		plResDelete(o->Name);
 	o->Name = plResCreate(o, len + 1);
 	plStrNCpy(o->Name, name, len);
 	o->Name[len] = 0;

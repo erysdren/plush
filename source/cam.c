@@ -9,7 +9,7 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 
 void plCamDelete(pl_Cam *c) {
-	plResDelete(c, PL_RESOURCE_DELETE_ALL);
+	plResDelete(c);
 }
 
 void plCamSetTarget(pl_Cam *c, float x, float y, float z) {

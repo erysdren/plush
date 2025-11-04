@@ -42,5 +42,5 @@ pl_Light *plLightCreate(void) {
 }
 
 void plLightDelete(pl_Light *l) {
-  plResDelete(l, PL_RESOURCE_DELETE_ALL);
+  plResDelete(l);
 }

@@ -90,11 +90,10 @@ void *plResCreate(void *parent, size_t size);
   plResDelete() free a resource buffer and all its children
   Parameters:
     user: a pointer to a resource buffer allocated with plResCreate()
-    mode: PL_RESOURCE_DELETE_* option
   Returns:
-    PL_RESOURCE_ERROR_* code
+    nothing
 */
-int plResDelete(void *user, int mode);
+void plResDelete(void *user);
 
 /*
   plResAddChild() adds an resource as a child of the given parent resource

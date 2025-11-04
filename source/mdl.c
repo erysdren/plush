@@ -52,7 +52,7 @@ pl_Mdl *plMdlFlipNormals(pl_Mdl *mdl) {
 
 void plMdlDelete(pl_Mdl *mdl)
 {
-	plResDelete(mdl, PL_RESOURCE_DELETE_ALL);
+	plResDelete(mdl);
 }
 
 pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf)

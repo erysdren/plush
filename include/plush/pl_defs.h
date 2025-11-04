@@ -33,28 +33,6 @@ extern "C" {
 #define plATan(v) atan(v)
 #define plSqrt(v) sqrt(v)
 
-/*
-** plResDelete() return values
-** 0 - no error
-** 1 - not a valid resource pointer
-** 2 - resource pointer was already freed
-** 3 - can't free for some reason
-*/
-#define PL_RESOURCE_ERROR_NONE (0)
-#define PL_RESOURCE_ERROR_NOT_RESOURCE (1)
-#define PL_RESOURCE_ERROR_DOUBLE_FREE (2)
-#define PL_RESOURCE_ERROR_CANT_FREE (3)
-
-/*
-** plResDelete() options
-** 0 - delete parent and all children
-** 1 - delete children and leave parent intact
-** 2 - delete parent only if it has no children
-*/
-#define PL_RESOURCE_DELETE_ALL (0)
-#define PL_RESOURCE_DELETE_CHILDREN_ONLY (1)
-#define PL_RESOURCE_DELETE_PARENT_ONLY (2)
-
 /* Utility min() and max() functions */
 #define plMin(x,y) (( ( x ) > ( y ) ? ( y ) : ( x )))
 #define plMax(x,y) (( ( x ) < ( y ) ? ( y ) : ( x )))

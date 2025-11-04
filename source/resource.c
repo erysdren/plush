@@ -8,6 +8,15 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
+/*
+** 0 - no error
+** 1 - not a valid resource pointer
+** 2 - resource pointer was already freed
+*/
+#define PL_RESOURCE_ERROR_NONE (0)
+#define PL_RESOURCE_ERROR_NOT_RESOURCE (1)
+#define PL_RESOURCE_ERROR_DOUBLE_FREE (2)
+
 static const size_t _plResAlign = PL_RESOURCE_ALIGNMENT;
 static const size_t _plResMagic = 0xBEEFCAFE;
 
@@ -149,7 +158,7 @@ void *plResRemoveParent(void *user)
 	return user;
 }
 
-static int _plResDelete(pl_Res *res, int mode)
+static int _plResDelete(pl_Res *res)
 {
 	pl_Res *child, *next;
 
@@ -161,24 +170,16 @@ static int _plResDelete(pl_Res *res, int mode)
 	if (res->Free != 0)
 		return PL_RESOURCE_ERROR_DOUBLE_FREE;
 
-	/* test if we can free children */
-	if (mode == PL_RESOURCE_DELETE_PARENT_ONLY && res->Children)
-		return PL_RESOURCE_ERROR_CANT_FREE;
-
 	/* free any children */
 	child = res->Children;
 	while (child)
 	{
 		next = child->NextSibling;
-		_plResDelete(child, PL_RESOURCE_DELETE_ALL);
+		_plResDelete(child);
 		child = next;
 	}
 
 	res->Children = NULL;
-
-	/* test if we should delete parent */
-	if (mode == PL_RESOURCE_DELETE_CHILDREN_ONLY)
-		return PL_RESOURCE_ERROR_NONE;
 
 	/* remove from any parent list */
 	_plResRemoveParent(res);
@@ -192,11 +193,10 @@ static int _plResDelete(pl_Res *res, int mode)
 	return PL_RESOURCE_ERROR_NONE;
 }
 
-int plResDelete(void *user, int mode)
+void plResDelete(void *user)
 {
-	int err;
 	pl_Res *res;
-	if ((err = _plResUserToResource(user, &res)) != PL_RESOURCE_ERROR_NONE)
-		return err;
-	return _plResDelete(res, mode);
+	if (_plResUserToResource(user, &res) != PL_RESOURCE_ERROR_NONE)
+		return;
+	_plResDelete(res);
 }
