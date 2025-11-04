@@ -9,8 +9,8 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 
 void plClipSetFrustum(pl_Cam *cam);
-void plClipRenderFace(pl_Face *face);
-int32_t plClipNeeded(pl_Face *face);
+void plClipRenderFace(pl_PrepFace *face);
+int32_t plClipNeeded(pl_PrepFace *face);
 
 #define MACRO_plMatrixApply(m,x,y,z,outx,outy,outz) \
       ( outx ) = ( x )*( m )[0] + ( y )*( m )[1] + ( z )*( m )[2] + ( m )[3];\
@@ -79,89 +79,107 @@ void plRenderLight(pl_Light *light) {
   _lights[_numlights++].light = light;
 }
 
-static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
-  uint32_t i, x, facepos, vertpos;
-  float nx = 0.0, ny = 0.0, nz = 0.0;
-  double tmp, tmp2;
-  float oMatrix[16], nMatrix[16], tempMatrix[16];
+static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
+{
+	uint32_t i, x, facepos, vertpos;
+	float nx = 0.0, ny = 0.0, nz = 0.0;
+	double tmp, tmp2;
+	float oMatrix[16], nMatrix[16], tempMatrix[16];
 
-  pl_Vertex *vertex;
-  pl_PrepVertex *prepvertex;
-  pl_Face *face;
-  pl_Light *light;
-  pl_Obj *child;
+	pl_PrepFace *face;
+	pl_Light *light;
+	pl_Obj *child;
 
-  if (obj->GenMatrix) {
-    plMatrixRotate(nMatrix,1,obj->Xa);
-    plMatrixRotate(tempMatrix,2,obj->Ya);
-    plMatrixMultiply(nMatrix,tempMatrix);
-    plMatrixRotate(tempMatrix,3,obj->Za);
-    plMatrixMultiply(nMatrix,tempMatrix);
-    plMemCpy(oMatrix,nMatrix,sizeof(float)*16);
-  } else plMemCpy(nMatrix,obj->RotMatrix,sizeof(float)*16);
+	if (obj->GenMatrix) {
+		plMatrixRotate(nMatrix,1,obj->Xa);
+		plMatrixRotate(tempMatrix,2,obj->Ya);
+		plMatrixMultiply(nMatrix,tempMatrix);
+		plMatrixRotate(tempMatrix,3,obj->Za);
+		plMatrixMultiply(nMatrix,tempMatrix);
+		plMemCpy(oMatrix,nMatrix,sizeof(float)*16);
+	} else plMemCpy(nMatrix,obj->RotMatrix,sizeof(float)*16);
 
-  if (bnmatrix) plMatrixMultiply(nMatrix,bnmatrix);
+	if (bnmatrix) plMatrixMultiply(nMatrix,bnmatrix);
 
-  if (obj->GenMatrix) {
-    plMatrixTranslate(tempMatrix, obj->Xp, obj->Yp, obj->Zp);
-    plMatrixMultiply(oMatrix,tempMatrix);
-  } else plMemCpy(oMatrix,obj->Matrix,sizeof(float)*16);
-  if (bmatrix) plMatrixMultiply(oMatrix,bmatrix);
+	if (obj->GenMatrix) {
+		plMatrixTranslate(tempMatrix, obj->Xp, obj->Yp, obj->Zp);
+		plMatrixMultiply(oMatrix,tempMatrix);
+	} else plMemCpy(oMatrix,obj->Matrix,sizeof(float)*16);
 
-  // erysdren
-  child = obj->Children;
-  while (child)
-  {
-    _RenderObj(child,oMatrix,nMatrix);
-    child = child->NextSibling;
-  }
+	if (bmatrix) plMatrixMultiply(oMatrix,bmatrix);
 
-  if (!obj->Model) return;
+	// erysdren
+	child = obj->Children;
+	while (child)
+	{
+		_RenderObj(child,oMatrix,nMatrix);
+		child = child->NextSibling;
+	}
 
-  if (!obj->Model->NumFaces || !obj->Model->NumVertices) return;
+	// invalid model
+	if (!obj->Model)
+		return;
+	// invalid model data
+	if (!obj->Model->NumFaces || !obj->Model->NumVertices)
+		return;
+	// exceeded maximum vert count
+	if (_numvertices + obj->Model->NumVertices >= PL_MAX_TRIANGLES * 3)
+		return;
+	// exceeded maximum face count
+	if (_numfaces + obj->Model->NumFaces >= PL_MAX_TRIANGLES)
+		return;
 
-  plMatrixTranslate(tempMatrix, -_cam->X, -_cam->Y, -_cam->Z);
-  plMatrixMultiply(oMatrix,tempMatrix);
-  plMatrixMultiply(oMatrix,_cMatrix);
-  plMatrixMultiply(nMatrix,_cMatrix);
-  
-  x = obj->Model->NumVertices;
-  vertex = obj->Model->Vertices;
-  vertpos = _numvertices;
+	plMatrixTranslate(tempMatrix, -_cam->X, -_cam->Y, -_cam->Z);
+	plMatrixMultiply(oMatrix,tempMatrix);
+	plMatrixMultiply(oMatrix,_cMatrix);
+	plMatrixMultiply(nMatrix,_cMatrix);
 
-  do {
-    MACRO_plMatrixApply(oMatrix,vertex->x,vertex->y,vertex->z, 
-                  _vertices[vertpos].xformedx, _vertices[vertpos].xformedy, _vertices[vertpos].xformedz);
-    MACRO_plMatrixApply(nMatrix,vertex->nx,vertex->ny,vertex->nz,
-                  _vertices[vertpos].xformednx, _vertices[vertpos].xformedny,_vertices[vertpos].xformednz);
-    vertpos++;
-    vertex++;
-  } while (--x);
+	// setup vertices
+	for (x = 0, vertpos = _numvertices; x < obj->Model->NumVertices; x++, vertpos++)
+	{
+		MACRO_plMatrixApply(
+			oMatrix,
+			obj->Model->Vertices[x].x, obj->Model->Vertices[x].y, obj->Model->Vertices[x].z,
+			_vertices[vertpos].xformedx, _vertices[vertpos].xformedy, _vertices[vertpos].xformedz
+		);
 
-  face = obj->Model->Faces;
-  facepos = _numfaces;
+		MACRO_plMatrixApply(
+			nMatrix,
+			obj->Model->Vertices[x].nx, obj->Model->Vertices[x].ny, obj->Model->Vertices[x].nz,
+			_vertices[vertpos].xformednx, _vertices[vertpos].xformedny, _vertices[vertpos].xformednz
+		);
 
-  if (_numfaces + obj->Model->NumFaces >= PL_MAX_TRIANGLES) // exceeded maximum face coutn
-  {
-    return;
-  }
+		_vertices[vertpos].Vertex = obj->Model->Vertices + x;
+	}
 
-  plRender_TriStats[0] += obj->Model->NumFaces;
-  _numfaces += obj->Model->NumFaces;
-  x = obj->Model->NumFaces;
+	// setup faces
+	for (x = 0, facepos = _numfaces, vertpos = _numvertices; x < obj->Model->NumFaces; x++, facepos++, vertpos += 3)
+	{
+		plMemSet(&_faces[facepos], 0, sizeof(pl_PrepFace));
 
-  do {
-    if (obj->BackfaceCull || face->Material->_st & PL_SHADE_FLAT)
-    {
-      MACRO_plMatrixApply(nMatrix,face->nx,face->ny,face->nz,nx,ny,nz);
-    }
+		for (i = 0; i < 3; i++)
+		{
+			_faces[facepos].Vertices[i] = _vertices + vertpos + i;
+		}
+
+		_faces[facepos].Face = obj->Model->Faces + x;
+	}
+
+	for (x = 0, facepos = _numfaces; x < obj->Model->NumFaces; x++, facepos++)
+	{
+		face = _faces + facepos;
+
+		if (obj->BackfaceCull || face->Face->Material->_st & PL_SHADE_FLAT)
+		{
+			MACRO_plMatrixApply(nMatrix, face->Face->nx, face->Face->ny, face->Face->nz, nx, ny, nz);
+		}
     if (!obj->BackfaceCull || (MACRO_plDotProduct(nx,ny,nz, 
         face->Vertices[0]->xformedx, face->Vertices[0]->xformedy,
         face->Vertices[0]->xformedz) < 0.0000001)) {
       if (plClipNeeded(face)) {
-        if (face->Material->_st & (PL_SHADE_FLAT|PL_SHADE_FLAT_DISTANCE)) {
-          tmp = face->sLighting;
-          if (face->Material->_st & PL_SHADE_FLAT) {
+        if (face->Face->Material->_st & (PL_SHADE_FLAT|PL_SHADE_FLAT_DISTANCE)) {
+          tmp = face->Face->sLighting;
+          if (face->Face->Material->_st & PL_SHADE_FLAT) {
             for (i = 0; i < _numlights; i ++) {
               tmp2 = 0.0;
               light = _lights[i].light;
@@ -193,25 +211,25 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
               else if (obj->BackfaceIllumination) tmp -= tmp2;
             } /* End of light loop */ 
           } /* End of flat shading if */
-          if (face->Material->_st & PL_SHADE_FLAT_DISTANCE)
+          if (face->Face->Material->_st & PL_SHADE_FLAT_DISTANCE)
             tmp += 1.0-(face->Vertices[0]->xformedz+face->Vertices[1]->xformedz+
                         face->Vertices[2]->xformedz) /
-                       (face->Material->FadeDist*3.0);
+                       (face->Face->Material->FadeDist*3.0);
           face->fShade = (float) tmp;
         } else face->fShade = 0.0; /* End of flatmask lighting if */
-        if (face->Material->_ft & PL_FILL_ENVIRONMENT) {
-          face->eMappingU[0] = 32768 + (int32_t) (face->Vertices[0]->xformednx*32768.0);
-          face->eMappingV[0] = 32768 - (int32_t) (face->Vertices[0]->xformedny*32768.0);
-          face->eMappingU[1] = 32768 + (int32_t) (face->Vertices[1]->xformednx*32768.0);
-          face->eMappingV[1] = 32768 - (int32_t) (face->Vertices[1]->xformedny*32768.0);
-          face->eMappingU[2] = 32768 + (int32_t) (face->Vertices[2]->xformednx*32768.0);
-          face->eMappingV[2] = 32768 - (int32_t) (face->Vertices[2]->xformedny*32768.0);
+        if (face->Face->Material->_ft & PL_FILL_ENVIRONMENT) {
+          face->Face->eMappingU[0] = 32768 + (int32_t) (face->Vertices[0]->xformednx*32768.0);
+          face->Face->eMappingV[0] = 32768 - (int32_t) (face->Vertices[0]->xformedny*32768.0);
+          face->Face->eMappingU[1] = 32768 + (int32_t) (face->Vertices[1]->xformednx*32768.0);
+          face->Face->eMappingV[1] = 32768 - (int32_t) (face->Vertices[1]->xformedny*32768.0);
+          face->Face->eMappingU[2] = 32768 + (int32_t) (face->Vertices[2]->xformednx*32768.0);
+          face->Face->eMappingV[2] = 32768 - (int32_t) (face->Vertices[2]->xformedny*32768.0);
         } 
-        if (face->Material->_st &(PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE)) {
+        if (face->Face->Material->_st &(PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE)) {
           uint8_t a;
           for (a = 0; a < 3; a ++) {
-            tmp = face->vsLighting[a];
-            if (face->Material->_st & PL_SHADE_GOURAUD) {
+            tmp = face->Face->vsLighting[a];
+            if (face->Face->Material->_st & PL_SHADE_GOURAUD) {
               for (i = 0; i < _numlights ; i++) {
                 tmp2 = 0.0;
                 light = _lights[i].light;
@@ -247,20 +265,20 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
                 else if (obj->BackfaceIllumination) tmp -= tmp2;
               } /* End of light loop */
             } /* End of gouraud shading if */
-            if (face->Material->_st & PL_SHADE_GOURAUD_DISTANCE)
-              tmp += 1.0-face->Vertices[a]->xformedz/face->Material->FadeDist;
+            if (face->Face->Material->_st & PL_SHADE_GOURAUD_DISTANCE)
+              tmp += 1.0-face->Vertices[a]->xformedz/face->Face->Material->FadeDist;
             face->Shades[a] = (float) tmp;
           } /* End of vertex loop for */ 
         } /* End of gouraud shading mask if */
-        _faces[facepos].zd = face->Vertices[0]->xformedz+
-        face->Vertices[1]->xformedz+face->Vertices[2]->xformedz;
-        _faces[facepos++].face = face;
+        face->zd = face->Vertices[0]->xformedz+face->Vertices[1]->xformedz+face->Vertices[2]->xformedz;
         plRender_TriStats[1] ++; 
       } /* Is it in our area Check */
     } /* Backface Check */
-    _numfaces = facepos;
-    face++;
-  } while (--x); /* Face loop */
+  }
+
+	plRender_TriStats[0] += obj->Model->NumFaces;
+	_numfaces += obj->Model->NumFaces;
+	_numvertices += obj->Model->NumVertices;
 }
 
 void plRenderObj(pl_Obj *obj) {
@@ -273,13 +291,14 @@ void plRenderEnd(void) {
   else if (_cam->Sort < 0) _hsort(_faces,_numfaces,1);
   f = _faces;
   while (_numfaces--) {
-    if (f->face->Material && f->face->Material->_PutFace)
+    if (f->Face->Material && f->Face->Material->_PutFace)
     {
-      plClipRenderFace(f->face);
+      plClipRenderFace(f);
     }
     f++;
   }
-  _numfaces=0;
+  _numfaces = 0;
+  _numvertices = 0;
   _numlights = 0;
 }
 

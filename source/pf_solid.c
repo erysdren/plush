@@ -149,9 +149,9 @@ void plPF_SolidG(pl_Cam *cam, pl_PrepFace *TriFace) {
   PUTFACE_SORT();
 
   
-  C1 = (int32_t) (TriFace->Face->Shades[i0]*nc);
-  C2 = (int32_t) (TriFace->Face->Shades[i1]*nc);
-  C3 = (int32_t) (TriFace->Face->Shades[i2]*nc);
+  C1 = (int32_t) (TriFace->Shades[i0]*nc);
+  C2 = (int32_t) (TriFace->Shades[i1]*nc);
+  C3 = (int32_t) (TriFace->Shades[i2]*nc);
   X2 = X1 = TriFace->Scrx[i0];
   Z1 = TriFace->Scrz[i0];
   Z2 = TriFace->Scrz[i1];

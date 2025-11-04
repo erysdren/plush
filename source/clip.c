@@ -110,18 +110,18 @@ void plClipSetFrustum(pl_Cam *cam) {
 }
 
 
-void plClipRenderFace(pl_Face *face) {
+void plClipRenderFace(pl_PrepFace *face) {
   uint32_t k, a, w, numVerts;
   double tmp, tmp2;
   pl_PrepFace newface;
 
   for (a = 0; a < 3; a ++) {
-    m_cl[0].newVertices[a].vertex = face->Vertices[a];
+    m_cl[0].newVertices[a] = *(face->Vertices[a]);
     m_cl[0].Shades[a] = face->Shades[a];
-    m_cl[0].MappingU[a] = face->MappingU[a];
-    m_cl[0].MappingV[a] = face->MappingV[a];
-    m_cl[0].eMappingU[a] = face->eMappingU[a];
-    m_cl[0].eMappingV[a] = face->eMappingV[a];
+    m_cl[0].MappingU[a] = face->Face->MappingU[a];
+    m_cl[0].MappingV[a] = face->Face->MappingV[a];
+    m_cl[0].eMappingU[a] = face->Face->eMappingU[a];
+    m_cl[0].eMappingV[a] = face->Face->eMappingV[a];
   }
 
   numVerts = 3;
@@ -133,7 +133,7 @@ void plClipRenderFace(pl_Face *face) {
     a++;
   }
   if (numVerts > 2) {
-    newface.Face = face;
+    plMemCpy(&newface, face, sizeof(pl_PrepFace));
     for (k = 2; k < numVerts; k ++) {
       newface.fShade = plMax(0,plMin(face->fShade,1));
       for (a = 0; a < 3; a ++) {
