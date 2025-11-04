@@ -86,6 +86,8 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 	double tmp, tmp2;
 	float oMatrix[16], nMatrix[16], tempMatrix[16];
 
+	pl_Vertex *vertex;
+	pl_PrepVertex *prepvertex;
 	pl_PrepFace *face;
 	pl_Light *light;
 	pl_Obj *child;
@@ -137,32 +139,35 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 	// setup vertices
 	for (x = 0, vertpos = _numvertices; x < obj->Model->NumVertices; x++, vertpos++)
 	{
+		vertex = obj->Model->Vertices + x;
+		prepvertex = _vertices + vertpos;
+
 		MACRO_plMatrixApply(
 			oMatrix,
-			obj->Model->Vertices[x].x, obj->Model->Vertices[x].y, obj->Model->Vertices[x].z,
-			_vertices[vertpos].xformedx, _vertices[vertpos].xformedy, _vertices[vertpos].xformedz
+			vertex->x, vertex->y, vertex->z,
+			prepvertex->xformedx, prepvertex->xformedy, prepvertex->xformedz
 		);
 
 		MACRO_plMatrixApply(
 			nMatrix,
-			obj->Model->Vertices[x].nx, obj->Model->Vertices[x].ny, obj->Model->Vertices[x].nz,
-			_vertices[vertpos].xformednx, _vertices[vertpos].xformedny, _vertices[vertpos].xformednz
+			vertex->nx, vertex->ny, vertex->nz,
+			prepvertex->xformednx, prepvertex->xformedny, prepvertex->xformednz
 		);
 
-		_vertices[vertpos].Vertex = obj->Model->Vertices + x;
+		prepvertex->Vertex = vertex;
 	}
 
 	// setup faces
-	for (x = 0, facepos = _numfaces, vertpos = _numvertices; x < obj->Model->NumFaces; x++, facepos++, vertpos += 3)
+	for (x = 0, facepos = _numfaces; x < obj->Model->NumFaces; x++, facepos++)
 	{
 		plMemSet(&_faces[facepos], 0, sizeof(pl_PrepFace));
 
+		_faces[facepos].Face = obj->Model->Faces + x;
+
 		for (i = 0; i < 3; i++)
 		{
-			_faces[facepos].Vertices[i] = _vertices + vertpos + i;
+			_faces[facepos].Vertices[i] = _vertices + _numvertices + (_faces[facepos].Face->Vertices[i] - obj->Model->Vertices);
 		}
-
-		_faces[facepos].Face = obj->Model->Faces + x;
 	}
 
 	for (x = 0, facepos = _numfaces; x < obj->Model->NumFaces; x++, facepos++)
