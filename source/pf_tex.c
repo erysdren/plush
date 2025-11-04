@@ -445,7 +445,7 @@ void plPF_TexG(pl_Cam *cam, pl_PrepFace *TriFace) {
     PUTFACE_SORT_TEX();
   }
 
-  C1 = C2 = TriFace->Face->Shades[i0]*65535.0f;
+  C1 = C2 = TriFace->Shades[i0]*65535.0f;
   U1 = U2 = MappingU1;
   V1 = V2 = MappingV1;
   X2 = X1 = TriFace->Scrx[i0];
@@ -458,7 +458,7 @@ void plPF_TexG(pl_Cam *cam, pl_PrepFace *TriFace) {
   if (dY) {
     dX2 = (TriFace->Scrx[i2] - X1) / dY;
     dZ2 = (TriFace->Scrz[i2] - Z1) / dY;
-    dC2 = (TriFace->Face->Shades[i2]*65535.0f - C1) / dY;
+    dC2 = (TriFace->Shades[i2]*65535.0f - C1) / dY;
     dU2 = (MappingU3 - U1) / dY;
     dV2 = (MappingV3 - V1) / dY;
   }
@@ -466,7 +466,7 @@ void plPF_TexG(pl_Cam *cam, pl_PrepFace *TriFace) {
   if (dY) {
     dX1 = (TriFace->Scrx[i1] - X1) / dY;
     dZ1 = (TriFace->Scrz[i1] - Z1) / dY;
-    dC1 = (TriFace->Face->Shades[i1]*65535.0f - C1) / dY;
+    dC1 = (TriFace->Shades[i1]*65535.0f - C1) / dY;
     dU1 = (MappingU2 - U1) / dY;
     dV1 = (MappingV2 - V1) / dY;
     if (dX2 < dX1) {
@@ -481,14 +481,14 @@ void plPF_TexG(pl_Cam *cam, pl_PrepFace *TriFace) {
     if (TriFace->Scrx[i1] > X1) {
       X2 = TriFace->Scrx[i1];
       Z2 = TriFace->Scrz[i1];
-      C2 = TriFace->Face->Shades[i1]*65535.0f;
+      C2 = TriFace->Shades[i1]*65535.0f;
       U2 = MappingU2;
       V2 = MappingV2;
       stat = 2|4;
     } else {
       X1 = TriFace->Scrx[i1];
       Z1 = TriFace->Scrz[i1];
-      C1 = TriFace->Face->Shades[i1]*65535.0f;
+      C1 = TriFace->Shades[i1]*65535.0f;
       U1 = MappingU2;
       V1 = MappingV2;
       stat = 1|8;
@@ -536,7 +536,7 @@ void plPF_TexG(pl_Cam *cam, pl_PrepFace *TriFace) {
         dZ1 = (TriFace->Scrz[i2]-Z1)/dY;
         dV1 = (MappingV3 - V1) / dY;
         dU1 = (MappingU3 - U1) / dY;
-        dC1 = (TriFace->Face->Shades[i2]*65535.0f-C1)/dY;
+        dC1 = (TriFace->Shades[i2]*65535.0f-C1)/dY;
       }
     }
     XL1 = (X1+(1<<19))>>20;
