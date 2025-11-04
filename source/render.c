@@ -81,13 +81,12 @@ void plRenderLight(pl_Light *light) {
 
 static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 {
-	uint32_t i, x, facepos, vertpos;
+	uint32_t i, x;
 	float nx = 0.0, ny = 0.0, nz = 0.0;
 	double tmp, tmp2;
 	float oMatrix[16], nMatrix[16], tempMatrix[16];
 
-	pl_Vertex *vertex;
-	pl_PrepVertex *prepvertex;
+	pl_PrepVertex *vertex;
 	pl_PrepFace *face;
 	pl_Light *light;
 	pl_Obj *child;
@@ -137,42 +136,40 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 	plMatrixMultiply(nMatrix,_cMatrix);
 
 	// setup vertices
-	for (x = 0, vertpos = _numvertices; x < obj->Model->NumVertices; x++, vertpos++)
+	for (x = 0; x < obj->Model->NumVertices; x++)
 	{
-		vertex = obj->Model->Vertices + x;
-		prepvertex = _vertices + vertpos;
+		vertex = _vertices + _numvertices + x;
+		vertex->Vertex = obj->Model->Vertices + x;
 
 		MACRO_plMatrixApply(
 			oMatrix,
-			vertex->x, vertex->y, vertex->z,
-			prepvertex->xformedx, prepvertex->xformedy, prepvertex->xformedz
+			vertex->Vertex->x, vertex->Vertex->y, vertex->Vertex->z,
+			vertex->xformedx, vertex->xformedy, vertex->xformedz
 		);
 
 		MACRO_plMatrixApply(
 			nMatrix,
-			vertex->nx, vertex->ny, vertex->nz,
-			prepvertex->xformednx, prepvertex->xformedny, prepvertex->xformednz
+			vertex->Vertex->nx, vertex->Vertex->ny, vertex->Vertex->nz,
+			vertex->xformednx, vertex->xformedny, vertex->xformednz
 		);
-
-		prepvertex->Vertex = vertex;
 	}
 
 	// setup faces
-	for (x = 0, facepos = _numfaces; x < obj->Model->NumFaces; x++, facepos++)
+	for (x = 0; x < obj->Model->NumFaces; x++)
 	{
-		plMemSet(&_faces[facepos], 0, sizeof(pl_PrepFace));
+		face = _faces + _numfaces + x;
 
-		_faces[facepos].Face = obj->Model->Faces + x;
+		face->Face = obj->Model->Faces + x;
 
 		for (i = 0; i < 3; i++)
 		{
-			_faces[facepos].Vertices[i] = _vertices + _numvertices + (_faces[facepos].Face->Vertices[i] - obj->Model->Vertices);
+			face->Vertices[i] = _vertices + _numvertices + (face->Face->Vertices[i] - obj->Model->Vertices);
 		}
 	}
 
-	for (x = 0, facepos = _numfaces; x < obj->Model->NumFaces; x++, facepos++)
+	for (x = 0; x < obj->Model->NumFaces; x++)
 	{
-		face = _faces + facepos;
+		face = _faces + _numfaces + x;
 
 		if (obj->BackfaceCull || face->Face->Material->_st & PL_SHADE_FLAT)
 		{
@@ -229,7 +226,7 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
           face->Face->eMappingV[1] = 32768 - (int32_t) (face->Vertices[1]->xformedny*32768.0);
           face->Face->eMappingU[2] = 32768 + (int32_t) (face->Vertices[2]->xformednx*32768.0);
           face->Face->eMappingV[2] = 32768 - (int32_t) (face->Vertices[2]->xformedny*32768.0);
-        } 
+        }
         if (face->Face->Material->_st &(PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE)) {
           uint8_t a;
           for (a = 0; a < 3; a ++) {
