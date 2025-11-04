@@ -9,10 +9,10 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 #include "putface.h"
 
-void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_PTexF(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   uint8_t *gmem = cam->frameBuffer;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   float *zbuf = cam->zBuffer;
   float MappingU1, MappingU2, MappingU3;
   float MappingV1, MappingV2, MappingV3;
@@ -36,10 +36,10 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   bool masked;
   uint8_t texel;
 
-  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (zbuf&&TriFace->Face->Material->zBufferable) ? 1 : 0;
  
-  if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
-  else Texture = TriFace->Material->Texture;
+  if (TriFace->Face->Material->Environment) Texture = TriFace->Face->Material->Environment;
+  else Texture = TriFace->Face->Material->Texture;
 
   if (!Texture) return;
   masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
@@ -48,9 +48,9 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   if (iShade < 0) iShade=0;
   if (iShade > 255) iShade=255;
 
-  if (!TriFace->Material->_AddTable) bc=0;
-  else bc = TriFace->Material->_AddTable[iShade];
-  nm = TriFace->Material->PerspectiveCorrect;
+  if (!TriFace->Face->Material->_AddTable) bc=0;
+  else bc = TriFace->Face->Material->_AddTable[iShade];
+  nm = TriFace->Face->Material->PerspectiveCorrect;
   nmb = 0; while (nm) { nmb++; nm >>= 1; }
   nmb = plMin(6,nmb);
   nm = 1<<nmb;
@@ -58,7 +58,7 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   MappingU_AND = (1<<Texture->Width)-1;
   vshift = 16 - Texture->Width;
 
-  if (TriFace->Material->Environment) {
+  if (TriFace->Face->Material->Environment) {
     PUTFACE_SORT_ENV();
   } else {
     PUTFACE_SORT_TEX();
@@ -224,13 +224,13 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   } 
 }
 
-void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_PTexG(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   float MappingU1, MappingU2, MappingU3;
   float MappingV1, MappingV2, MappingV3;
 
   pl_Texture *Texture;
-  bool zb = (cam->zBuffer&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (cam->zBuffer&&TriFace->Face->Material->zBufferable) ? 1 : 0;
 
   uint8_t nm, nmb;
   uint32_t n;
@@ -238,7 +238,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   uint8_t vshift;
   uint8_t *texture;
   uint16_t *addtable;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   int32_t iUL, iVL, idUL, idVL, iULnext, iVLnext;
   float U2,V2,dU2=0,dV2=0,dUL=0,dVL=0,UL,VL;
   int32_t XL1, Xlen;
@@ -260,16 +260,16 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   uint8_t *gmem = cam->frameBuffer;
   float *zbuf = cam->zBuffer;
 
-  if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
-  else Texture = TriFace->Material->Texture;
+  if (TriFace->Face->Material->Environment) Texture = TriFace->Face->Material->Environment;
+  else Texture = TriFace->Face->Material->Texture;
 
   if (!Texture) return;
   masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
   texture = Texture->Data;
-  addtable = TriFace->Material->_AddTable;
+  addtable = TriFace->Face->Material->_AddTable;
   if (!addtable) return;
 
-  nm = TriFace->Material->PerspectiveCorrect;
+  nm = TriFace->Face->Material->PerspectiveCorrect;
   nmb = 0; while (nm) { nmb++; nm >>= 1; }
   nmb = plMin(6,nmb);
   nm = 1<<nmb;
@@ -277,7 +277,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   MappingU_AND = (1<<Texture->Width)-1;
   vshift = 16 - Texture->Width;
 
-  if (TriFace->Material->Environment) {
+  if (TriFace->Face->Material->Environment) {
     PUTFACE_SORT_ENV();
   } else {
     PUTFACE_SORT_TEX();
@@ -289,11 +289,11 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   MappingV2 *= TriFace->Scrz[i1]/65536.0f;
   MappingU3 *= TriFace->Scrz[i2]/65536.0f;
   MappingV3 *= TriFace->Scrz[i2]/65536.0f;
-  TriFace->Shades[0] *= 65536.0f;
-  TriFace->Shades[1] *= 65536.0f;
-  TriFace->Shades[2] *= 65536.0f;
+  TriFace->Face->Shades[0] *= 65536.0f;
+  TriFace->Face->Shades[1] *= 65536.0f;
+  TriFace->Face->Shades[2] *= 65536.0f;
 
-  C1 = C2 = (int32_t) TriFace->Shades[i0];
+  C1 = C2 = (int32_t) TriFace->Face->Shades[i0];
   U1 = U2 = MappingU1;
   V1 = V2 = MappingV1;
   X2 = X1 = TriFace->Scrx[i0];
@@ -306,7 +306,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   if (dY) {
     dX2 = (TriFace->Scrx[i2] - X1) / dY;
     dZ2 = (TriFace->Scrz[i2] - Z1) / dY;
-    dC2 = (int32_t) ((TriFace->Shades[i2] - C1) / dY);
+    dC2 = (int32_t) ((TriFace->Face->Shades[i2] - C1) / dY);
     dU2 = (MappingU3 - U1) / dY;
     dV2 = (MappingV3 - V1) / dY;
   }
@@ -314,7 +314,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   if (dY) {
     dX1 = (TriFace->Scrx[i1] - X1) / dY;
     dZ1 = (TriFace->Scrz[i1] - Z1) / dY;
-    dC1 = (int32_t) ((TriFace->Shades[i1] - C1) / dY);
+    dC1 = (int32_t) ((TriFace->Face->Shades[i1] - C1) / dY);
     dU1 = (MappingU2 - U1) / dY;
     dV1 = (MappingV2 - V1) / dY;
     if (dX2 < dX1) {
@@ -329,14 +329,14 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
     if (TriFace->Scrx[i1] > X1) {
       X2 = TriFace->Scrx[i1];
       Z2 = TriFace->Scrz[i1];
-      C2 = (int32_t)TriFace->Shades[i1];
+      C2 = (int32_t)TriFace->Face->Shades[i1];
       U2 = MappingU2;
       V2 = MappingV2;
       stat = 2|4;
     } else {
       X1 = TriFace->Scrx[i1];
       Z1 = TriFace->Scrz[i1];
-      C1 = (int32_t)TriFace->Shades[i1];
+      C1 = (int32_t)TriFace->Face->Shades[i1];
       U1 = MappingU2;
       V1 = MappingV2;
       stat = 1|8;
@@ -388,7 +388,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
           dX2 = (TriFace->Scrx[i2]-TriFace->Scrx[i0])/dY;
         }
         dZ1 = (TriFace->Scrz[i2]-Z1)/dY;
-        dC1 = (int32_t)((TriFace->Shades[i2]-C1)/dY);
+        dC1 = (int32_t)((TriFace->Face->Shades[i2]-C1)/dY);
         dV1 = (MappingV3 - V1) / dY;
         dU1 = (MappingU3 - U1) / dY;
       }

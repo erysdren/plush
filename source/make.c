@@ -181,6 +181,7 @@ pl_Mdl *plMakeSphere(float r, uint32_t divr, uint32_t divh, pl_Mat *m) {
   return (mdl);
 }
 
+#if 0
 pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
                        bool capbottom, pl_Mat *m) {
   pl_Mdl *mdl;
@@ -381,6 +382,7 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
   plMdlCalcNormals(mdl);
   return (mdl);
 }
+#endif
 
 static uint8_t verts[6*6] = { 
   0,4,1, 1,4,5, 0,1,2, 3,2,1, 2,3,6, 3,7,6,

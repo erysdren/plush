@@ -8,6 +8,7 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#if 0
 typedef struct {
     uint16_t id;
     void (*func)(FILE *f, uint32_t p);
@@ -243,4 +244,4 @@ static void _pl3DSChunkReader(FILE *f, uint32_t p) {
     if (ferror(f)) break;
   }
 }
-
+#endif
