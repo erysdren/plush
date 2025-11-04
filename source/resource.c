@@ -222,6 +222,6 @@ void *plResMemDup(void *parent, void *buf, size_t len)
 	if (!buf || !len)
 		return NULL;
 	ret = plResCreate(parent, len);
-	plStrNCpy(ret, buf, len);
+	plMemCpy(ret, buf, len);
 	return ret;
 }
