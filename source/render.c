@@ -8,15 +8,9 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
-typedef struct {
-  float zd;
-  pl_Face *face;
-} _faceInfo;
-
-typedef struct {
-  pl_Light *light;
-  float l[3];
-} _lightInfo;
+void plClipSetFrustum(pl_Cam *cam);
+void plClipRenderFace(pl_Face *face);
+int32_t plClipNeeded(pl_Face *face);
 
 #define MACRO_plMatrixApply(m,x,y,z,outx,outy,outz) \
       ( outx ) = ( x )*( m )[0] + ( y )*( m )[1] + ( z )*( m )[2] + ( m )[3];\
@@ -40,15 +34,18 @@ typedef struct {
 uint32_t plRender_TriStats[4];
 
 static uint32_t _numfaces;
-static _faceInfo _faces[PL_MAX_TRIANGLES];
+static pl_PrepFace _faces[PL_MAX_TRIANGLES];
+
+static uint32_t _numvertices;
+static pl_PrepVertex _vertices[PL_MAX_TRIANGLES*3];
 
 static float _cMatrix[16];
 static uint32_t _numlights;
-static _lightInfo _lights[PL_MAX_LIGHTS];
+static pl_PrepLight _lights[PL_MAX_LIGHTS];
 static pl_Cam *_cam;
 static void _RenderObj(pl_Obj *, float *, float *);
 static void _sift_down(int L, int U, int dir);
-static void _hsort(_faceInfo *base, int nel, int dir);
+static void _hsort(pl_PrepFace *base, int nel, int dir);
 
 void plRenderBegin(pl_Cam *Camera) {
   float tempMatrix[16];
@@ -83,12 +80,13 @@ void plRenderLight(pl_Light *light) {
 }
 
 static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
-  uint32_t i, x, facepos;
+  uint32_t i, x, facepos, vertpos;
   float nx = 0.0, ny = 0.0, nz = 0.0;
   double tmp, tmp2;
   float oMatrix[16], nMatrix[16], tempMatrix[16];
 
   pl_Vertex *vertex;
+  pl_PrepVertex *prepvertex;
   pl_Face *face;
   pl_Light *light;
   pl_Obj *child;
@@ -129,12 +127,14 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix) {
   
   x = obj->Model->NumVertices;
   vertex = obj->Model->Vertices;
+  vertpos = _numvertices;
 
   do {
     MACRO_plMatrixApply(oMatrix,vertex->x,vertex->y,vertex->z, 
-                  vertex->xformedx, vertex->xformedy, vertex->xformedz); 
+                  _vertices[vertpos].xformedx, _vertices[vertpos].xformedy, _vertices[vertpos].xformedz);
     MACRO_plMatrixApply(nMatrix,vertex->nx,vertex->ny,vertex->nz,
-                  vertex->xformednx,vertex->xformedny,vertex->xformednz);
+                  _vertices[vertpos].xformednx, _vertices[vertpos].xformedny,_vertices[vertpos].xformednz);
+    vertpos++;
     vertex++;
   } while (--x);
 
@@ -268,7 +268,7 @@ void plRenderObj(pl_Obj *obj) {
 }
 
 void plRenderEnd(void) {
-  _faceInfo *f;
+  pl_PrepFace *f;
   if (_cam->Sort > 0) _hsort(_faces,_numfaces,0);
   else if (_cam->Sort < 0) _hsort(_faces,_numfaces,1);
   f = _faces;
@@ -283,9 +283,9 @@ void plRenderEnd(void) {
   _numlights = 0;
 }
 
-static _faceInfo *Base, tmp;
+static pl_PrepFace *Base, tmp;
 
-static void _hsort(_faceInfo *base, int nel, int dir) {
+static void _hsort(pl_PrepFace *base, int nel, int dir) {
   static int i;
   Base=base-1;
   for (i=nel/2; i>0; i--) _sift_down(i,nel,dir);

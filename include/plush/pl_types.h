@@ -35,6 +35,7 @@ typedef struct _pl_Texture {
 ** Material type. Create materials with plMatCreate().
 */
 typedef struct _pl_Face pl_Face;
+typedef struct _pl_PrepFace pl_PrepFace;
 typedef struct _pl_Cam pl_Cam;
 typedef struct _pl_Mat {
   int32_t Ambient[3];          /* RGB of surface (0-255 is a good range) */
@@ -61,7 +62,7 @@ typedef struct _pl_Mat {
   uint16_t *_AddTable;        /* Shading/Translucent/etc table */
   uint8_t *_ReMapTable;       /* Table to remap colors to palette */
   uint8_t *_RequestedColors;  /* _ColorsUsed colors, desired colors */
-  void (*_PutFace)(pl_Cam *, pl_Face *);
+  void (*_PutFace)(pl_Cam *, pl_PrepFace *);
                                /* Function that renders the triangle with this
                                   material */
 } pl_Mat;
@@ -71,13 +72,7 @@ typedef struct _pl_Mat {
 */
 typedef struct _pl_Vertex {
   float x, y, z;              /* Vertex coordinate (objectspace) */
-  float xformedx, xformedy, xformedz;   
-                                 /* Transformed vertex 
-                                    coordinate (cameraspace) */
   float nx, ny, nz;           /* Unit vertex normal (objectspace) */
-  float xformednx, xformedny, xformednz; 
-                                 /* Transformed unit vertex normal 
-                                    (cameraspace) */
 } pl_Vertex;
 
 /*
@@ -87,9 +82,6 @@ typedef struct _pl_Face {
   pl_Vertex *Vertices[3];      /* Vertices of triangle */
   float nx, ny, nz;         /* Normal of triangle (object space) */
   pl_Mat *Material;            /* Material of triangle */
-  int32_t Scrx[3], Scry[3];  /* Projected screen coordinates
-                                  (12.20 fixed point) */
-  float Scrz[3];            /* Projected 1/Z coordinates */
   int32_t MappingU[3], MappingV[3]; 
                                /* 16.16 Texture mapping coordinates */ 
   int32_t eMappingU[3], eMappingV[3]; 
@@ -182,6 +174,35 @@ typedef struct _pl_Cam {
   uint8_t *frameBuffer;         /* Framebuffer (ScreenWidth*ScreenHeight) */
   float *zBuffer;           /* Z Buffer (NULL if none) */
 } pl_Cam;
+
+/*
+** Prepared Vertex
+*/
+typedef struct _pl_PrepVertex {
+  pl_Vertex *vertex;
+  float xformedx, xformedy, xformedz; /* Transformed vertex coordinate (cameraspace) */
+  float xformednx, xformedny, xformednz; /* Transformed unit vertex normal (cameraspace) */
+} pl_PrepVertex;
+
+/*
+** Prepared Face
+*/
+typedef struct _pl_PrepFace {
+  pl_PrepVertex *Vertices[3];
+  pl_Face *Face;
+  int32_t Scrx[3], Scry[3]; /* Projected screen coordinates (12.20 fixed point) */
+  float Scrz[3]; /* Projected 1/Z coordinates */
+  float zd; /* Z distance from camera (when using cam->Sort) */
+  float fShade; /* Flat intensity */
+} pl_PrepFace;
+
+/*
+** Prepared Light
+*/
+typedef struct _pl_PrepLight {
+  pl_Light *light;
+  float l[3];
+} pl_PrepLight;
 
 #ifdef __cplusplus
 }
