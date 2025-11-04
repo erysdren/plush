@@ -114,6 +114,27 @@ void *plResAddChild(void *parent, void *child);
 */
 void *plResRemoveParent(void *user);
 
+/*
+  plResStrDup() copys a given null terminated string into a resource pointer
+  Paramters:
+    parent: parent resource pointer
+    s: null terminated source string
+  Returns:
+    a pointer to the duplicated string on success, NULL on failure
+*/
+const char *plResStrDup(void *parent, const char *s);
+
+/*
+  plResMemDup() copys a given buffer into a resource pointer
+  Paramters:
+    parent: parent resource pointer
+    buf: source buffer
+    len: source buffer length in bytes
+  Returns:
+    a pointer to the duplicated buffer on success, NULL on failure
+*/
+void *plResMemDup(void *parent, void *buf, size_t len);
+
 /******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/

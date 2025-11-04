@@ -200,3 +200,28 @@ void plResDelete(void *user)
 		return;
 	_plResDelete(res);
 }
+
+const char *plResStrDup(void *parent, const char *s)
+{
+	char *ret;
+	size_t len;
+	if (!s)
+		return NULL;
+	len = plStrLen(s);
+	if (!len)
+		return NULL;
+	ret = plResCreate(parent, len + 1);
+	plStrNCpy(ret, s, len);
+	ret[len] = 0;
+	return ret;
+}
+
+void *plResMemDup(void *parent, void *buf, size_t len)
+{
+	void *ret;
+	if (!buf || !len)
+		return NULL;
+	ret = plResCreate(parent, len);
+	plStrNCpy(ret, buf, len);
+	return ret;
+}
