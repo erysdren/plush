@@ -3,110 +3,109 @@
 // The cube is now a different colored cube then ex1.c
 // ZBuffering has been added, as well as dynamic framebuffer allocation
 
-#include <float.h>
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
-
-// Include the plush header file
-#include <plush/plush.h>
-
-// Include our example graphics interface module
 #include "ex.h" 
 
 // Our variables
-pl_Light *TheLight;   // Our light
-pl_Obj *TheCube;      // Our cube object
-pl_Mat *CubeMat;      // The material for the cube
-pl_Mat *AllMaterials[2]; // Used for creating palette
-pl_Cam *TheCamera; // Our camera
-uint8_t *TheFrameBuffer; // Our framebuffer to render to
-float *TheZBuffer;   // Our zbuffer
-uint8_t ThePalette[768];
+static pl_Light *TheLight; // Our light
+static pl_Obj *TheCube; // Our cube object
+static pl_Mat *CubeMat; // The material for the cube
+static pl_Mat *AllMaterials[2]; // Used for creating palette
+static pl_Cam *TheCamera; // Our camera
+static uint8_t *TheFrameBuffer; // Our framebuffer to render to
+static float *TheZBuffer; // Our zbuffer
+static uint8_t ThePalette[768];
 
-int main(int argc, char **argv) { // Main
-#if defined(DJGPP) || defined(__WATCOMC__)
-   // Put the fpu in a low precision, no exception state
-  _control87(MCW_EM|PC_24,MCW_EM|MCW_PC); 
-#endif
-  exSetGraphics(); // Set graphics
- 
-  TheFrameBuffer = (uint8_t *) plMalloc(W*H); // Alloc framebuffer
-  if (!TheFrameBuffer) { 
-    exSetText(); 
-    printf("Out of memory!\n");
-    exit(1);
-  }
-  // Alloc z-buffer
-  TheZBuffer = (float *) plMalloc(W*H*sizeof(float));
+int exInit(void **appstate, int argc, char **argv)
+{
+	TheFrameBuffer = (uint8_t *)plMalloc(W*H*sizeof(uint8_t)); // Alloc framebuffer
+	if (!TheFrameBuffer)
+		return PL_EXIT_FAILURE;
 
-  CubeMat = plMatCreate();    // Create the material for the cube
-  CubeMat->NumGradients = 100; // Have it use 100 colors
-  CubeMat->ShadeType = PL_SHADE_FLAT; // Make the cube flat shaded
+	// Alloc z-buffer
+	TheZBuffer = (float *)plMalloc(W*H*sizeof(float));
+	if (!TheZBuffer)
+		return PL_EXIT_FAILURE;
 
-  CubeMat->Ambient[0] = 32; // Set red ambient component
-  CubeMat->Ambient[1] = 0;  // Set green ambient component
-  CubeMat->Ambient[2] = 16; // Set blue ambient component
+	CubeMat = plMatCreate(); // Create the material for the cube
+	CubeMat->NumGradients = 100; // Have it use 100 colors
+	CubeMat->ShadeType = PL_SHADE_FLAT; // Make the cube flat shaded
 
-  CubeMat->Diffuse[0] = 200; // Set red diffuse component
-  CubeMat->Diffuse[1] = 100; // Set green diffuse component
-  CubeMat->Diffuse[2] = 150; // Set blue diffuse component
+	CubeMat->Ambient[0] = 32; // Set red ambient component
+	CubeMat->Ambient[1] = 0; // Set green ambient component
+	CubeMat->Ambient[2] = 16; // Set blue ambient component
 
-  plMatInit(CubeMat);          // Initialize the material
+	CubeMat->Diffuse[0] = 200; // Set red diffuse component
+	CubeMat->Diffuse[1] = 100; // Set green diffuse component
+	CubeMat->Diffuse[2] = 150; // Set blue diffuse component
 
-  AllMaterials[0] = CubeMat; // Make list of materials
-  AllMaterials[1] = 0; // Null terminate list of materials
-  plMatMakeOptPal(ThePalette,1,255,AllMaterials,1); // Create a nice palette
+	plMatInit(CubeMat); // Initialize the material
 
-  ThePalette[0] = ThePalette[1] = ThePalette[2] = 0; // Color 0 is black
+	AllMaterials[0] = CubeMat; // Make list of materials
+	AllMaterials[1] = 0; // Null terminate list of materials
+	plMatMakeOptPal(ThePalette,1,255,AllMaterials,1); // Create a nice palette
 
-  plMatMapToPal(CubeMat,ThePalette,0,255); // Map the material to our palette
+	ThePalette[0] = ThePalette[1] = ThePalette[2] = 0; // Color 0 is black
 
-  // Convert std 8 bit/chan palette to vga's 6 bit/chan palette
-  // for (i = 0; i < 768; i ++) ThePalette[i] >>= 2;
-  exSetPalette(ThePalette); // Set the palette
- 
-  TheCube = plObjCreate(NULL);
-  TheCube->Model = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
+	plMatMapToPal(CubeMat,ThePalette,0,255); // Map the material to our palette
 
-  TheCamera = plCamCreate(W, // Screen width
-                          H, // Screen height
-                          W*3.0/(H*4.0), // Aspect ratio
-                          90.0, // Field of view
-                          TheFrameBuffer, // Framebuffer
-                          TheZBuffer // ZBuffer
-                          ); // Create the camera
-  TheCamera->Z = -300; // Back the camera up from the origin
-  TheCamera->Sort = 0; // We don't need to sort since zbuffering takes care
-                       // of it for us!
+	exSetPalette(ThePalette); // Set the palette
 
-  TheLight = plLightSet(plLightCreate(), // Create a light to be set up
-             PL_LIGHT_VECTOR, // vector light
-             0.0,0.0,0.0, // rotation angles
-             1.0, // intensity
-             1.0); // falloff, not used for vector lights
-             
-  while (!exGetKey()) { // While the keyboard hasn't been touched
-    TheCube->Xa += 1.0; // Rotate by 1 degree on each axis
-    TheCube->Ya += 1.0;
-    TheCube->Za += 1.0;
+	TheCube = plObjCreate(NULL);
+	TheCube->Model = plMakeBox(100.0,100.0,100.0,CubeMat); // Create the cube
 
-                                      // clear zbuffer for next frame
-    memset(TheZBuffer,0,W*H*sizeof(float));
-    memset(TheFrameBuffer,0,W*H); // clear framebuffer for next frame
-    plRenderBegin(TheCamera);        // Start rendering with the camera
-    plRenderLight(TheLight);         // Render our light
-    plRenderObj(TheCube);            // Render our object
-    plRenderEnd();                   // Finish rendering
-    exWaitVSync();                   // Sync with retrace
-    memcpy(exGraphMem,TheFrameBuffer,W*H); // dump to screen
-  }
-  plFree(TheFrameBuffer);
-  plFree(TheZBuffer);
-  plMatDelete(CubeMat);
-  plObjDelete(TheCube);
-  plCamDelete(TheCamera);
-  plLightDelete(TheLight);
-  exSetText(); // Restore text mode
-  return 0;          // Quit
+	// Create the camera
+	TheCamera = plCamCreate(W, // Screen width
+							H, // Screen height
+							W*3.0/(H*4.0), // Aspect ratio
+							90.0, // Field of view
+							TheFrameBuffer, // Framebuffer
+							TheZBuffer); // ZBuffer
+	TheCamera->Z = -300; // Back the camera up from the origin
+	TheCamera->Sort = 0; // We don't need to sort since zbuffering takes care
+						// of it for us!
+
+	TheLight = plLightSet(plLightCreate(), // Create a light to be set up
+							PL_LIGHT_VECTOR, // vector light
+							0.0,0.0,0.0, // rotation angles
+							1.0, // intensity
+							1.0); // falloff, not used for vector lights
+
+	return PL_EXIT_CONTINUE;
+}
+
+int exIterate(void *appstate)
+{
+	TheCube->Xa += 1.0; // Rotate by 1 degree on each axis
+	TheCube->Ya += 1.0;
+	TheCube->Za += 1.0;
+
+	plMemSet(TheZBuffer,0,W*H*sizeof(float)); // clear zbuffer for next frame
+	plMemSet(TheFrameBuffer,0,W*H*sizeof(uint8_t)); // clear framebuffer for next frame
+	plRenderBegin(TheCamera); // Start rendering with the camera
+	plRenderLight(TheLight); // Render our light
+	plRenderObj(TheCube); // Render our object
+	plRenderEnd(); // Finish rendering
+	plMemCpy(exGraphMem,TheFrameBuffer,W*H); // dump to screen
+	return PL_EXIT_CONTINUE;
+}
+
+int exKeyEvent(void *appstate, int key)
+{
+	// any keypress will trigger an exit
+	return PL_EXIT_SUCCESS;
+}
+
+void exQuit(void *appstate, int code)
+{
+	plFree(TheFrameBuffer);
+	plFree(TheZBuffer);
+	plMatDelete(CubeMat);
+	plObjDelete(TheCube);
+	plCamDelete(TheCamera);
+	plLightDelete(TheLight);
+}
+
+int main(int argc, char **argv)
+{
+	return exBegin(argc, argv, "ex2: Simple Plush example");
 }
