@@ -201,7 +201,7 @@ void plResDelete(void *user)
 	_plResDelete(res);
 }
 
-const char *plResStrDup(void *parent, const char *s)
+void *plResStrDup(void *parent, const char *s)
 {
 	char *ret;
 	size_t len;

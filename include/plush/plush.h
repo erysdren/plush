@@ -122,7 +122,7 @@ void *plResRemoveParent(void *user);
   Returns:
     a pointer to the duplicated string on success, NULL on failure
 */
-const char *plResStrDup(void *parent, const char *s);
+void *plResStrDup(void *parent, const char *s);
 
 /*
   plResMemDup() copys a given buffer into a resource pointer
