@@ -11,7 +11,6 @@ Copyright (C) 2024-2025, erysdren (it/its)
 void plObjDelete(pl_Obj *o) {
   pl_Obj *child, *next;
   if (o) {
-    if (o->Name) plFree(o->Name);
     plObjRemoveParent(o);
     child = o->Children;
     while (child)
@@ -20,13 +19,12 @@ void plObjDelete(pl_Obj *o) {
       plObjDelete(child);
       child = next;
     }
-    plFree(o);
+    plResDelete(o);
   }
 }
 
 pl_Obj *plObjCreate(pl_Obj *parent) {
-  pl_Obj *o;
-  if (!(o = (pl_Obj *) plMalloc(sizeof(pl_Obj)))) return 0;
+  pl_Obj *o = plResCreate(NULL, sizeof(pl_Obj));
   plMemSet(o,0,sizeof(pl_Obj));
   o->GenMatrix = 1;
   o->BackfaceCull = 1;
@@ -66,17 +64,11 @@ pl_Obj *plObjRemoveParent(pl_Obj *o)
 
 void plObjSetName(pl_Obj *o, const char *name)
 {
-	size_t len;
 	if (!o || !name)
 		return;
-	len = plStrLen(name);
-	if (!len)
-		return;
 	if (o->Name)
-		plFree(o->Name);
-	o->Name = plMalloc(len + 1);
-	plStrNCpy(o->Name, name, len);
-	o->Name[len] = 0;
+		plResDelete((void *)o->Name);
+	o->Name = plResStrDup(o, name);
 }
 
 int plObjEnumerate(pl_Obj *obj, int (*func)(pl_Obj *obj, void *user), void *user)

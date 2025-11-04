@@ -26,6 +26,9 @@ approximately 8*PL_MAX_TRIANGLES bytes of memory. i.e. the default of
 
 #define PL_MAX_TRIANGLES (@PLUSH_MAX_TRIANGLES@)
 
+/* Byte alignment of resource memory allocations */
+#define PL_RESOURCE_ALIGNMENT (@PLUSH_RESOURCE_ALIGNMENT@)
+
 #ifdef __cplusplus
 }
 #endif

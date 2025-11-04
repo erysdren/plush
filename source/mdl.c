@@ -50,32 +50,32 @@ pl_Mdl *plMdlFlipNormals(pl_Mdl *mdl) {
   return mdl;
 }
 
-void plMdlDelete(pl_Mdl *mdl) {
-  if (mdl) {
-    if (mdl->Vertices) plFree(mdl->Vertices);
-    if (mdl->Faces) plFree(mdl->Faces);
-    plFree(mdl);
-  }
+void plMdlDelete(pl_Mdl *mdl)
+{
+	plResDelete(mdl);
 }
 
-pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf) {
-  pl_Mdl *mdl;
-  if (!(mdl = (pl_Mdl *) plMalloc(sizeof(pl_Mdl)))) return 0;
-  plMemSet(mdl,0,sizeof(pl_Mdl));
-  mdl->NumVertices = nv;
-  mdl->NumFaces = nf;
-  if (nv && !(mdl->Vertices=(pl_Vertex *) plMalloc(sizeof(pl_Vertex)*nv))) {
-    plFree(mdl);
-    return 0;
-  }
-  if (nf && !(mdl->Faces = (pl_Face *) plMalloc(sizeof(pl_Face)*nf))) {
-    plFree(mdl->Vertices);
-    plFree(mdl);
-    return 0;
-  }
-  plMemSet(mdl->Vertices,0,sizeof(pl_Vertex)*nv);
-  plMemSet(mdl->Faces,0,sizeof(pl_Face)*nf);
-  return mdl;
+pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf)
+{
+	pl_Mdl *mdl;
+
+	if (!nv || !nf)
+		return NULL;
+
+	mdl = plResCreate(NULL, sizeof(pl_Mdl));
+
+	plMemSet(mdl, 0, sizeof(pl_Mdl));
+
+	mdl->NumVertices = nv;
+	mdl->NumFaces = nf;
+
+	mdl->Vertices = plResCreate(mdl, sizeof(pl_Vertex) * mdl->NumVertices);
+	mdl->Faces = plResCreate(mdl, sizeof(pl_Face) * mdl->NumFaces);
+
+	plMemSet(mdl->Vertices, 0, sizeof(pl_Vertex) * mdl->NumVertices);
+	plMemSet(mdl->Faces, 0, sizeof(pl_Face) * mdl->NumFaces);
+
+	return mdl;
 }
 
 void plMdlSetMat(pl_Mdl *mdl, pl_Mat *mat) {

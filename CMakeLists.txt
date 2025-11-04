@@ -12,6 +12,7 @@ option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
 set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
 set(PLUSH_MAX_TRIANGLES "16384" CACHE STRING "Maximum number of triangles in a single render pass")
+set(PLUSH_RESOURCE_ALIGNMENT "8" CACHE STRING "Byte alignment of resource memory allocations")
 
 # asan
 
@@ -55,6 +56,7 @@ target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/read_pcx.c
 	${PROJECT_SOURCE_DIR}/source/readio.c
 	${PROJECT_SOURCE_DIR}/source/render.c
+	${PROJECT_SOURCE_DIR}/source/resource.c
 	${PROJECT_SOURCE_DIR}/source/spline.c
 	${PROJECT_SOURCE_DIR}/source/text.c
 	${PROJECT_SOURCE_DIR}/source/texture.c

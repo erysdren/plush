@@ -103,6 +103,7 @@ int main(int argc, char **argv) { // Main
     }
   }
   plTexDelete(CubeMat->Texture);
+  plTexDelete(CubeMat->Environment);
   plMatDelete(CubeMat);
   plObjDelete(TheCube);
   plCamDelete(TheCamera);

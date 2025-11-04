@@ -35,13 +35,12 @@ pl_Light *plLightSet(pl_Light *light, uint8_t mode, float x, float y,
 }
 
 pl_Light *plLightCreate(void) {
-  pl_Light *l;
-  l = (pl_Light *)plMalloc(sizeof(pl_Light));
+  pl_Light *l = plResCreate(NULL, sizeof(pl_Light));
   if (!l) return 0;
   plMemSet(l,0,sizeof(pl_Light));
   return (l);
 }
 
 void plLightDelete(pl_Light *l) {
-  if (l) plFree(l);
+  plResDelete(l);
 }

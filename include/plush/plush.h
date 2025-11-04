@@ -71,6 +71,80 @@ void plAllocatorSet(pl_Alloc func, void *user);
 pl_Alloc plAllocatorGet(void **user);
 
 /******************************************************************************
+** Resource Functions (resource.c)
+******************************************************************************/
+
+/*
+  plResCreate() allocate a new resource buffer with the given parent pointer
+  Parameters:
+    parent: a parent pointer also allocated with plResCreate() or NULL
+    size: requested size in bytes
+  Returns:
+    a pointer to the buffer on success, NULL on failure
+  Notes:
+    the returned pointer will be aligned to PL_RESOURCE_ALIGNMENT bytes
+*/
+void *plResCreate(void *parent, size_t size);
+
+/*
+  plResDelete() free a resource buffer and all its children
+  Parameters:
+    user: a pointer to a resource buffer allocated with plResCreate()
+  Returns:
+    nothing
+*/
+void plResDelete(void *user);
+
+/*
+  plResAddChild() adds an resource as a child of the given parent resource
+  Paramters:
+    parent: parent resource
+    child: resource to add as child
+  Returns:
+    child resource pointer
+*/
+void *plResAddChild(void *parent, void *child);
+
+/*
+  plResRemoveParent() removes a given resource from its parent hierarchy
+  Paramters:
+    user: resource pointer to remove from parent hierarchy
+  Returns:
+    user resource pointer
+*/
+void *plResRemoveParent(void *user);
+
+/*
+  plResStrDup() copys a given null terminated string into a resource pointer
+  Paramters:
+    parent: parent resource pointer
+    s: null terminated source string
+  Returns:
+    a pointer to the duplicated string on success, NULL on failure
+*/
+void *plResStrDup(void *parent, const char *s);
+
+/*
+  plResMemDup() copys a given buffer into a resource pointer
+  Paramters:
+    parent: parent resource pointer
+    buf: source buffer
+    len: source buffer length in bytes
+  Returns:
+    a pointer to the duplicated buffer on success, NULL on failure
+*/
+void *plResMemDup(void *parent, void *buf, size_t len);
+
+/*
+  plResSize() return the byte size of the resource buffer
+  Paramters:
+    user: a pointer to a resource buffer allocated with plResCreate()
+  Returns:
+    the byte size of the buffer, 0 on error
+*/
+size_t plResSize(void *user);
+
+/******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/
 
