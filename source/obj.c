@@ -64,17 +64,11 @@ pl_Obj *plObjRemoveParent(pl_Obj *o)
 
 void plObjSetName(pl_Obj *o, const char *name)
 {
-	size_t len;
 	if (!o || !name)
 		return;
-	len = plStrLen(name);
-	if (!len)
-		return;
 	if (o->Name)
-		plResDelete(o->Name);
-	o->Name = plResCreate(o, len + 1);
-	plStrNCpy(o->Name, name, len);
-	o->Name[len] = 0;
+		plResDelete((void *)o->Name);
+	o->Name = plResStrDup(o, name);
 }
 
 int plObjEnumerate(pl_Obj *obj, int (*func)(pl_Obj *obj, void *user), void *user)
