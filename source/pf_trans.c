@@ -143,7 +143,7 @@ void plPF_TransG(pl_Cam *cam, pl_PrepFace *TriFace) {
 
   PUTFACE_SORT();
 
-  C1 = C2 = (int32_t) (TriFace->Face->Shades[i0]*nc);
+  C1 = C2 = (int32_t) (TriFace->Shades[i0]*nc);
   X2 = X1 = TriFace->Scrx[i0];
   Z2 = Z1 = TriFace->Scrz[i0];
   Y0 = (TriFace->Scry[i0]+(1<<19))>>20;
@@ -153,14 +153,14 @@ void plPF_TransG(pl_Cam *cam, pl_PrepFace *TriFace) {
   dY = Y2 - Y0;
   if (dY) {
     dX2 = (TriFace->Scrx[i2] - X1) / dY;
-    dC2 = (int32_t) ((TriFace->Face->Shades[i2]*nc - C1) / dY);
+    dC2 = (int32_t) ((TriFace->Shades[i2]*nc - C1) / dY);
     dZ2 = (TriFace->Scrz[i2] - Z1) / dY;
   }
   dY = Y1-Y0;
   if (dY) {
     dX1 = (TriFace->Scrx[i1] - X1) / dY;
     dZ1 = (TriFace->Scrz[i1] - Z1) / dY;
-    dC1 = (int32_t) ((TriFace->Face->Shades[i1]*nc - C1) / dY);
+    dC1 = (int32_t) ((TriFace->Shades[i1]*nc - C1) / dY);
     if (dX2 < dX1) {
       dX2 ^= dX1; dX1 ^= dX2; dX2 ^= dX1;
       dC2 ^= dC1; dC1 ^= dC2; dC2 ^= dC1;
@@ -171,12 +171,12 @@ void plPF_TransG(pl_Cam *cam, pl_PrepFace *TriFace) {
     if (TriFace->Scrx[i1] > X1) {
       X2 = TriFace->Scrx[i1];
       Z2 = TriFace->Scrz[i1];
-      C2 = (int32_t) (TriFace->Face->Shades[i1]*nc);
+      C2 = (int32_t) (TriFace->Shades[i1]*nc);
       stat = 2|4;
     } else {
       X1 = TriFace->Scrx[i1];
       Z1 = TriFace->Scrz[i1];
-      C1 = (int32_t) (TriFace->Face->Shades[i1]*nc);
+      C1 = (int32_t) (TriFace->Shades[i1]*nc);
       stat = 1|8;
     }
   } 
@@ -216,7 +216,7 @@ void plPF_TransG(pl_Cam *cam, pl_PrepFace *TriFace) {
           dX2 = (TriFace->Scrx[i2]-TriFace->Scrx[i0])/dY;
         }
         dZ1 = (TriFace->Scrz[i2]-Z1)/dY;
-        dC1 = (int32_t) ((TriFace->Face->Shades[i2]*nc - C1) / dY);
+        dC1 = (int32_t) ((TriFace->Shades[i2]*nc - C1) / dY);
       }
     }
     CL = C1;
