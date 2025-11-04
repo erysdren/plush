@@ -225,3 +225,11 @@ void *plResMemDup(void *parent, void *buf, size_t len)
 	plMemCpy(ret, buf, len);
 	return ret;
 }
+
+size_t plResSize(void *user)
+{
+	pl_Res *res;
+	if (_plResUserToResource(user, &res) != PL_RESOURCE_ERROR_NONE)
+		return 0;
+	return res->Size;
+}

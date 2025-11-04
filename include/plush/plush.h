@@ -135,6 +135,15 @@ void *plResStrDup(void *parent, const char *s);
 */
 void *plResMemDup(void *parent, void *buf, size_t len);
 
+/*
+  plResSize() return the byte size of the resource buffer
+  Paramters:
+    user: a pointer to a resource buffer allocated with plResCreate()
+  Returns:
+    the byte size of the buffer, 0 on error
+*/
+size_t plResSize(void *user);
+
 /******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/
