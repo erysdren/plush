@@ -53,6 +53,7 @@ void plRenderBegin(pl_Cam *Camera) {
   _cam = Camera;
   _numlights = 0;
   _numfaces = 0;
+  _numvertices = 0;
   plMatrixRotate(_cMatrix,2,-Camera->Pan);
   plMatrixRotate(tempMatrix,1,-Camera->Pitch);
   plMatrixMultiply(_cMatrix,tempMatrix);
@@ -139,6 +140,7 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 	for (x = 0; x < obj->Model->NumVertices; x++)
 	{
 		vertex = _vertices + _numvertices + x;
+
 		vertex->Vertex = obj->Model->Vertices + x;
 
 		MACRO_plMatrixApply(
