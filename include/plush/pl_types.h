@@ -177,7 +177,7 @@ typedef struct _pl_Cam {
 ** Prepared Vertex
 */
 typedef struct _pl_PrepVertex {
-  pl_Vertex *Vertex;
+  pl_Vertex *Vertex; /* Source vertex */
   float xformedx, xformedy, xformedz; /* Transformed vertex coordinate (cameraspace) */
   float xformednx, xformedny, xformednz; /* Transformed unit vertex normal (cameraspace) */
 } pl_PrepVertex;
@@ -186,8 +186,8 @@ typedef struct _pl_PrepVertex {
 ** Prepared Face
 */
 typedef struct _pl_PrepFace {
-  pl_PrepVertex *Vertices[3];
-  pl_Face *Face;
+  pl_PrepVertex *Vertices[3]; /* Prepared vertices */
+  pl_Face *Face; /* Source face */
   int32_t Scrx[3], Scry[3]; /* Projected screen coordinates (12.20 fixed point) */
   float Scrz[3]; /* Projected 1/Z coordinates */
   int32_t MappingU[3], MappingV[3]; /* 16.16 Texture mapping coordinates */
