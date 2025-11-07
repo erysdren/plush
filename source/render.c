@@ -166,6 +166,11 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 		for (i = 0; i < 3; i++)
 		{
 			face->Vertices[i] = _vertices + _numvertices + (face->Face->Vertices[i] - obj->Model->Vertices);
+
+			face->MappingU[i] = face->Face->MappingU[i];
+			face->MappingV[i] = face->Face->MappingV[i];
+			face->eMappingU[i] = face->Face->eMappingU[i];
+			face->eMappingV[i] = face->Face->eMappingV[i];
 		}
 	}
 
