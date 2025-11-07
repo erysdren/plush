@@ -189,8 +189,10 @@ typedef struct _pl_PrepFace {
   pl_PrepVertex *Vertices[3];
   pl_Face *Face;
   int32_t Scrx[3], Scry[3]; /* Projected screen coordinates (12.20 fixed point) */
-  float Shades[3]; /* Vertex intensity */
   float Scrz[3]; /* Projected 1/Z coordinates */
+  int32_t MappingU[3], MappingV[3]; /* 16.16 Texture mapping coordinates */
+  int32_t eMappingU[3], eMappingV[3]; /* 16.16 Environment map coordinates */
+  float Shades[3]; /* Vertex intensity */
   float zd; /* Z distance from camera (when using cam->Sort) */
   float fShade; /* Flat intensity */
 } pl_PrepFace;
