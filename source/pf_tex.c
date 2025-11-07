@@ -59,12 +59,12 @@ void plPF_TexEnv(pl_Cam *cam, pl_PrepFace *TriFace) {
 
   PUTFACE_SORT_TEX();
 
-  eMappingU1=(int32_t) (TriFace->Face->eMappingU[i0]*Environment->uScale*TriFace->Face->Material->EnvScaling);
-  eMappingV1=(int32_t) (TriFace->Face->eMappingV[i0]*Environment->vScale*TriFace->Face->Material->EnvScaling);
-  eMappingU2=(int32_t) (TriFace->Face->eMappingU[i1]*Environment->uScale*TriFace->Face->Material->EnvScaling);
-  eMappingV2=(int32_t) (TriFace->Face->eMappingV[i1]*Environment->vScale*TriFace->Face->Material->EnvScaling);
-  eMappingU3=(int32_t) (TriFace->Face->eMappingU[i2]*Environment->uScale*TriFace->Face->Material->EnvScaling);
-  eMappingV3=(int32_t) (TriFace->Face->eMappingV[i2]*Environment->vScale*TriFace->Face->Material->EnvScaling);
+  eMappingU1=(int32_t) (TriFace->eMappingU[i0]*Environment->uScale*TriFace->Face->Material->EnvScaling);
+  eMappingV1=(int32_t) (TriFace->eMappingV[i0]*Environment->vScale*TriFace->Face->Material->EnvScaling);
+  eMappingU2=(int32_t) (TriFace->eMappingU[i1]*Environment->uScale*TriFace->Face->Material->EnvScaling);
+  eMappingV2=(int32_t) (TriFace->eMappingV[i1]*Environment->vScale*TriFace->Face->Material->EnvScaling);
+  eMappingU3=(int32_t) (TriFace->eMappingU[i2]*Environment->uScale*TriFace->Face->Material->EnvScaling);
+  eMappingV3=(int32_t) (TriFace->eMappingV[i2]*Environment->vScale*TriFace->Face->Material->EnvScaling);
 
   U1 = U2 = MappingU1;
   V1 = V2 = MappingV1;

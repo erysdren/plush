@@ -24,17 +24,17 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #define PUTFACE_SORT_ENV() \
   PUTFACE_SORT(); \
-  MappingU1=TriFace->Face->eMappingU[i0]*Texture->uScale*\
+  MappingU1=TriFace->eMappingU[i0]*Texture->uScale*\
             TriFace->Face->Material->EnvScaling;\
-  MappingV1=TriFace->Face->eMappingV[i0]*Texture->vScale*\
+  MappingV1=TriFace->eMappingV[i0]*Texture->vScale*\
             TriFace->Face->Material->EnvScaling;\
-  MappingU2=TriFace->Face->eMappingU[i1]*Texture->uScale*\
+  MappingU2=TriFace->eMappingU[i1]*Texture->uScale*\
             TriFace->Face->Material->EnvScaling;\
-  MappingV2=TriFace->Face->eMappingV[i1]*Texture->vScale*\
+  MappingV2=TriFace->eMappingV[i1]*Texture->vScale*\
             TriFace->Face->Material->EnvScaling;\
-  MappingU3=TriFace->Face->eMappingU[i2]*Texture->uScale*\
+  MappingU3=TriFace->eMappingU[i2]*Texture->uScale*\
             TriFace->Face->Material->EnvScaling;\
-  MappingV3=TriFace->Face->eMappingV[i2]*Texture->vScale*\
+  MappingV3=TriFace->eMappingV[i2]*Texture->vScale*\
             TriFace->Face->Material->EnvScaling;
 
 #define PUTFACE_SORT_TEX() \
