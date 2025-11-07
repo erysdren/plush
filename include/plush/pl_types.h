@@ -193,7 +193,7 @@ typedef struct _pl_PrepFace {
   int32_t MappingU[3], MappingV[3]; /* 16.16 Texture mapping coordinates */
   int32_t eMappingU[3], eMappingV[3]; /* 16.16 Environment map coordinates */
   float Shades[3]; /* Vertex intensity */
-  float zd; /* Z distance from camera (when using cam->Sort) */
+  float zd; /* Z distance from camera (when using no zbuffer) */
   float fShade; /* Flat intensity */
 } pl_PrepFace;
 
