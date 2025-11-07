@@ -12,6 +12,7 @@ option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
 set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
 set(PLUSH_MAX_TRIANGLES "16384" CACHE STRING "Maximum number of triangles in a single render pass")
+set(PLUSH_MAX_VERTICES "49152" CACHE STRING "Maximum number of vertices in a single render pass")
 set(PLUSH_RESOURCE_ALIGNMENT "8" CACHE STRING "Byte alignment of resource memory allocations")
 
 # asan
