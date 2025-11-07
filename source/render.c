@@ -37,7 +37,7 @@ static uint32_t _numfaces;
 static pl_PrepFace _faces[PL_MAX_TRIANGLES];
 
 static uint32_t _numvertices;
-static pl_PrepVertex _vertices[PL_MAX_TRIANGLES*3];
+static pl_PrepVertex _vertices[PL_MAX_VERTICES];
 
 static float _cMatrix[16];
 static uint32_t _numlights;
@@ -125,7 +125,7 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 	if (!obj->Model->NumFaces || !obj->Model->NumVertices)
 		return;
 	// exceeded maximum vert count
-	if (_numvertices + obj->Model->NumVertices >= PL_MAX_TRIANGLES * 3)
+	if (_numvertices + obj->Model->NumVertices >= PL_MAX_VERTICES)
 		return;
 	// exceeded maximum face count
 	if (_numfaces + obj->Model->NumFaces >= PL_MAX_TRIANGLES)
