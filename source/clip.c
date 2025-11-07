@@ -118,10 +118,10 @@ void plClipRenderFace(pl_PrepFace *face) {
   for (a = 0; a < 3; a ++) {
     m_cl[0].newVertices[a] = *(face->Vertices[a]);
     m_cl[0].Shades[a] = face->Shades[a];
-    m_cl[0].MappingU[a] = face->Face->MappingU[a];
-    m_cl[0].MappingV[a] = face->Face->MappingV[a];
-    m_cl[0].eMappingU[a] = face->Face->eMappingU[a];
-    m_cl[0].eMappingV[a] = face->Face->eMappingV[a];
+    m_cl[0].MappingU[a] = face->MappingU[a];
+    m_cl[0].MappingV[a] = face->MappingV[a];
+    m_cl[0].eMappingU[a] = face->eMappingU[a];
+    m_cl[0].eMappingV[a] = face->eMappingV[a];
   }
 
   numVerts = 3;
@@ -140,6 +140,11 @@ void plClipRenderFace(pl_PrepFace *face) {
         if (a == 0) w = 0;
         else w = a+(k-2);
         newface.Vertices[a] = m_cl[0].newVertices+w;
+        newface.Shades[a] = (float) m_cl[0].Shades[w];
+        newface.MappingU[a] = (int32_t)m_cl[0].MappingU[w];
+        newface.MappingV[a] = (int32_t)m_cl[0].MappingV[w];
+        newface.eMappingU[a] = (int32_t)m_cl[0].eMappingU[w];
+        newface.eMappingV[a] = (int32_t)m_cl[0].eMappingV[w];
         newface.Scrz[a] = 1.0f/newface.Vertices[a]->xformedz;
         tmp2 = m_fov * newface.Scrz[a];
         tmp = tmp2*newface.Vertices[a]->xformedx;
