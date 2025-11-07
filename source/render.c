@@ -227,12 +227,12 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
           face->fShade = (float) tmp;
         } else face->fShade = 0.0; /* End of flatmask lighting if */
         if (face->Face->Material->_ft & PL_FILL_ENVIRONMENT) {
-          face->Face->eMappingU[0] = 32768 + (int32_t) (face->Vertices[0]->xformednx*32768.0);
-          face->Face->eMappingV[0] = 32768 - (int32_t) (face->Vertices[0]->xformedny*32768.0);
-          face->Face->eMappingU[1] = 32768 + (int32_t) (face->Vertices[1]->xformednx*32768.0);
-          face->Face->eMappingV[1] = 32768 - (int32_t) (face->Vertices[1]->xformedny*32768.0);
-          face->Face->eMappingU[2] = 32768 + (int32_t) (face->Vertices[2]->xformednx*32768.0);
-          face->Face->eMappingV[2] = 32768 - (int32_t) (face->Vertices[2]->xformedny*32768.0);
+          face->eMappingU[0] = 32768 + (int32_t) (face->Vertices[0]->xformednx*32768.0);
+          face->eMappingV[0] = 32768 - (int32_t) (face->Vertices[0]->xformedny*32768.0);
+          face->eMappingU[1] = 32768 + (int32_t) (face->Vertices[1]->xformednx*32768.0);
+          face->eMappingV[1] = 32768 - (int32_t) (face->Vertices[1]->xformedny*32768.0);
+          face->eMappingU[2] = 32768 + (int32_t) (face->Vertices[2]->xformednx*32768.0);
+          face->eMappingV[2] = 32768 - (int32_t) (face->Vertices[2]->xformedny*32768.0);
         }
         if (face->Face->Material->_st &(PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE)) {
           uint8_t a;
