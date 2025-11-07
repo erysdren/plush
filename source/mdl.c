@@ -59,9 +59,6 @@ pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf)
 {
 	pl_Mdl *mdl;
 
-	if (!nv || !nf)
-		return NULL;
-
 	mdl = plResCreate(NULL, sizeof(pl_Mdl));
 
 	plMemSet(mdl, 0, sizeof(pl_Mdl));
@@ -69,11 +66,17 @@ pl_Mdl *plMdlCreate(uint32_t nv, uint32_t nf)
 	mdl->NumVertices = nv;
 	mdl->NumFaces = nf;
 
-	mdl->Vertices = plResCreate(mdl, sizeof(pl_Vertex) * mdl->NumVertices);
-	mdl->Faces = plResCreate(mdl, sizeof(pl_Face) * mdl->NumFaces);
+	if (nv)
+	{
+		mdl->Vertices = plResCreate(mdl, sizeof(pl_Vertex) * mdl->NumVertices);
+		plMemSet(mdl->Vertices, 0, sizeof(pl_Vertex) * mdl->NumVertices);
+	}
 
-	plMemSet(mdl->Vertices, 0, sizeof(pl_Vertex) * mdl->NumVertices);
-	plMemSet(mdl->Faces, 0, sizeof(pl_Face) * mdl->NumFaces);
+	if (nf)
+	{
+		mdl->Faces = plResCreate(mdl, sizeof(pl_Face) * mdl->NumFaces);
+		plMemSet(mdl->Faces, 0, sizeof(pl_Face) * mdl->NumFaces);
+	}
 
 	return mdl;
 }
