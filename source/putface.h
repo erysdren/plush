@@ -39,17 +39,17 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #define PUTFACE_SORT_TEX() \
   PUTFACE_SORT(); \
-  MappingU1=TriFace->Face->MappingU[i0]*Texture->uScale*\
+  MappingU1=TriFace->MappingU[i0]*Texture->uScale*\
             TriFace->Face->Material->TexScaling;\
-  MappingV1=TriFace->Face->MappingV[i0]*Texture->vScale*\
+  MappingV1=TriFace->MappingV[i0]*Texture->vScale*\
             TriFace->Face->Material->TexScaling;\
-  MappingU2=TriFace->Face->MappingU[i1]*Texture->uScale*\
+  MappingU2=TriFace->MappingU[i1]*Texture->uScale*\
             TriFace->Face->Material->TexScaling;\
-  MappingV2=TriFace->Face->MappingV[i1]*Texture->vScale*\
+  MappingV2=TriFace->MappingV[i1]*Texture->vScale*\
             TriFace->Face->Material->TexScaling;\
-  MappingU3=TriFace->Face->MappingU[i2]*Texture->uScale*\
+  MappingU3=TriFace->MappingU[i2]*Texture->uScale*\
             TriFace->Face->Material->TexScaling;\
-  MappingV3=TriFace->Face->MappingV[i2]*Texture->vScale*\
+  MappingV3=TriFace->MappingV[i2]*Texture->vScale*\
             TriFace->Face->Material->TexScaling;
 
 #endif /* !_PUTFACE_H_ */
