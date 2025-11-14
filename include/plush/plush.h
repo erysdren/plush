@@ -393,46 +393,6 @@ int plObjEnumerate(pl_Obj *obj, int (*func)(pl_Obj *obj, void *user), void *user
 pl_Obj *plObjFind(pl_Obj *obj, const char *name);
 
 /******************************************************************************
-** Frustum Clipping Functions (clip.c)
-******************************************************************************/
-
-/*
-  plClipSetFrustum() sets up the clipping frustum.
-  Parameters:
-    cam: a camera allocated with plCamCreate().
-  Returns:
-    nothing
-  Notes:
-    Sets up the internal structures. 
-    DO NOT CALL THIS ROUTINE FROM WITHIN A plRender*() block.
-*/
-void plClipSetFrustum(pl_Cam *cam);
-
-/*
-  plClipRenderFace() renders a face and clips it to the frustum initialized
-    with plClipSetFrustum().
-  Parameters:
-    face: the face to render
-  Returns:
-    nothing
-  Notes: this is used internally by plRender*(), so be careful. Kinda slow too.
-*/
-void plClipRenderFace(pl_Face *face);
-
-/*
-  plClipNeeded() decides whether the face is in the frustum, intersecting 
-    the frustum, or completely out of the frustum craeted with 
-    plClipSetFrustum().
-  Parameters:
-    face: the face to check
-  Returns:
-    0: the face is out of the frustum, no drawing necessary
-    1: the face is intersecting the frustum, splitting and drawing necessary
-  Notes: this is used internally by plRender*(), so be careful. Kinda slow too.
-*/
-int32_t plClipNeeded(pl_Face *face);
-
-/******************************************************************************
 ** Light Handling Routines (light.c)
 ******************************************************************************/
 
@@ -978,15 +938,15 @@ void plTextPrintf(pl_Cam *cam, int32_t x, int32_t y, float z,
 ** Built-in Rasterizers
 ******************************************************************************/
 
-void plPF_SolidF(pl_Cam *, pl_Face *);
-void plPF_SolidG(pl_Cam *, pl_Face *);
-void plPF_TexF(pl_Cam *, pl_Face *);
-void plPF_TexG(pl_Cam *, pl_Face *);
-void plPF_TexEnv(pl_Cam *, pl_Face *);
-void plPF_PTexF(pl_Cam *, pl_Face *);
-void plPF_PTexG(pl_Cam *, pl_Face *);
-void plPF_TransF(pl_Cam *, pl_Face *);
-void plPF_TransG(pl_Cam *, pl_Face *);
+void plPF_SolidF(pl_Cam *, pl_PrepFace *);
+void plPF_SolidG(pl_Cam *, pl_PrepFace *);
+void plPF_TexF(pl_Cam *, pl_PrepFace *);
+void plPF_TexG(pl_Cam *, pl_PrepFace *);
+void plPF_TexEnv(pl_Cam *, pl_PrepFace *);
+void plPF_PTexF(pl_Cam *, pl_PrepFace *);
+void plPF_PTexG(pl_Cam *, pl_PrepFace *);
+void plPF_TransF(pl_Cam *, pl_PrepFace *);
+void plPF_TransG(pl_Cam *, pl_PrepFace *);
 
 #ifdef __cplusplus
 }

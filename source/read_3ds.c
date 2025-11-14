@@ -18,6 +18,8 @@ static pl_Obj *bobj;
 static pl_Obj *lobj;
 static int16_t currentobj;
 static pl_Mat *_m;
+static int32_t *_texcoords = NULL;
+static int32_t _num_texcoords = 0;
 
 static float _pl3DSReadFloat(FILE *f);
 static uint32_t _pl3DSReadDWord(FILE *f);
@@ -65,6 +67,9 @@ pl_Obj *plRead3DSObj(const char *fn, pl_Mat *m) {
   rewind(f);
   _pl3DSChunkReader(f, p);
   fclose(f);
+  if (_texcoords) plFree(_texcoords);
+  _texcoords = NULL;
+  _num_texcoords = 0;
   return bobj;
 }
 
@@ -130,12 +135,12 @@ static void _pl3DSTriMeshReader(FILE *f, uint32_t p) {
     face->Vertices[0] = obj->Model->Vertices + (ptrdiff_t) face->Vertices[0];
     face->Vertices[1] = obj->Model->Vertices + (ptrdiff_t) face->Vertices[1];
     face->Vertices[2] = obj->Model->Vertices + (ptrdiff_t) face->Vertices[2];
-    face->MappingU[0] = face->Vertices[0]->xformedx;
-    face->MappingV[0] = face->Vertices[0]->xformedy;
-    face->MappingU[1] = face->Vertices[1]->xformedx;
-    face->MappingV[1] = face->Vertices[1]->xformedy;
-    face->MappingU[2] = face->Vertices[2]->xformedx;
-    face->MappingV[2] = face->Vertices[2]->xformedy;
+    face->MappingU[0] = _texcoords[((face->Vertices[0] - obj->Model->Vertices) * 2) + 0];
+    face->MappingV[0] = _texcoords[((face->Vertices[0] - obj->Model->Vertices) * 2) + 1];
+    face->MappingU[1] = _texcoords[((face->Vertices[1] - obj->Model->Vertices) * 2) + 0];
+    face->MappingV[1] = _texcoords[((face->Vertices[1] - obj->Model->Vertices) * 2) + 1];
+    face->MappingU[2] = _texcoords[((face->Vertices[2] - obj->Model->Vertices) * 2) + 0];
+    face->MappingV[2] = _texcoords[((face->Vertices[2] - obj->Model->Vertices) * 2) + 1];
     face++;
   }
   plMdlCalcNormals(obj->Model);
@@ -153,7 +158,7 @@ static void _pl3DSVertListReader(FILE *f, uint32_t p) {
   pl_Vertex *v;
   nv = _pl3DSReadWord(f);
   obj->Model->NumVertices = nv;
-  v = obj->Model->Vertices = (pl_Vertex *) plCalloc(sizeof(pl_Vertex)*nv,1);
+  v = obj->Model->Vertices = plResCreate(obj->Model, sizeof(pl_Vertex) * nv);
   while (nv--) {
     v->x = _pl3DSReadFloat(f);
     v->y = _pl3DSReadFloat(f);
@@ -171,7 +176,7 @@ static void _pl3DSFaceListReader(FILE *f, uint32_t p) {
 
   nv = _pl3DSReadWord(f);
   obj->Model->NumFaces = nv;
-  face = obj->Model->Faces = (pl_Face *) plCalloc(sizeof(pl_Face)*nv,1);
+  face = obj->Model->Faces = plResCreate(obj->Model, sizeof(pl_Face) * nv);
   while (nv--) {
     c[0] = _pl3DSReadWord(f);
     c[1] = _pl3DSReadWord(f);
@@ -208,8 +213,10 @@ static void MapListReader(FILE *f, uint32_t p) {
     c[0] = _pl3DSReadFloat(f);
     c[1] = _pl3DSReadFloat(f);
     if (feof(f)) return;
-    v->xformedx = (int32_t) (c[0]*65536.0);
-    v->xformedy = (int32_t) (c[1]*65536.0);
+    _texcoords = plRealloc(_texcoords, (_num_texcoords + 2) * sizeof(int32_t));
+    _texcoords[((v - obj->Model->Vertices) * 2) + 0] = (int32_t) (c[0]*65536.0);
+    _texcoords[((v - obj->Model->Vertices) * 2) + 1] = (int32_t) (c[1]*65536.0);
+    _num_texcoords += 2;
     v++;
   }
 }
@@ -243,4 +250,3 @@ static void _pl3DSChunkReader(FILE *f, uint32_t p) {
     if (ferror(f)) break;
   }
 }
-
