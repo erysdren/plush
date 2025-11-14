@@ -16,7 +16,7 @@ Original homepage: [1014.org](http://1014.org/code/nullsoft/plush/)
 
 Archived homepage: [nullsoft.com](https://web.archive.org/web/19990221124147/http://nullsoft.com/plush/)
 
-Archived versions: [/archive/](./archive/)
+Archived versions: [archive](./archive/)
 
 ## Notes
 
