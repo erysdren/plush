@@ -68,6 +68,7 @@ target_sources(plush PRIVATE
 	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_bmp.c>
 	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_cob.c>
 	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_jaw.c>
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_lbm.c>
 	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_obj.c>
 	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_pcx.c>
 	${PROJECT_SOURCE_DIR}/source/readio.c
