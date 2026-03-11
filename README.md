@@ -122,6 +122,7 @@ Archived versions: [archive](./archive/)
 - Palette color cycling features
 - "Shader" structure for rendering triangles with multiple passes
 - Make the whole library thread safe
+- Allow multiple cameras to use the same framebuffer with different "viewports"
 
 ## CMake Configuration Variables
 
