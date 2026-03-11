@@ -781,6 +781,29 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 */
 pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
 
+/*
+  plReadLBMTex() reads a 8bpp LBM texture
+  Parameters:
+    fn: filename of texture to read
+    rescale: will rescale image if not whole log2 dimensions (USE THIS)
+    optimize: will optimize colors (USE THIS TOO)
+  Returns:
+    pointer to texture
+*/
+pl_Texture *plReadLBMTex(const char *fn, bool rescale, bool optimize);
+
+/*
+  plReadLBMTexFromMem() reads an 8bpp LBM texture from the provided buffer
+  Parameters:
+    buf: pcx file buffer
+    len: size of buf in bytes
+    rescale: will rescale image if not whole log2 dimensions (USE THIS)
+    optimize: will optimize colors (USE THIS TOO)
+  Returns:
+    pointer to texture
+*/
+pl_Texture *plReadLBMTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
+
 /******************************************************************************
 ** File Writers (write_*.c)
 ******************************************************************************/
