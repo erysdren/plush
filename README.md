@@ -123,6 +123,7 @@ Archived versions: [archive](./archive/)
 - "Shader" structure for rendering triangles with multiple passes
 - Make the whole library thread safe
 - Allow multiple cameras to use the same framebuffer with different "viewports"
+- Allow rendering with triangle strips and triangle fans
 
 ## CMake Configuration Variables
 
