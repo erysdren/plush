@@ -119,6 +119,7 @@ Archived versions: [archive](./archive/)
 - Unify all examples to use main loop callbacks for better Emscripten support
 - Blend mode for textured triangles
 - GLTF loader
+- Palette color cycling features
 
 ## CMake Configuration Variables
 
