@@ -1,28 +1,18 @@
 // teapot.c: OBJ model loading example
 // owo
 
-#include <float.h>
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
-
-#include <plush/plush.h>
-
 #include "ex.h"
 
-pl_Light *light;
-pl_Obj *teapot;
-pl_Mat *material;
-pl_Cam *camera;
-uint8_t framebuffer[W * H];
-float zbuffer[W * H];
-uint8_t palette[768];
+static pl_Light *light;
+static pl_Obj *teapot;
+static pl_Mat *material;
+static pl_Cam *camera;
+static uint8_t framebuffer[W * H];
+static float zbuffer[W * H];
+static uint8_t palette[768];
 
-int main(int argc, char **argv)
+int exInit(void **appstate, int argc, char **argv)
 {
-	/* setup graphics mode */
-	exSetGraphics();
-
 	/* create material */
 	/* these ambient/diffuse/specular values are taken from Haiku's GLTeapot */
 	material = plMatCreate();
@@ -59,37 +49,48 @@ int main(int argc, char **argv)
 	/* create light */
 	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
 
-	/* main loop */
-	while (!exGetKey())
-	{
-		/* rotate model */
-		teapot->Xa += 1.0;
-		teapot->Ya += 1.0;
-		teapot->Za += 1.0;
+	return PL_EXIT_CONTINUE;
+}
 
-		/* clear back buffer */
-		memset(zbuffer, 0, sizeof(zbuffer));
-		memset(framebuffer, 0, sizeof(framebuffer));
+int exIterate(void *appstate)
+{
+	/* rotate model */
+	teapot->Xa += 1.0;
+	teapot->Ya += 1.0;
+	teapot->Za += 1.0;
 
-		/* render frame */
-		plRenderBegin(camera);
-		plRenderLight(light);
-		plRenderObj(teapot);
-		plRenderEnd();
+	/* clear back buffer */
+	plMemSet(zbuffer, 0, sizeof(zbuffer));
+	plMemSet(framebuffer, 0, sizeof(framebuffer));
 
-		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
-	}
+	/* render frame */
+	plRenderBegin(camera);
+	plRenderLight(light);
+	plRenderObj(teapot);
+	plRenderEnd();
 
+	/* copy to screen */
+	plMemCpy(exGraphMem, framebuffer, sizeof(framebuffer));
+
+	return PL_EXIT_CONTINUE;
+}
+
+int exKeyEvent(void *appstate, int key)
+{
+	// any keypress will trigger an exit
+	return PL_EXIT_SUCCESS;
+}
+
+void exQuit(void *appstate, int code)
+{
 	/* clean up */
 	plCamDelete(camera);
 	plLightDelete(light);
 	plObjDelete(teapot);
 	plMatDelete(material);
+}
 
-	/* shut down video */
-	exSetText();
-
-	return 0;
+int main(int argc, char **argv)
+{
+	return exBegin(argc, argv, "teapot: OBJ model loading example");
 }
