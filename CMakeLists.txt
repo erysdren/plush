@@ -5,6 +5,9 @@ project(plush
 	LANGUAGES C
 	VERSION 1.2.0
 )
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+find_package(Math)
 
 # options
 
@@ -72,12 +75,7 @@ target_include_directories(plush
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
 )
 
-find_library(MATH m)
-if(MATH)
-	target_link_libraries(plush PUBLIC ${MATH})
-endif()
-
-target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN>)
+target_link_libraries(plush PUBLIC $<$<BOOL:${PLUSH_USE_ASAN}>:ASAN::ASAN> $<TARGET_NAME_IF_EXISTS:Math::Math>)
 
 # examples
 
