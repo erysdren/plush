@@ -9,70 +9,9 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 
 #include "readio.h"
+#include "texture.h"
 
-/* texture.c */
-uint32_t _plHiBit(uint16_t x);
-uint32_t _plOptimizeImage(uint8_t *pal, uint8_t *data, uint32_t len);
-void _plRescaleImage(uint8_t *in, uint8_t *out, uint32_t inx, uint32_t iny, uint32_t outx, uint32_t outy);
-
-/* read_pcx.c */
 static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, uint8_t **pal, uint8_t **data);
-
-static pl_Texture *_plProcessPCX(uint16_t x, uint16_t y, uint8_t *data, uint8_t *pal, bool rescale, bool optimize)
-{
-	pl_Texture *t = plResCreate(NULL, sizeof(pl_Texture));
-
-	t->Width = _plHiBit(x);
-	t->Height = _plHiBit(y);
-
-	if (rescale && (1 << t->Width != x || 1 << t->Height != y))
-	{
-		uint8_t nx, ny, *newdata;
-
-		nx = t->Width;
-		if ((1 << t->Width) != x)
-			nx++;
-
-		ny = t->Height;
-		if ((1 << t->Height) != y)
-			ny++;
-
-		newdata = plMalloc((1 << nx) * (1 << ny));
-
-		_plRescaleImage(data, newdata, x, y, 1<<nx, 1<<ny);
-
-		plFree(data);
-		data = newdata;
-
-		t->Width = nx;
-		t->Height = ny;
-
-		x = 1 << nx;
-		y = 1 << ny;
-	}
-
-	t->iWidth = x;
-	t->iHeight = y;
-	t->uScale = (float)(1 << t->Width);
-	t->vScale = (float)(1 << t->Height);
-
-	if (optimize)
-		t->NumColors = _plOptimizeImage(pal, data, t->iWidth * t->iHeight);
-	else
-		t->NumColors = 256;
-
-	t->Data = plResCreate(t, t->iWidth * t->iHeight);
-	plMemCpy(t->Data, data, t->iWidth * t->iHeight);
-	plFree(data);
-
-	t->PaletteData = plResCreate(t, 768);
-	plMemCpy(t->PaletteData, pal, 768);
-	plFree(pal);
-
-	t->ClearColor = -1;
-
-	return t;
-}
 
 pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
   uint8_t *data, *pal;
@@ -83,7 +22,7 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
   r = _plReadPCX(&_plIOStdio,fp,&x,&y,&pal,&data);
   fclose(fp);
   if (r < 0) return 0;
-  return _plProcessPCX(x, y, data, pal, rescale, optimize);
+  return _plProcessTexture(x, y, data, pal, rescale, optimize);
 }
 
 pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize) {
@@ -96,7 +35,7 @@ pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimi
   ctx.pos = 0;
   r = _plReadPCX(&_plIOMem,&ctx,&x,&y,&pal,&data);
   if (r < 0) return 0;
-  return _plProcessPCX(x, y, data, pal, rescale, optimize);
+  return _plProcessTexture(x, y, data, pal, rescale, optimize);
 }
 
 static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, uint8_t **pal, uint8_t **data)

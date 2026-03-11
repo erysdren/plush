@@ -8,6 +8,64 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#include "texture.h"
+
+pl_Texture *_plProcessTexture(uint16_t x, uint16_t y, uint8_t *data, uint8_t *pal, bool rescale, bool optimize)
+{
+	pl_Texture *t = plResCreate(NULL, sizeof(pl_Texture));
+
+	t->Width = _plHiBit(x);
+	t->Height = _plHiBit(y);
+
+	if (rescale && (1 << t->Width != x || 1 << t->Height != y))
+	{
+		uint8_t nx, ny, *newdata;
+
+		nx = t->Width;
+		if ((1 << t->Width) != x)
+			nx++;
+
+		ny = t->Height;
+		if ((1 << t->Height) != y)
+			ny++;
+
+		newdata = plMalloc((1 << nx) * (1 << ny));
+
+		_plRescaleImage(data, newdata, x, y, 1<<nx, 1<<ny);
+
+		plFree(data);
+		data = newdata;
+
+		t->Width = nx;
+		t->Height = ny;
+
+		x = 1 << nx;
+		y = 1 << ny;
+	}
+
+	t->iWidth = x;
+	t->iHeight = y;
+	t->uScale = (float)(1 << t->Width);
+	t->vScale = (float)(1 << t->Height);
+
+	if (optimize)
+		t->NumColors = _plOptimizeImage(pal, data, t->iWidth * t->iHeight);
+	else
+		t->NumColors = 256;
+
+	t->Data = plResCreate(t, t->iWidth * t->iHeight);
+	plMemCpy(t->Data, data, t->iWidth * t->iHeight);
+	plFree(data);
+
+	t->PaletteData = plResCreate(t, 768);
+	plMemCpy(t->PaletteData, pal, 768);
+	plFree(pal);
+
+	t->ClearColor = -1;
+
+	return t;
+}
+
 uint32_t _plHiBit(uint16_t x) {
   uint32_t i = 16, mask = 1<<15;
   while (mask) {
