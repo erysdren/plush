@@ -111,11 +111,14 @@ Archived versions: [archive](./archive/)
 
 - Re-work .3DS file loader to match the OBJ file loader in terms of syntax
 - Add .BMP file loader
+- Add .LBM file loader
 - Run `clang-format` on all source files
 - Vertex colours
 - Coloured lights
 - Write usage docs
 - Unify all examples to use main loop callbacks for better Emscripten support
+- Blend mode for textured triangles
+- GLTF loader
 
 ## CMake Configuration Variables
 
