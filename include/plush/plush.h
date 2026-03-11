@@ -145,6 +145,22 @@ void *plResMemDup(void *parent, void *buf, size_t len);
 size_t plResSize(void *user);
 
 /******************************************************************************
+** Endian Functions (endian.c)
+******************************************************************************/
+
+/* byte swaps input without checking */
+int16_t plSwap16(int16_t n);
+int32_t plSwap32(int32_t n);
+
+/* convert from little endian to host endianness */
+int32_t plLittle16(int32_t n);
+int32_t plLittle32(int32_t n);
+
+/* convert from big endian to host endianness */
+int32_t plBig16(int32_t n);
+int32_t plBig32(int32_t n);
+
+/******************************************************************************
 ** Material Functions (mat.c)
 ******************************************************************************/
 
