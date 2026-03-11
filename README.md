@@ -120,6 +120,7 @@ Archived versions: [archive](./archive/)
 - Blend mode for textured triangles
 - GLTF loader
 - Palette color cycling features
+- "Shader" structure for rendering triangles with multiple passes
 
 ## CMake Configuration Variables
 
