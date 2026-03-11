@@ -121,6 +121,7 @@ Archived versions: [archive](./archive/)
 - GLTF loader
 - Palette color cycling features
 - "Shader" structure for rendering triangles with multiple passes
+- Make the whole library thread safe
 
 ## CMake Configuration Variables
 
