@@ -9,22 +9,22 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 #include "putface.h"
 
-void plPF_TransF(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_TransF(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   uint8_t *gmem = cam->frameBuffer;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   float *zbuf = cam->zBuffer;
   int32_t X1, X2, dX1=0, dX2=0, XL1, XL2;
   float Z1, ZL, dZ1=0, dZL=0, dZ2=0, Z2;
   int32_t Y1, Y2, Y0, dY;
-  uint16_t *lookuptable = TriFace->Material->_AddTable;
+  uint16_t *lookuptable = TriFace->Face->Material->_AddTable;
   uint8_t stat;
-  int32_t bc = (int32_t) TriFace->fShade*TriFace->Material->_tsfact;
-  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  int32_t bc = (int32_t) TriFace->fShade*TriFace->Face->Material->_tsfact;
+  bool zb = (zbuf&&TriFace->Face->Material->zBufferable) ? 1 : 0;
 
   PUTFACE_SORT();
   
-  if (bc > (int32_t) TriFace->Material->_tsfact-1) bc=TriFace->Material->_tsfact-1;
+  if (bc > (int32_t) TriFace->Face->Material->_tsfact-1) bc=TriFace->Face->Material->_tsfact-1;
   if (bc < 0) bc=0;
   remap+=bc;
 
@@ -124,22 +124,22 @@ void plPF_TransF(pl_Cam *cam, pl_Face *TriFace) {
   }
 }
 
-void plPF_TransG(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_TransG(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   uint8_t *gmem = cam->frameBuffer;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   float *zbuf = cam->zBuffer;
   int32_t X1, X2, dX1=0, dX2=0, XL1, XL2;
   float Z1, ZL, dZ1=0, dZL=0, dZ2=0, Z2;
   int32_t dC1=0, dCL=0, CL, C1, C2, dC2=0;
   int32_t Y1, Y2, Y0, dY;
-  float nc = (TriFace->Material->_tsfact*65536.0f);
-  uint16_t *lookuptable = TriFace->Material->_AddTable;
-  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  float nc = (TriFace->Face->Material->_tsfact*65536.0f);
+  uint16_t *lookuptable = TriFace->Face->Material->_AddTable;
+  bool zb = (zbuf&&TriFace->Face->Material->zBufferable) ? 1 : 0;
   uint8_t stat;
 
-  int32_t maxColor=((TriFace->Material->_tsfact-1)<<16);
-  int32_t maxColorNonShift=TriFace->Material->_tsfact-1;
+  int32_t maxColor=((TriFace->Face->Material->_tsfact-1)<<16);
+  int32_t maxColorNonShift=TriFace->Face->Material->_tsfact-1;
 
   PUTFACE_SORT();
 

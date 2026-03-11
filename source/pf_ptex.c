@@ -9,10 +9,10 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 #include "putface.h"
 
-void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_PTexF(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   uint8_t *gmem = cam->frameBuffer;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   float *zbuf = cam->zBuffer;
   float MappingU1, MappingU2, MappingU3;
   float MappingV1, MappingV2, MappingV3;
@@ -36,10 +36,10 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   bool masked;
   uint8_t texel;
 
-  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (zbuf&&TriFace->Face->Material->zBufferable) ? 1 : 0;
  
-  if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
-  else Texture = TriFace->Material->Texture;
+  if (TriFace->Face->Material->Environment) Texture = TriFace->Face->Material->Environment;
+  else Texture = TriFace->Face->Material->Texture;
 
   if (!Texture) return;
   masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
@@ -48,9 +48,9 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   if (iShade < 0) iShade=0;
   if (iShade > 255) iShade=255;
 
-  if (!TriFace->Material->_AddTable) bc=0;
-  else bc = TriFace->Material->_AddTable[iShade];
-  nm = TriFace->Material->PerspectiveCorrect;
+  if (!TriFace->Face->Material->_AddTable) bc=0;
+  else bc = TriFace->Face->Material->_AddTable[iShade];
+  nm = TriFace->Face->Material->PerspectiveCorrect;
   nmb = 0; while (nm) { nmb++; nm >>= 1; }
   nmb = plMin(6,nmb);
   nm = 1<<nmb;
@@ -58,7 +58,7 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   MappingU_AND = (1<<Texture->Width)-1;
   vshift = 16 - Texture->Width;
 
-  if (TriFace->Material->Environment) {
+  if (TriFace->Face->Material->Environment) {
     PUTFACE_SORT_ENV();
   } else {
     PUTFACE_SORT_TEX();
@@ -224,13 +224,13 @@ void plPF_PTexF(pl_Cam *cam, pl_Face *TriFace) {
   } 
 }
 
-void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_PTexG(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   float MappingU1, MappingU2, MappingU3;
   float MappingV1, MappingV2, MappingV3;
 
   pl_Texture *Texture;
-  bool zb = (cam->zBuffer&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (cam->zBuffer&&TriFace->Face->Material->zBufferable) ? 1 : 0;
 
   uint8_t nm, nmb;
   uint32_t n;
@@ -238,7 +238,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   uint8_t vshift;
   uint8_t *texture;
   uint16_t *addtable;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   int32_t iUL, iVL, idUL, idVL, iULnext, iVLnext;
   float U2,V2,dU2=0,dV2=0,dUL=0,dVL=0,UL,VL;
   int32_t XL1, Xlen;
@@ -260,16 +260,16 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   uint8_t *gmem = cam->frameBuffer;
   float *zbuf = cam->zBuffer;
 
-  if (TriFace->Material->Environment) Texture = TriFace->Material->Environment;
-  else Texture = TriFace->Material->Texture;
+  if (TriFace->Face->Material->Environment) Texture = TriFace->Face->Material->Environment;
+  else Texture = TriFace->Face->Material->Texture;
 
   if (!Texture) return;
   masked = Texture->ClearColor >= 0 && Texture->ClearColor <= 255;
   texture = Texture->Data;
-  addtable = TriFace->Material->_AddTable;
+  addtable = TriFace->Face->Material->_AddTable;
   if (!addtable) return;
 
-  nm = TriFace->Material->PerspectiveCorrect;
+  nm = TriFace->Face->Material->PerspectiveCorrect;
   nmb = 0; while (nm) { nmb++; nm >>= 1; }
   nmb = plMin(6,nmb);
   nm = 1<<nmb;
@@ -277,7 +277,7 @@ void plPF_PTexG(pl_Cam *cam, pl_Face *TriFace) {
   MappingU_AND = (1<<Texture->Width)-1;
   vshift = 16 - Texture->Width;
 
-  if (TriFace->Material->Environment) {
+  if (TriFace->Face->Material->Environment) {
     PUTFACE_SORT_ENV();
   } else {
     PUTFACE_SORT_TEX();

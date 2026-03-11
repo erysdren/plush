@@ -9,7 +9,7 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #include <plush/plush.h>
 #include "putface.h"
 
-void plPF_SolidF(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_SolidF(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
 
   uint8_t *gmem = cam->frameBuffer;
@@ -19,16 +19,16 @@ void plPF_SolidF(pl_Cam *cam, pl_Face *TriFace) {
   float dZL=0, dZ1=0, dZ2=0, Z1, ZL, Z2, Z3;
   int32_t Y1, Y2, Y0, dY;
   uint8_t stat;
-  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (zbuf&&TriFace->Face->Material->zBufferable) ? 1 : 0;
   uint8_t bc;
   int32_t shade;
 
   PUTFACE_SORT();
 
-  shade=(int32_t) (TriFace->fShade*(TriFace->Material->_ColorsUsed-1));
+  shade=(int32_t) (TriFace->fShade*(TriFace->Face->Material->_ColorsUsed-1));
   if (shade < 0) shade=0;
-  if (shade > (int32_t) TriFace->Material->_ColorsUsed-1) shade=TriFace->Material->_ColorsUsed-1;
-  bc=TriFace->Material->_ReMapTable[shade];
+  if (shade > (int32_t) TriFace->Face->Material->_ColorsUsed-1) shade=TriFace->Face->Material->_ColorsUsed-1;
+  bc=TriFace->Face->Material->_ReMapTable[shade];
 
   X2 = X1 = TriFace->Scrx[i0];
   Z1 = TriFace->Scrz[i0];
@@ -130,21 +130,21 @@ void plPF_SolidF(pl_Cam *cam, pl_Face *TriFace) {
   }
 }
 
-void plPF_SolidG(pl_Cam *cam, pl_Face *TriFace) {
+void plPF_SolidG(pl_Cam *cam, pl_PrepFace *TriFace) {
   uint8_t i0, i1, i2;
   uint8_t *gmem = cam->frameBuffer;
-  uint8_t *remap = TriFace->Material->_ReMapTable;
+  uint8_t *remap = TriFace->Face->Material->_ReMapTable;
   float *zbuf = cam->zBuffer;
   float dZL=0, dZ1=0, dZ2=0, Z1, Z2, ZL, Z3;
   int32_t dX1=0, dX2=0, X1, X2, XL1, XL2;
   int32_t C1, C2, dC1=0, dC2=0, dCL=0, CL, C3;
   int32_t Y1, Y2, Y0, dY;
   uint8_t stat;
-  bool zb = (zbuf&&TriFace->Material->zBufferable) ? 1 : 0;
+  bool zb = (zbuf&&TriFace->Face->Material->zBufferable) ? 1 : 0;
 
-  float nc = (TriFace->Material->_ColorsUsed-1)*65536.0f;
-  int32_t maxColor=((TriFace->Material->_ColorsUsed-1)<<16);
-  int32_t maxColorNonShift=TriFace->Material->_ColorsUsed-1;
+  float nc = (TriFace->Face->Material->_ColorsUsed-1)*65536.0f;
+  int32_t maxColor=((TriFace->Face->Material->_ColorsUsed-1)<<16);
+  int32_t maxColorNonShift=TriFace->Face->Material->_ColorsUsed-1;
 
   PUTFACE_SORT();
 

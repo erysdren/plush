@@ -25,31 +25,31 @@ Copyright (C) 2024-2025, erysdren (it/its)
 #define PUTFACE_SORT_ENV() \
   PUTFACE_SORT(); \
   MappingU1=TriFace->eMappingU[i0]*Texture->uScale*\
-            TriFace->Material->EnvScaling;\
+            TriFace->Face->Material->EnvScaling;\
   MappingV1=TriFace->eMappingV[i0]*Texture->vScale*\
-            TriFace->Material->EnvScaling;\
+            TriFace->Face->Material->EnvScaling;\
   MappingU2=TriFace->eMappingU[i1]*Texture->uScale*\
-            TriFace->Material->EnvScaling;\
+            TriFace->Face->Material->EnvScaling;\
   MappingV2=TriFace->eMappingV[i1]*Texture->vScale*\
-            TriFace->Material->EnvScaling;\
+            TriFace->Face->Material->EnvScaling;\
   MappingU3=TriFace->eMappingU[i2]*Texture->uScale*\
-            TriFace->Material->EnvScaling;\
+            TriFace->Face->Material->EnvScaling;\
   MappingV3=TriFace->eMappingV[i2]*Texture->vScale*\
-            TriFace->Material->EnvScaling;
+            TriFace->Face->Material->EnvScaling;
 
 #define PUTFACE_SORT_TEX() \
   PUTFACE_SORT(); \
   MappingU1=TriFace->MappingU[i0]*Texture->uScale*\
-            TriFace->Material->TexScaling;\
+            TriFace->Face->Material->TexScaling;\
   MappingV1=TriFace->MappingV[i0]*Texture->vScale*\
-            TriFace->Material->TexScaling;\
+            TriFace->Face->Material->TexScaling;\
   MappingU2=TriFace->MappingU[i1]*Texture->uScale*\
-            TriFace->Material->TexScaling;\
+            TriFace->Face->Material->TexScaling;\
   MappingV2=TriFace->MappingV[i1]*Texture->vScale*\
-            TriFace->Material->TexScaling;\
+            TriFace->Face->Material->TexScaling;\
   MappingU3=TriFace->MappingU[i2]*Texture->uScale*\
-            TriFace->Material->TexScaling;\
+            TriFace->Face->Material->TexScaling;\
   MappingV3=TriFace->MappingV[i2]*Texture->vScale*\
-            TriFace->Material->TexScaling;
+            TriFace->Face->Material->TexScaling;
 
 #endif /* !_PUTFACE_H_ */

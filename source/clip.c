@@ -12,7 +12,7 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 typedef struct
 {
-  pl_Vertex newVertices[8];
+  pl_PrepVertex newVertices[8];
   double Shades[8];
   double MappingU[8];
   double MappingV[8];
@@ -110,10 +110,10 @@ void plClipSetFrustum(pl_Cam *cam) {
 }
 
 
-void plClipRenderFace(pl_Face *face) {
+void plClipRenderFace(pl_PrepFace *face) {
   uint32_t k, a, w, numVerts;
   double tmp, tmp2;
-  pl_Face newface;
+  pl_PrepFace newface;
 
   for (a = 0; a < 3; a ++) {
     m_cl[0].newVertices[a] = *(face->Vertices[a]);
@@ -133,7 +133,7 @@ void plClipRenderFace(pl_Face *face) {
     a++;
   }
   if (numVerts > 2) {
-    plMemCpy(&newface,face,sizeof(pl_Face));
+    plMemCpy(&newface, face, sizeof(pl_PrepFace));
     for (k = 2; k < numVerts; k ++) {
       newface.fShade = plMax(0,plMin(face->fShade,1));
       for (a = 0; a < 3; a ++) {
@@ -152,14 +152,14 @@ void plClipRenderFace(pl_Face *face) {
         newface.Scrx[a] = m_cx + ((int32_t)((tmp*(float) (1<<20))));
         newface.Scry[a] = m_cy - ((int32_t)((tmp2*m_adj_asp*(float) (1<<20))));
       }
-      newface.Material->_PutFace(m_cam,&newface);
+      newface.Face->Material->_PutFace(m_cam,&newface);
       plRender_TriStats[3] ++; 
     }
     plRender_TriStats[2] ++; 
   }
 }
 
-int32_t plClipNeeded(pl_Face *face) {
+int32_t plClipNeeded(pl_PrepFace *face) {
   double dr,dl,db,dt; 
   double f;
   dr = (m_cam->ClipRight-m_cam->CenterX);
