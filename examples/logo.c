@@ -1,28 +1,18 @@
 // logo.c: plush logo
 // owo
 
-#include <float.h>
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
-
-#include <plush/plush.h>
-
 #include "ex.h"
 
-pl_Light *light;
-pl_Obj *logo;
-pl_Mat *material;
-pl_Cam *camera;
-uint8_t framebuffer[W * H];
-float zbuffer[W * H];
-uint8_t palette[768];
+static pl_Light *light;
+static pl_Obj *logo;
+static pl_Mat *material;
+static pl_Cam *camera;
+static uint8_t framebuffer[W * H];
+static float zbuffer[W * H];
+static uint8_t palette[768];
 
-int main(int argc, char **argv)
+int exInit(void **appstate, int argc, char **argv)
 {
-	/* setup graphics mode */
-	exSetGraphics();
-
 	/* create material */
 	material = plMatCreate();
 	material->NumGradients = 2500;
@@ -51,32 +41,43 @@ int main(int argc, char **argv)
 	/* create light */
 	light = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, 0.0, 0.0, 0.0, 1.0, 1.0);
 
-	/* main loop */
-	while (!exGetKey())
-	{
-		/* clear back buffer */
-		memset(zbuffer, 0, sizeof(zbuffer));
-		memset(framebuffer, 0, sizeof(framebuffer));
+	return PL_EXIT_CONTINUE;
+}
 
-		/* render frame */
-		plRenderBegin(camera);
-		plRenderLight(light);
-		plRenderObj(logo);
-		plRenderEnd();
+int exIterate(void *appstate)
+{
+	/* clear back buffer */
+	plMemSet(zbuffer, 0, sizeof(zbuffer));
+	plMemSet(framebuffer, 0, sizeof(framebuffer));
 
-		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
-	}
+	/* render frame */
+	plRenderBegin(camera);
+	plRenderLight(light);
+	plRenderObj(logo);
+	plRenderEnd();
 
+	/* copy to screen */
+	plMemCpy(exGraphMem, framebuffer, sizeof(framebuffer));
+
+	return PL_EXIT_CONTINUE;
+}
+
+int exKeyEvent(void *appstate, int key)
+{
+	// any keypress will trigger an exit
+	return PL_EXIT_SUCCESS;
+}
+
+void exQuit(void *appstate, int code)
+{
 	/* clean up */
 	plCamDelete(camera);
 	plLightDelete(light);
 	plObjDelete(logo);
 	plMatDelete(material);
+}
 
-	/* shut down video */
-	exSetText();
-
-	return 0;
+int main(int argc, char **argv)
+{
+	return exBegin(argc, argv, "Plush Logo");
 }

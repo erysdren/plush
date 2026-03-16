@@ -1,34 +1,24 @@
 // sprite.c: a more complex scene with a rotating camera and a sprite plane
 // owo
 
-#include <float.h>
-#include <time.h>
-#include <stdio.h>
-#include <math.h>
-
-#include <plush/plush.h>
-
 #include "ex.h"
 
 #define NUM_MATERIALS 2
 
-pl_Light *light1, *light2;
-pl_Obj *world;
-pl_Obj *sprite;
-pl_Mat *materials[NUM_MATERIALS];
-pl_Cam *camera;
-uint8_t framebuffer[W * H];
-float zbuffer[W * H];
-uint8_t palette[768];
-float camera_angle = 0;
-float light1_angle = 0;
+static pl_Light *light1, *light2;
+static pl_Obj *world;
+static pl_Obj *sprite;
+static pl_Mat *materials[NUM_MATERIALS];
+static pl_Cam *camera;
+static uint8_t framebuffer[W * H];
+static float zbuffer[W * H];
+static uint8_t palette[768];
+static float camera_angle = 0;
+static float light1_angle = 0;
 
-int main(int argc, char **argv)
+int exInit(void **appstate, int argc, char **argv)
 {
 	int i;
-
-	/* setup graphics mode */
-	exSetGraphics();
 
 	/* create materials */
 	materials[0] = plMatCreate();
@@ -82,40 +72,53 @@ int main(int argc, char **argv)
 	light1 = plLightSet(plLightCreate(), PL_LIGHT_VECTOR, -90.0, 30.0, -45.0, 1.0, 1.0);
 	light2 = plLightSet(plLightCreate(), PL_LIGHT_POINT, 0.0, 24.0, 0.0, 1.0, 256.0);
 
-	/* main loop */
-	while (!exGetKey())
-	{
-		/* clear back buffer */
-		memset(zbuffer, 0, sizeof(zbuffer));
-		memset(framebuffer, 0, sizeof(framebuffer));
+	return PL_EXIT_CONTINUE;
+}
 
-		/* rotate camera */
-		camera_angle += 0.01;
-		camera->X = 160 * cos(camera_angle);
-		camera->Z = 160 * sin(camera_angle);
-		camera->Pan = 90 + atan2(camera->Z, camera->X) * 180 / PL_PI;
+int exKeyEvent(void *appstate, int key)
+{
+	// any keypress will trigger an exit
+	return PL_EXIT_SUCCESS;
+}
 
-		/* rotate sprite to face camera */
-		sprite->Xa = 90;
-		sprite->Ya = camera->Pan;
+int exIterate(void *appstate)
+{
+	/* clear back buffer */
+	plMemSet(zbuffer, 0, sizeof(zbuffer));
+	plMemSet(framebuffer, 0, sizeof(framebuffer));
 
-		/* rotate vector light */
-		light1_angle -= 0.01;
-		light1->Xp = cos(light1_angle);
-		light1->Zp = sin(light1_angle);
+	/* rotate camera */
+	camera_angle += 0.01;
+	camera->X = 160 * cos(camera_angle);
+	camera->Z = 160 * sin(camera_angle);
+	camera->Pan = 90 + atan2(camera->Z, camera->X) * 180 / PL_PI;
 
-		/* render frame */
-		plRenderBegin(camera);
-		plRenderLight(light1);
-		plRenderLight(light2);
-		plRenderObj(world);
-		plRenderObj(sprite);
-		plRenderEnd();
+	/* rotate sprite to face camera */
+	sprite->Xa = 90;
+	sprite->Ya = camera->Pan;
 
-		/* wait for vsync, then copy to screen */
-		exWaitVSync();
-		memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
-	}
+	/* rotate vector light */
+	light1_angle -= 0.01;
+	light1->Xp = cos(light1_angle);
+	light1->Zp = sin(light1_angle);
+
+	/* render frame */
+	plRenderBegin(camera);
+	plRenderLight(light1);
+	plRenderLight(light2);
+	plRenderObj(world);
+	plRenderObj(sprite);
+	plRenderEnd();
+
+	/* copy to screen */
+	plMemCpy(exGraphMem, framebuffer, sizeof(framebuffer));
+
+	return PL_EXIT_CONTINUE;
+}
+
+void exQuit(void *appstate, int code)
+{
+	int i;
 
 	/* clean up */
 	plCamDelete(camera);
@@ -124,9 +127,9 @@ int main(int argc, char **argv)
 	plObjDelete(world);
 	for (i = 0; i < NUM_MATERIALS; i++)
 		plMatDelete(materials[i]);
+}
 
-	/* shut down video */
-	exSetText();
-
-	return 0;
+int main(int argc, char **argv)
+{
+	return exBegin(argc, argv, "sprite");
 }
