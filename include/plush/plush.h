@@ -507,6 +507,17 @@ pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t
 */
 void plTexDelete(pl_Texture *t);
 
+/*
+  plTexResize() resizes a texture with no filtering or dithering
+  Parameters:
+    texture: the texture to resize
+    new_width: the desired new width of the texture
+    new_height: the desired new height of the texture
+  Returns:
+    true on success, false on failure
+*/
+bool plTexResize(pl_Texture *texture, uint32_t new_width, uint32_t new_height);
+
 
 /******************************************************************************
 ** Camera Handling Routines (cam.c)

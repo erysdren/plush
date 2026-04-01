@@ -123,6 +123,35 @@ void _plRescaleImage(uint8_t *in, uint8_t *out, uint32_t inw,
   } while (--outy);
 }
 
+bool plTexResize(pl_Texture *texture, uint32_t new_width, uint32_t new_height)
+{
+	uint8_t *new_data = NULL;
+
+	if (!texture)
+		return false;
+
+	if (new_width == 0 || new_height == 0)
+		return false;
+
+	new_data = plResCreate(texture, new_width * new_height);
+	if (!new_data)
+		return false;
+
+	_plRescaleImage(texture->Data, new_data, texture->iWidth, texture->iHeight, new_width, new_height);
+
+	plResDelete(texture->Data);
+
+	texture->Data = new_data;
+	texture->Width = _plHiBit(new_width);
+	texture->Height = _plHiBit(new_height);
+	texture->iWidth = new_width;
+	texture->iHeight = new_height;
+	texture->uScale = (float)(1 << texture->Width);
+	texture->vScale = (float)(1 << texture->Height);
+
+	return true;
+}
+
 pl_Texture *plTexCreate(uint32_t w, uint32_t h, uint8_t *p, uint32_t nc, uint8_t *c)
 {
 	pl_Texture *t = plResCreate(NULL, sizeof(pl_Texture));
