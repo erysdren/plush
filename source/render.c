@@ -82,7 +82,7 @@ void plRenderLight(pl_Light *light) {
 
 static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 {
-	uint32_t i, x, facepos;
+	uint32_t i, x;
 	float nx = 0.0, ny = 0.0, nz = 0.0;
 	double tmp, tmp2;
 	float oMatrix[16], nMatrix[16], tempMatrix[16];
@@ -158,9 +158,9 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 
 	plRender_TriStats[0] += obj->Model->NumFaces;
 
-	for (x = 0, facepos = _numfaces; x < obj->Model->NumFaces; x++)
+	for (x = 0; x < obj->Model->NumFaces; x++)
 	{
-		face = _faces + facepos;
+		face = _faces + _numfaces;
 
 		face->Face = obj->Model->Faces + x;
 
@@ -288,10 +288,9 @@ static void _RenderObj(pl_Obj *obj, float *bmatrix, float *bnmatrix)
 				} /* End of vertex loop for */
 			} /* End of gouraud shading mask if */
 			face->zd = face->Vertices[0]->xformedz+face->Vertices[1]->xformedz+face->Vertices[2]->xformedz;
-			facepos++;
+			_numfaces++;
 			plRender_TriStats[1] ++;
 		} /* Backface Check */
-		_numfaces = facepos;
 	}
 
 	_numvertices += obj->Model->NumVertices;
