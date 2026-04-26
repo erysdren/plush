@@ -105,6 +105,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		masked
 		metrics
 		model
+		multicam
 		polyrobo
 		polyrobo2
 		q3bsp
