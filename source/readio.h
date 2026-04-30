@@ -25,7 +25,10 @@ typedef struct _pl_IOMemCtx {
 	size_t pos;
 } pl_IOMemCtx;
 
+#if !PL_NO_STDIO
 extern pl_IO _plIOStdio;
+#endif
+
 extern pl_IO _plIOMem;
 
 #endif /* !_READIO_H_ */

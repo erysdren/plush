@@ -10,6 +10,8 @@ Copyright (C) 2024-2025, erysdren (it/its)
 
 #include "readio.h"
 
+#if !PL_NO_STDIO
+
 static int _plIOStdioGetc(void *user)
 {
 	return fgetc((FILE *)user);
@@ -48,6 +50,8 @@ static int _plIOStdioTell(void *user)
 pl_IO _plIOStdio = {
 	_plIOStdioGetc, _plIOStdioGets, _plIOStdioRead, _plIOStdioSeek, _plIOStdioRewind, _plIOStdioEof, _plIOStdioTell
 };
+
+#endif /* !PL_NO_STDIO */
 
 static int _plIOMemGetc(void *user)
 {

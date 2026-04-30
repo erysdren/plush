@@ -691,6 +691,8 @@ pl_Mdl *plMakeTorus(float r1, float r2, uint32_t divrot,
 ** File Readers (read_*.c)
 ******************************************************************************/
 
+#if !PL_NO_STDIO
+
 /* 
   plRead3DSObj() reads a 3DS object
   Parameters:
@@ -776,6 +778,8 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
 */
 pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 
+#endif /* !PL_NO_STDIO */
+
 /*
   plReadPCXTexFromMem() reads an 8bpp PCX texture from the provided buffer
   Parameters:
@@ -795,6 +799,8 @@ pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimi
 /******************************************************************************
 ** File Writers (write_*.c)
 ******************************************************************************/
+
+#if !PL_NO_STDIO
 
 /*
   plWritePCX() write an 8bpp PCX image
@@ -828,6 +834,8 @@ bool plWritePCXTex(const char *fn, pl_Texture *tex);
     true on success, false on failure
 */
 bool plWriteWavefrontMdl(const char *fn, pl_Mdl *mdl);
+
+#endif /* !PL_NO_STDIO */
 
 /******************************************************************************
 ** Math Code (math.c)

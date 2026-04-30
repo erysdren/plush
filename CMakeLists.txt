@@ -13,6 +13,7 @@ find_package(Math)
 
 option(PLUSH_BUILD_EXAMPLES "Build Plush Examples" ON)
 option(PLUSH_USE_ASAN "Use Address Sanitizer" OFF)
+option(PLUSH_NO_STDIO "Disable all file reading and writing functions" OFF)
 set(PLUSH_MAX_LIGHTS "32" CACHE STRING "Maximum number of lights in a single render pass")
 set(PLUSH_MAX_TRIANGLES "16384" CACHE STRING "Maximum number of triangles in a single render pass")
 set(PLUSH_RESOURCE_ALIGNMENT "8" CACHE STRING "Byte alignment of resource memory allocations")
@@ -22,8 +23,11 @@ if(NOT DEFINED PLUSH_BIG_ENDIAN)
 	else()
 		set(PLUSH_BIG_ENDIAN 0)
 	endif()
+endif()
+if(PLUSH_NO_STDIO)
+	set(PLUSH_NO_STDIO 1)
 else()
-	set(PLUSH_BIG_ENDIAN $<BOOL:${PLUSH_BIG_ENDIAN}>)
+	set(PLUSH_NO_STDIO 0)
 endif()
 
 # asan
@@ -62,19 +66,19 @@ target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/pf_tex.c
 	${PROJECT_SOURCE_DIR}/source/pf_trans.c
 	${PROJECT_SOURCE_DIR}/source/plush.c
-	${PROJECT_SOURCE_DIR}/source/read_3ds.c
-	${PROJECT_SOURCE_DIR}/source/read_cob.c
-	${PROJECT_SOURCE_DIR}/source/read_jaw.c
-	${PROJECT_SOURCE_DIR}/source/read_obj.c
-	${PROJECT_SOURCE_DIR}/source/read_pcx.c
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_3ds.c>
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_cob.c>
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_jaw.c>
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_obj.c>
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/read_pcx.c>
 	${PROJECT_SOURCE_DIR}/source/readio.c
 	${PROJECT_SOURCE_DIR}/source/render.c
 	${PROJECT_SOURCE_DIR}/source/resource.c
 	${PROJECT_SOURCE_DIR}/source/spline.c
 	${PROJECT_SOURCE_DIR}/source/text.c
 	${PROJECT_SOURCE_DIR}/source/texture.c
-	${PROJECT_SOURCE_DIR}/source/write_obj.c
-	${PROJECT_SOURCE_DIR}/source/write_pcx.c
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/write_obj.c>
+	$<$<NOT:${PLUSH_NO_STDIO}>:${PROJECT_SOURCE_DIR}/source/write_pcx.c>
 )
 
 target_include_directories(plush
