@@ -3,7 +3,7 @@ Plush Version 1.2
 read_obj.c
 Wavefront OBJ Reader
 Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.
-Copyright (C) 2024-2025, erysdren (it/its)
+Copyright (C) 2024-2026, erysdren (it/its)
 ******************************************************************************/
 
 #include <plush/plush.h>

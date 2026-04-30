@@ -2,7 +2,7 @@
   pl_types.h
   PLUSH 3D VERSION 1.2 TYPES DEFINITION HEADER
   Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.
-  Copyright (C) 2024-2025, erysdren (it/its)
+  Copyright (C) 2024-2026, erysdren (it/its)
 ******************************************************************************/
 
 #ifndef _PL_TYPES_H_

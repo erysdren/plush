@@ -2,7 +2,7 @@
 Plush Version 1.2
 write_obj.c
 Wavefront OBJ Writer
-Copyright (C) 2025, erysdren (it/its)
+Copyright (C) 2025-2026, erysdren (it/its)
 ******************************************************************************/
 
 #include <plush/plush.h>

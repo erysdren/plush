@@ -178,7 +178,7 @@ following compilers:
 ## License
 
 Copyright (C) 1996-2000, Justin Frankel and Nullsoft, Inc.\
-Copyright (C) 2024-2025, erysdren (it/its)
+Copyright (C) 2024-2026, erysdren (it/its)
 
 This software is provided 'as-is', without any express or implied warranty. In
 no event will the authors be held liable for any damages arising from the use
