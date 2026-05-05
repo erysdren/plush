@@ -28,8 +28,8 @@ typedef struct bmp_dib {
 	uint16_t bpp;
 	uint32_t compression;
 	uint32_t len_pixels;
-	uint32_t res_x;
-	uint32_t res_y;
+	int32_t res_x;
+	int32_t res_y;
 	uint32_t num_colors;
 	uint32_t num_important_colors;
 } bmp_dib_t;
@@ -40,6 +40,12 @@ static int _plReadBMP(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 {
 	bmp_header_t header;
 	bmp_dib_t dib;
+	uint8_t *picdest, *paldest;
+	uint8_t *pic_p, *pal_p;
+	uint8_t *temppal, *temppixels, *pixels_p;
+	int i, y;
+	int stride;
+	bool topdown = false;
 
 	/* read header */
 	io->read(&header, sizeof(header), 1, user);
@@ -69,6 +75,81 @@ static int _plReadBMP(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 	/* validate */
 	if (dib.len_dib < sizeof(bmp_dib_t))
 		return -2;
+	if (dib.num_planes != 1)
+		return -3;
+	if (dib.bpp != 8)
+		return -4;
+	if (dib.compression != 0)
+		return -5;
+
+	/* check for inverted height value */
+	if (dib.height < 0)
+	{
+		dib.height = -dib.height;
+		topdown = true;
+	}
+
+	/* allocate */
+	paldest = plMalloc(768);
+	pic_p = picdest = plMalloc(dib.width * dib.height);
+
+	/* read palette */
+	pal_p = temppal = (uint8_t *)plMalloc(dib.num_colors * 4);
+	io->read(temppal, 4, dib.num_colors, user);
+
+	/* copy palette */
+	for (i = 0; i < dib.num_colors; i++)
+	{
+		paldest[i * 3 + 0] = pal_p[2];
+		paldest[i * 3 + 1] = pal_p[1];
+		paldest[i * 3 + 2] = pal_p[0];
+
+		pal_p += 4;
+	}
+
+	/* fill in the rest of the palette */
+	for (i = dib.num_colors; i < 256; i++)
+	{
+		paldest[i * 3 + 0] = 0;
+		paldest[i * 3 + 1] = 0;
+		paldest[i * 3 + 2] = 0;
+	}
+
+	/* read pixel data */
+	pixels_p = temppixels = (uint8_t *)plMalloc(dib.len_pixels);
+	io->seek(user, header.ofs_pixels, SEEK_SET);
+	io->read(temppixels, dib.len_pixels, 1, user);
+
+	stride = (dib.width + 3) & ~3;
+
+	/* copy pixel data */
+	if (topdown)
+	{
+		for (y = 0; y < dib.height; y++)
+		{
+			memcpy(pic_p, pixels_p, dib.width);
+			pic_p += dib.width;
+			pixels_p += stride;
+		}
+	}
+	else
+	{
+		pixels_p += (dib.height - 1) * stride;
+		for (y = 0; y < dib.height; y++)
+		{
+			memcpy(pic_p, pixels_p, dib.width);
+			pic_p += dib.width;
+			pixels_p -= stride;
+		}
+	}
+
+	/* clean up */
+	plFree(temppal);
+	plFree(temppixels);
+
+	/* return stuff */
+	*pal = paldest;
+	*data = picdest;
 
 	return 0;
 }
