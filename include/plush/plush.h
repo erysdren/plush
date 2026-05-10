@@ -764,7 +764,7 @@ pl_Mdl *plReadWavefrontMdl(const char *fn, pl_Mat *m);
 pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t max_materials, size_t *num_materials, pl_Mat *fallback_material);
 
 /*
-  plReadPCXTex() reads a 8bpp BMP texture
+  plReadPCXTex() reads an uncompressed 8bpp BMP texture
   Parameters:
     fn: filename of texture to read
     rescale: will rescale image if not whole log2 dimensions (USE THIS)
@@ -808,7 +808,7 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
 
 /*
-  plReadPCXTexFromMem() reads an 8bpp BMP texture from the provided buffer
+  plReadPCXTexFromMem() reads an uncompressed 8bpp BMP texture from the provided buffer
   Parameters:
     buf: bmp file buffer
     len: size of buf in bytes
