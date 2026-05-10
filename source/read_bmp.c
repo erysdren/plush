@@ -95,7 +95,8 @@ static int _plReadBMP(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 
 	/* read palette */
 	pal_p = temppal = (uint8_t *)plMalloc(dib.num_colors * 4);
-	io->read(temppal, 4, dib.num_colors, user);
+	io->seek(user, sizeof(bmp_header_t) + dib.len_dib, SEEK_SET);
+	io->read(temppal, dib.num_colors * 4, 1, user);
 
 	/* copy palette */
 	for (i = 0; i < dib.num_colors; i++)
