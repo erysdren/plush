@@ -148,6 +148,8 @@ static int _plReadBMP(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 	plFree(temppixels);
 
 	/* return stuff */
+	*width = dib.width;
+	*height = dib.height;
 	*pal = paldest;
 	*data = picdest;
 
