@@ -188,11 +188,13 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
   pl_Face *f;
   uint32_t i;
   double a, da;
+  int32_t *texcoords = NULL;
   if (divr < 3) divr = 3;
   mdl = plMdlCreate(divr*2+((divr==3)?0:(captop?1:0)+(capbottom?1:0)),
                   divr*2+(divr==3 ? (captop ? 1 : 0) + (capbottom ? 1 : 0) :
                   (captop ? divr : 0) + (capbottom ? divr : 0)));
   if (!mdl) return 0;
+  texcoords = plMalloc(mdl->NumVertices * sizeof(int32_t) * 2);
   a = 0.0;
   da = (2.0*PL_PI)/divr;
   v = mdl->Vertices;
@@ -201,8 +203,8 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
     v->y = h/2.0f; 
     v->x = (float) (r*plCos((double) a));
     v->z = (float)(r*plSin(a));
-    v->xformedx = (float) (32768.0 + (32768.0*plCos((double) a))); // temp
-    v->xformedy = (float) (32768.0 + (32768.0*plSin((double) a))); // use xf
+    texcoords[((v - mdl->Vertices) * 2) + 0] = (int32_t) (32768.0 + (32768.0*plCos((double) a))); // temp
+    texcoords[((v - mdl->Vertices) * 2) + 1] = (int32_t) (32768.0 + (32768.0*plSin((double) a))); // use xf
     v++; 
     a += da;
   }
@@ -212,8 +214,8 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
     v->y = -h/2.0f; 
     v->x = (float) (r*plCos((double) a));
     v->z = (float) (r*plSin(a));
-    v->xformedx = (float) (32768.0 + (32768.0*plCos((double) a)));
-    v->xformedy = (float) (32768.0 + (32768.0*plSin((double) a)));
+    texcoords[((v - mdl->Vertices) * 2) + 0] = (int32_t) (32768.0 + (32768.0*plCos((double) a)));
+    texcoords[((v - mdl->Vertices) * 2) + 1] = (int32_t) (32768.0 + (32768.0*plSin((double) a)));
     v++; a += da;
   }
   if (captop && divr != 3) {
@@ -250,22 +252,22 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
       f->Vertices[0] = topverts + 0;
       f->Vertices[1] = topverts + 2;
       f->Vertices[2] = topverts + 1;
-      f->MappingU[0] = (int32_t) topverts[0].xformedx;
-      f->MappingV[0] = (int32_t) topverts[0].xformedy;
-      f->MappingU[1] = (int32_t) topverts[1].xformedx;
-      f->MappingV[1] = (int32_t) topverts[1].xformedy;
-      f->MappingU[2] = (int32_t) topverts[2].xformedx;
-      f->MappingV[2] = (int32_t) topverts[2].xformedy;
+      f->MappingU[0] = texcoords[((f->Vertices[0] - mdl->Vertices) * 2) + 0];
+      f->MappingV[0] = texcoords[((f->Vertices[0] - mdl->Vertices) * 2) + 1];
+      f->MappingU[1] = texcoords[((f->Vertices[2] - mdl->Vertices) * 2) + 0];
+      f->MappingV[1] = texcoords[((f->Vertices[2] - mdl->Vertices) * 2) + 1];
+      f->MappingU[2] = texcoords[((f->Vertices[1] - mdl->Vertices) * 2) + 0];
+      f->MappingV[2] = texcoords[((f->Vertices[1] - mdl->Vertices) * 2) + 1];
       f->Material = m; f++;
     } else {
       for (i = 0; i < divr; i ++) {
         f->Vertices[0] = topverts + (i == divr-1 ? 0 : i + 1);
         f->Vertices[1] = topverts + i;
         f->Vertices[2] = topcapvert;
-        f->MappingU[0] = (int32_t) topverts[(i==divr-1?0:i+1)].xformedx;
-        f->MappingV[0] = (int32_t) topverts[(i==divr-1?0:i+1)].xformedy;
-        f->MappingU[1] = (int32_t) topverts[i].xformedx;
-        f->MappingV[1] = (int32_t) topverts[i].xformedy;
+        f->MappingU[0] = texcoords[((&topverts[(i==divr-1?0:i+1)] - mdl->Vertices) * 2) + 0];
+        f->MappingV[0] = texcoords[((&topverts[(i==divr-1?0:i+1)] - mdl->Vertices) * 2) + 1];
+        f->MappingU[1] = texcoords[((&topverts[i] - mdl->Vertices) * 2) + 0];
+        f->MappingV[1] = texcoords[((&topverts[i] - mdl->Vertices) * 2) + 1];
         f->MappingU[2] = f->MappingV[2] = 32768;
         f->Material = m; f++;
       }
@@ -276,27 +278,28 @@ pl_Mdl *plMakeCylinder(float r, float h, uint32_t divr, bool captop,
       f->Vertices[0] = bottomverts + 0;
       f->Vertices[1] = bottomverts + 1;
       f->Vertices[2] = bottomverts + 2;
-      f->MappingU[0] = (int32_t) bottomverts[0].xformedx;
-      f->MappingV[0] = (int32_t) bottomverts[0].xformedy;
-      f->MappingU[1] = (int32_t) bottomverts[1].xformedx;
-      f->MappingV[1] = (int32_t) bottomverts[1].xformedy;
-      f->MappingU[2] = (int32_t) bottomverts[2].xformedx;
-      f->MappingV[2] = (int32_t) bottomverts[2].xformedy;
+      f->MappingU[0] = texcoords[((f->Vertices[0] - mdl->Vertices) * 2) + 0];
+      f->MappingV[0] = texcoords[((f->Vertices[0] - mdl->Vertices) * 2) + 1];
+      f->MappingU[1] = texcoords[((f->Vertices[1] - mdl->Vertices) * 2) + 0];
+      f->MappingV[1] = texcoords[((f->Vertices[1] - mdl->Vertices) * 2) + 1];
+      f->MappingU[2] = texcoords[((f->Vertices[2] - mdl->Vertices) * 2) + 0];
+      f->MappingV[2] = texcoords[((f->Vertices[2] - mdl->Vertices) * 2) + 1];
       f->Material = m; f++;
     } else {
       for (i = 0; i < divr; i ++) {
         f->Vertices[0] = bottomverts + i;
         f->Vertices[1] = bottomverts + (i == divr-1 ? 0 : i + 1);
         f->Vertices[2] = bottomcapvert;
-        f->MappingU[0] = (int32_t) bottomverts[i].xformedx;
-        f->MappingV[0] = (int32_t) bottomverts[i].xformedy;
-        f->MappingU[1] = (int32_t) bottomverts[(i==divr-1?0:i+1)].xformedx;
-        f->MappingV[1] = (int32_t) bottomverts[(i==divr-1?0:i+1)].xformedy;
+        f->MappingU[0] = texcoords[((&bottomverts[i] - mdl->Vertices) * 2) + 0];
+        f->MappingV[0] = texcoords[((&bottomverts[i] - mdl->Vertices) * 2) + 1];
+        f->MappingU[1] = texcoords[((&bottomverts[(i==divr-1?0:i+1)] - mdl->Vertices) * 2) + 0];
+        f->MappingV[1] = texcoords[((&bottomverts[(i==divr-1?0:i+1)] - mdl->Vertices) * 2) + 1];
         f->MappingU[2] = f->MappingV[2] = 32768;
         f->Material = m; f++;
       }
     }
   }
+  if (texcoords) plFree(texcoords);
   plMdlCalcNormals(mdl);
   return (mdl);
 }
@@ -308,14 +311,16 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
   pl_Face *f;
   uint32_t i;
   double a, da;
+  int32_t *texcoords = NULL;
   if (div < 3) div = 3;
   mdl = plMdlCreate(div + (div == 3 ? 1 : (cap ? 2 : 1)),
                   div + (div == 3 ? 1 : (cap ? div : 0)));
   if (!mdl) return 0;
+  texcoords = plMalloc(mdl->NumVertices * sizeof(int32_t) * 2);
   v = mdl->Vertices;
   v->x = v->z = 0; v->y = h/2;
-  v->xformedx = 1<<15;
-  v->xformedy = 1<<15;
+  texcoords[((v - mdl->Vertices) * 2) + 0] = 1<<15;
+  texcoords[((v - mdl->Vertices) * 2) + 1] = 1<<15;
   v++;
   a = 0.0;
   da = (2.0*PL_PI)/div;
@@ -323,16 +328,16 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
     v->y = h/-2.0f;
     v->x = (float) (r*plCos((double) a));
     v->z = (float) (r*plSin((double) a));
-    v->xformedx = (float) (32768.0 + (plCos((double) a)*32768.0));
-    v->xformedy = (float) (32768.0 + (plSin((double) a)*32768.0));
+    texcoords[((v - mdl->Vertices) * 2) + 0] = (int32_t) (32768.0 + (plCos((double) a)*32768.0));
+    texcoords[((v - mdl->Vertices) * 2) + 1] = (int32_t) (32768.0 + (plSin((double) a)*32768.0));
     a += da;
     v++;
   }
   if (cap && div != 3) {
     v->y = h / -2.0f; 
     v->x = v->z = 0.0f;
-    v->xformedx = (float) (1<<15);
-    v->xformedy = (float) (1<<15);
+    texcoords[((v - mdl->Vertices) * 2) + 0] = 1<<15;
+    texcoords[((v - mdl->Vertices) * 2) + 1] = 1<<15;
     v++;
   }
   f = mdl->Faces;
@@ -340,12 +345,12 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
     f->Vertices[0] = mdl->Vertices;
     f->Vertices[1] = mdl->Vertices + (i == div ? 1 : i + 1);
     f->Vertices[2] = mdl->Vertices + i;
-    f->MappingU[0] = (int32_t) mdl->Vertices[0].xformedx;
-    f->MappingV[0] = (int32_t) mdl->Vertices[0].xformedy;
-    f->MappingU[1] = (int32_t) mdl->Vertices[(i==div?1:i+1)].xformedx;
-    f->MappingV[1] = (int32_t) mdl->Vertices[(i==div?1:i+1)].xformedy;
-    f->MappingU[2] = (int32_t) mdl->Vertices[i].xformedx;
-    f->MappingV[2] = (int32_t) mdl->Vertices[i].xformedy;
+    f->MappingU[0] = texcoords[((&mdl->Vertices[0] - mdl->Vertices) * 2) + 0];
+    f->MappingV[0] = texcoords[((&mdl->Vertices[0] - mdl->Vertices) * 2) + 1];
+    f->MappingU[1] = texcoords[((&mdl->Vertices[(i==div?1:i+1)] - mdl->Vertices) * 2) + 0];
+    f->MappingV[1] = texcoords[((&mdl->Vertices[(i==div?1:i+1)] - mdl->Vertices) * 2) + 1];
+    f->MappingU[2] = texcoords[((&mdl->Vertices[i] - mdl->Vertices) * 2) + 0];
+    f->MappingV[2] = texcoords[((&mdl->Vertices[i] - mdl->Vertices) * 2) + 1];
     f->Material = m;
     f++;
   }
@@ -354,12 +359,12 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
       f->Vertices[0] = mdl->Vertices + 1;
       f->Vertices[1] = mdl->Vertices + 2;
       f->Vertices[2] = mdl->Vertices + 3;
-      f->MappingU[0] = (int32_t) mdl->Vertices[1].xformedx;
-      f->MappingV[0] = (int32_t) mdl->Vertices[1].xformedy;
-      f->MappingU[1] = (int32_t) mdl->Vertices[2].xformedx;
-      f->MappingV[1] = (int32_t) mdl->Vertices[2].xformedy;
-      f->MappingU[2] = (int32_t) mdl->Vertices[3].xformedx;
-      f->MappingV[2] = (int32_t) mdl->Vertices[3].xformedy;
+      f->MappingU[0] = texcoords[((&mdl->Vertices[1] - mdl->Vertices) * 2) + 0];
+      f->MappingV[0] = texcoords[((&mdl->Vertices[1] - mdl->Vertices) * 2) + 1];
+      f->MappingU[1] = texcoords[((&mdl->Vertices[2] - mdl->Vertices) * 2) + 0];
+      f->MappingV[1] = texcoords[((&mdl->Vertices[2] - mdl->Vertices) * 2) + 1];
+      f->MappingU[2] = texcoords[((&mdl->Vertices[3] - mdl->Vertices) * 2) + 0];
+      f->MappingV[2] = texcoords[((&mdl->Vertices[3] - mdl->Vertices) * 2) + 1];
       f->Material = m;
       f++;
     } else {
@@ -367,17 +372,18 @@ pl_Mdl *plMakeCone(float r, float h, uint32_t div,
         f->Vertices[0] = mdl->Vertices + div + 1;
         f->Vertices[1] = mdl->Vertices + i;
         f->Vertices[2] = mdl->Vertices + (i==div ? 1 : i+1);
-        f->MappingU[0] = (int32_t) mdl->Vertices[div+1].xformedx;
-        f->MappingV[0] = (int32_t) mdl->Vertices[div+1].xformedy;
-        f->MappingU[1] = (int32_t) mdl->Vertices[i].xformedx;
-        f->MappingV[1] = (int32_t) mdl->Vertices[i].xformedy;
-        f->MappingU[2] = (int32_t) mdl->Vertices[i==div?1:i+1].xformedx;
-        f->MappingV[2] = (int32_t) mdl->Vertices[i==div?1:i+1].xformedy;
+        f->MappingU[0] = texcoords[((&mdl->Vertices[div+1] - mdl->Vertices) * 2) + 0];
+        f->MappingV[0] = texcoords[((&mdl->Vertices[div+1] - mdl->Vertices) * 2) + 1];
+        f->MappingU[1] = texcoords[((&mdl->Vertices[i] - mdl->Vertices) * 2) + 0];
+        f->MappingV[1] = texcoords[((&mdl->Vertices[i] - mdl->Vertices) * 2) + 1];
+        f->MappingU[2] = texcoords[((&mdl->Vertices[i==div?1:i+1] - mdl->Vertices) * 2) + 0];
+        f->MappingV[2] = texcoords[((&mdl->Vertices[i==div?1:i+1] - mdl->Vertices) * 2) + 1];
         f->Material = m;
         f++;
       }
     }
   }
+  if (texcoords) plFree(texcoords);
   plMdlCalcNormals(mdl);
   return (mdl);
 }
