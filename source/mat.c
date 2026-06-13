@@ -11,8 +11,8 @@ Copyright (C) 2024-2026, erysdren (it/its)
 static void _plGenerateSinglePalette(pl_Mat *);
 static void _plGeneratePhongPalette(pl_Mat *);
 static void _plGenerateTextureEnvPalette(pl_Mat *);
-static void _plGenerateTexturePalette(pl_Mat *, pl_Texture *);
-static void _plGeneratePhongTexturePalette(pl_Mat *, pl_Texture *);
+static void _plGenerateTexturePalette(pl_Mat *, pl_Texture *, pl_Texture *);
+static void _plGeneratePhongTexturePalette(pl_Mat *, pl_Texture *, pl_Texture *);
 static void _plGeneratePhongTransparentPalette(pl_Mat *m);
 static void  _plGenerateTransparentPalette(pl_Mat *);
 static void _plSetMaterialPutFace(pl_Mat *m);
@@ -56,12 +56,12 @@ void plMatInit(pl_Mat *m) {
     else _plGeneratePhongPalette(m);
   } else if (m->_ft == PL_FILL_TEXTURE) {
     if (m->_st == PL_SHADE_NONE)
-      _plGenerateTexturePalette(m,m->Texture);
-    else _plGeneratePhongTexturePalette(m,m->Texture);
+      _plGenerateTexturePalette(m,m->Texture,m->Texture2);
+    else _plGeneratePhongTexturePalette(m,m->Texture,m->Texture2);
   } else if (m->_ft == PL_FILL_ENVIRONMENT) {
     if (m->_st == PL_SHADE_NONE) 
-      _plGenerateTexturePalette(m,m->Environment);
-    else _plGeneratePhongTexturePalette(m,m->Environment);
+      _plGenerateTexturePalette(m,m->Environment,NULL);
+    else _plGeneratePhongTexturePalette(m,m->Environment,NULL);
   } else if (m->_ft == (PL_FILL_ENVIRONMENT|PL_FILL_TEXTURE))
     _plGenerateTextureEnvPalette(m);
   else if (m->_ft == PL_FILL_TRANSPARENT) {
@@ -225,10 +225,11 @@ static void _plGenerateTextureEnvPalette(pl_Mat *m) {
   }
 }
 
-static void _plGenerateTexturePalette(pl_Mat *m, pl_Texture *t) {
+static void _plGenerateTexturePalette(pl_Mat *m, pl_Texture *t, pl_Texture *t2) {
   uint8_t *ppal, *pal;
   int32_t c, i, x;
   m->_ColorsUsed = t->NumColors;
+  if (t2) m->_ColorsUsed += t2->NumColors;
   if (m->_RequestedColors) plResDelete(m->_RequestedColors);
   pal = m->_RequestedColors = plResCreate(m, m->_ColorsUsed*3);
   ppal = t->PaletteData;
@@ -239,20 +240,32 @@ static void _plGenerateTexturePalette(pl_Mat *m, pl_Texture *t) {
       *(pal++) = plMax(0,plMin(c,255));
     }
   } while (--i);
+  if (!t2) return;
+  ppal = t2->PaletteData;
+  i = t2->NumColors;
+  do {
+    for (x = 0; x < 3; x ++) {
+      c = m->Ambient[x] + *ppal++;
+      *(pal++) = plMax(0,plMin(c,255));
+    }
+  } while (--i);
 }
 
-static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t) {
+static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t, pl_Texture *t2) {
   double a, ca, da, cb;
   uint16_t *addtable;
   uint8_t *ppal, *pal;
   int32_t c, i, i2, x;
   uint32_t num_shades;
-  
-  if (t->NumColors) num_shades = (m->NumGradients / t->NumColors);
+  uint32_t num_colors;
+
+  num_colors = t->NumColors + (t2 ? t2->NumColors : 0);
+
+  if (num_colors) num_shades = (m->NumGradients / num_colors);
   else num_shades=1;
 
   if (!num_shades) num_shades = 1;
-  m->_ColorsUsed = num_shades*t->NumColors;
+  m->_ColorsUsed = num_shades*num_colors;
   if (m->_RequestedColors) plResDelete(m->_RequestedColors);
   pal = m->_RequestedColors = plResCreate(m, m->_ColorsUsed*3);
   a = PL_PI/2.0;
@@ -271,6 +284,15 @@ static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t) {
         *(pal++) = plMax(0,plMin(c,255));
       }
     } while (--i);
+    if (!t2) continue;
+    ppal = t2->PaletteData;
+    i = t2->NumColors;
+    do {
+      for (x = 0; x < 3; x ++) {
+        c = (int32_t) ((cb*m->Specular[x])+(ca*m->Diffuse[x])+m->Ambient[x] + *ppal++);
+        *(pal++) = plMax(0,plMin(c,255));
+      }
+    } while (--i);
   } while (--i2);
   ca = 0;
   if (m->_AddTable) plResDelete(m->_AddTable);
@@ -280,7 +302,7 @@ static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t) {
   do {
     a = plSin(ca) * num_shades;
     ca += PL_PI/512.0;
-    *addtable++ = ((int32_t) a)*t->NumColors;
+    *addtable++ = ((int32_t) a)*num_colors;
   } while (--i);
 }
 
