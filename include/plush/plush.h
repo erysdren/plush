@@ -808,7 +808,7 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize);
 pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
 
 /*
-  plReadPCXTexFromMem() reads an uncompressed 8bpp BMP texture from the provided buffer
+  plReadBMPTexFromMem() reads an uncompressed 8bpp BMP texture from the provided buffer
   Parameters:
     buf: bmp file buffer
     len: size of buf in bytes
