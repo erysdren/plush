@@ -116,6 +116,7 @@ int main(int argc, char **argv)
 	plObjDelete(cube);
 	plObjDelete(sky);
 	plTexDelete(materials[0]->Texture);
+	plTexDelete(materials[0]->Texture2);
 	plTexDelete(materials[1]->Texture);
 	plMatDelete(materials[0]);
 	plMatDelete(materials[1]);
