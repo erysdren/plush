@@ -147,8 +147,11 @@ can be rendered in a scene. This value is accessible in code with the
 - [`fire.c`](./examples/fire.c) - procedurally animated fire texture and a skull
 - [`flurry.c`](./examples/flurry.c) - transparent material showcase
 - [`fly.c`](./examples/fly.c) - interactive flight environment
+- [`logo.c`](./examples/logo.c) - recreation of the original Plush logo
+- [`masked.c`](./examples/masked.c) - example of using ClearColor on a texture
 - [`metrics.c`](./examples/metrics.c) - portable performance metrics
 - [`model.c`](./examples/model.c) - another .3DS model loading demo
+- [`multicam.c`](./examples/multicam.c) - multiple cameras using the same framebuffer
 - [`polyrobo.c`](./examples/polyrobo.c) - high polycount robot model
 - [`polyrobo2.c`](./examples/polyrobo2.c) - high polycount robot model in a large lit scene
 - [`q3bsp.c`](./examples/q3bsp.c) - quake 3 bsp loader and renderer
@@ -160,6 +163,7 @@ can be rendered in a scene. This value is accessible in code with the
 - [`texenv.c`](./examples/texenv.c) - environment mapping example
 - [`texture.c`](./examples/texture.c) - static texture buffer loading example
 - [`triangle.c`](./examples/triangle.c) - a single triangle with gouraud shading and pre-lit vertex intensity
+- [`wacredits.c`](./examples/wacredits.c) - a recreation of the Winamp credits window
 
 ## Portability
 
