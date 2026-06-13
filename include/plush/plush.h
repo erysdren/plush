@@ -771,6 +771,8 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
     optimize: will optimize colors (USE THIS TOO)
   Returns:
     pointer to texture
+  Notes:
+    The BMP must be an 8bpp image with no RLE compression
 */
 pl_Texture *plReadBMPTex(const char *fn, bool rescale, bool optimize);
 
@@ -816,6 +818,8 @@ pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimi
     optimize: will optimize colors (USE THIS TOO)
   Returns:
     pointer to texture
+  Notes:
+    The BMP must be an 8bpp image with no RLE compression
 */
 pl_Texture *plReadBMPTexFromMem(void *buf, size_t len, bool rescale, bool optimize);
 
