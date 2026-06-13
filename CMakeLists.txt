@@ -47,9 +47,7 @@ add_library(plush STATIC)
 add_library(plush::plush ALIAS plush)
 
 # unavoidable with how the rasterizer code is currently structured
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(plush PRIVATE -Wno-unsequenced)
-endif()
+target_compile_options(plush PRIVATE $<$<C_COMPILER_ID:GNU,Clang>:-Wno-unsequenced>)
 
 target_sources(plush PRIVATE
 	${PROJECT_SOURCE_DIR}/source/cam.c
