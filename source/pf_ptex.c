@@ -477,6 +477,7 @@ void plPF_MPTexF(pl_Cam *cam, pl_Face *TriFace)
 	dummyMaterial.Texture = dummyMaterial.Texture2;
 	dummyMaterial.TexScaling = dummyMaterial.Tex2Scaling;
 	dummyMaterial.zBufferable = false;
+	dummyMaterial._ReMapTable += TriFace->Material->Texture->NumColors;
 
 	/* setup dummy face */
 	memcpy(&dummyFace, TriFace, sizeof(pl_Face));
@@ -501,6 +502,7 @@ void plPF_MPTexG(pl_Cam *cam, pl_Face *TriFace)
 	dummyMaterial.Texture = dummyMaterial.Texture2;
 	dummyMaterial.TexScaling = dummyMaterial.Tex2Scaling;
 	dummyMaterial.zBufferable = false;
+	dummyMaterial._ReMapTable += TriFace->Material->Texture->NumColors;
 
 	/* setup dummy face */
 	memcpy(&dummyFace, TriFace, sizeof(pl_Face));

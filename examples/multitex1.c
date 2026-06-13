@@ -63,6 +63,8 @@ int main(int argc, char **argv)
 	materials[0]->Texture2 = plTexCreate(64, 64, texture2_pixels, 256, texture2_palette);
 	materials[0]->Texture2->ClearColor = 255;
 	materials[0]->Diffuse[0] = materials[0]->Diffuse[1] = materials[0]->Diffuse[2] = 0;
+	materials[0]->TexScaling = 2.0;
+	materials[0]->Tex2Scaling = 1.0;
 	materials[0]->PerspectiveCorrect = 2;
 	plMatInit(materials[0]);
 

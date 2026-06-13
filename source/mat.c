@@ -228,8 +228,7 @@ static void _plGenerateTextureEnvPalette(pl_Mat *m) {
 static void _plGenerateTexturePalette(pl_Mat *m, pl_Texture *t, pl_Texture *t2) {
   uint8_t *ppal, *pal;
   int32_t c, i, x;
-  m->_ColorsUsed = t->NumColors;
-  if (t2) m->_ColorsUsed += t2->NumColors;
+  m->_ColorsUsed = t->NumColors + (t2 ? t2->NumColors : 0);
   if (m->_RequestedColors) plResDelete(m->_RequestedColors);
   pal = m->_RequestedColors = plResCreate(m, m->_ColorsUsed*3);
   ppal = t->PaletteData;
