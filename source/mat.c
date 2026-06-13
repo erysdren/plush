@@ -145,7 +145,7 @@ static void _plGeneratePhongPalette(pl_Mat *m) {
       ca = plCos((double) a);
       a += da;
     }
-    cb = pow((double) ca, (double) m->Shininess);
+    cb = plPow((double) ca, (double) m->Shininess);
     for (x = 0; x < 3; x ++) {
       c = (int32_t) ((cb*m->Specular[x])+(ca*m->Diffuse[x])+m->Ambient[x]);
       *(pal++) = plMax(0,plMin(c,255));
@@ -262,7 +262,7 @@ static void _plGeneratePhongTexturePalette(pl_Mat *m, pl_Texture *t) {
     ppal = t->PaletteData;
     ca = plCos((double) a);
     a += da;
-    cb = pow(ca, (double) m->Shininess);
+    cb = plPow(ca, (double) m->Shininess);
     i = t->NumColors;
     do {
       for (x = 0; x < 3; x ++) {

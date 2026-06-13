@@ -32,6 +32,7 @@ extern "C" {
 #define plTan(v) tan(v)
 #define plATan(v) atan(v)
 #define plSqrt(v) sqrt(v)
+#define plPow(a, b) pow(a, b)
 
 /* Utility min() and max() functions */
 #define plMin(x,y) (( ( x ) > ( y ) ? ( y ) : ( x )))
