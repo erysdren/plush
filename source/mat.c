@@ -24,6 +24,7 @@ pl_Mat *plMatCreate(void) {
   plMemSet(m,0,sizeof(pl_Mat));
   m->EnvScaling = 1.0f;
   m->TexScaling = 1.0f;
+  m->Tex2Scaling = 1.0f;
   m->Ambient[0] = m->Ambient[1] = m->Ambient[2] = 0;
   m->Diffuse[0] = m->Diffuse[1] = m->Diffuse[2] = 128;
   m->Specular[0] = m->Specular[1] = m->Specular[2] = 128;
@@ -323,26 +324,31 @@ static void _plSetMaterialPutFace(pl_Mat *m) {
       if (m->PerspectiveCorrect) switch (m->_st) {
         case PL_SHADE_NONE: case PL_SHADE_FLAT: 
         case PL_SHADE_FLAT_DISTANCE: case PL_SHADE_FLAT_DISTANCE|PL_SHADE_FLAT: 
-          m->_PutFace = plPF_PTexF;
+          if (m->Texture2) m->_PutFace = plPF_MPTexF;
+          else m->_PutFace = plPF_PTexF;
         break;
         case PL_SHADE_GOURAUD: case PL_SHADE_GOURAUD_DISTANCE: 
         case PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE: 
-          m->_PutFace = plPF_PTexG;
+          if (m->Texture2) m->_PutFace = plPF_MPTexG;
+          else m->_PutFace = plPF_PTexG;
         break;
       } 
       else switch (m->_st) {
         case PL_SHADE_NONE: case PL_SHADE_FLAT: 
         case PL_SHADE_FLAT_DISTANCE: case PL_SHADE_FLAT_DISTANCE|PL_SHADE_FLAT: 
-          m->_PutFace = plPF_TexF;
+          if (m->Texture2) m->_PutFace = plPF_MTexF;
+          else m->_PutFace = plPF_TexF;
         break;
         case PL_SHADE_GOURAUD: case PL_SHADE_GOURAUD_DISTANCE: 
         case PL_SHADE_GOURAUD|PL_SHADE_GOURAUD_DISTANCE: 
-          m->_PutFace = plPF_TexG;
+          if (m->Texture2) m->_PutFace = plPF_MTexG;
+          else m->_PutFace = plPF_TexG;
         break;
       }
     break;
     case PL_FILL_TEXTURE|PL_FILL_ENVIRONMENT: 
-      m->_PutFace = plPF_TexEnv;
+      if (m->Texture2) m->_PutFace = plPF_MTexEnv;
+      else m->_PutFace = plPF_TexEnv;
     break;
   }
 }

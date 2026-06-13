@@ -419,12 +419,12 @@ pl_Mdl *plMakeBox(float w, float d, float h, pl_Mat *m) {
     f->Vertices[0] = mdl->Vertices + *vv++;
     f->Vertices[1] = mdl->Vertices + *vv++;
     f->Vertices[2] = mdl->Vertices + *vv++;
-    f->MappingU[0] = (int32_t) ((double)*mm++ * 65535.0);
-    f->MappingV[0] = (int32_t) ((double)*mm++ * 65535.0);
-    f->MappingU[1] = (int32_t) ((double)*mm++ * 65535.0);
-    f->MappingV[1] = (int32_t) ((double)*mm++ * 65535.0);
-    f->MappingU[2] = (int32_t) ((double)*mm++ * 65535.0);
-    f->MappingV[2] = (int32_t) ((double)*mm++ * 65535.0);
+    f->Mapping2U[0] = f->MappingU[0] = (int32_t) ((double)*mm++ * 65535.0);
+    f->Mapping2V[0] = f->MappingV[0] = (int32_t) ((double)*mm++ * 65535.0);
+    f->Mapping2U[1] = f->MappingU[1] = (int32_t) ((double)*mm++ * 65535.0);
+    f->Mapping2V[1] = f->MappingV[1] = (int32_t) ((double)*mm++ * 65535.0);
+    f->Mapping2U[2] = f->MappingU[2] = (int32_t) ((double)*mm++ * 65535.0);
+    f->Mapping2V[2] = f->MappingV[2] = (int32_t) ((double)*mm++ * 65535.0);
     f->Material = m;
     f++;
   }
