@@ -1042,11 +1042,19 @@ void plTextPrintf(pl_Cam *cam, int32_t x, int32_t y, float z,
 
 void plPF_SolidF(pl_Cam *, pl_Face *);
 void plPF_SolidG(pl_Cam *, pl_Face *);
+
 void plPF_TexF(pl_Cam *, pl_Face *);
 void plPF_TexG(pl_Cam *, pl_Face *);
 void plPF_TexEnv(pl_Cam *, pl_Face *);
 void plPF_PTexF(pl_Cam *, pl_Face *);
 void plPF_PTexG(pl_Cam *, pl_Face *);
+
+void plPF_MTexF(pl_Cam *, pl_Face *);
+void plPF_MTexG(pl_Cam *, pl_Face *);
+void plPF_MTexEnv(pl_Cam *, pl_Face *);
+void plPF_MPTexF(pl_Cam *, pl_Face *);
+void plPF_MPTexG(pl_Cam *, pl_Face *);
+
 void plPF_TransF(pl_Cam *, pl_Face *);
 void plPF_TransG(pl_Cam *, pl_Face *);
 
