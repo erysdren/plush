@@ -8,6 +8,11 @@ Copyright (C) 2024-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
+void plSplineInit(pl_Spline *s)
+{
+
+}
+
 void plSplineGetPoint(pl_Spline *s, float frame, float *out) {
   int32_t i, i_1, i0, i1, i2;
   float time1,time2,time3;
