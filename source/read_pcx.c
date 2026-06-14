@@ -13,6 +13,8 @@ Copyright (C) 2024-2026, erysdren (it/its)
 
 static int _plReadPCX(pl_IO *io, void *user, uint16_t *width, uint16_t *height, uint8_t **pal, uint8_t **data);
 
+#if !PL_NO_STDIO
+
 pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
   uint8_t *data, *pal;
   uint16_t x, y;
@@ -24,6 +26,8 @@ pl_Texture *plReadPCXTex(const char *fn, bool rescale, bool optimize) {
   if (r < 0) return 0;
   return _plProcessTexture(x, y, data, pal, rescale, optimize);
 }
+
+#endif /* !PL_NO_STDIO */
 
 pl_Texture *plReadPCXTexFromMem(void *buf, size_t len, bool rescale, bool optimize) {
   uint8_t *data, *pal;

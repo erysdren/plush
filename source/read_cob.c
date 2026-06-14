@@ -8,6 +8,8 @@ Copyright (C) 2024-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#if !PL_NO_STDIO
+
 #define PL_COB_MAX_LINELENGTH 1024
 
 pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
@@ -180,3 +182,5 @@ pl_Mdl *plReadCOBMdl(const char *fn, pl_Mat *mat) {
   fclose(fp);
   return mdl;
 }
+
+#endif /* !PL_NO_STDIO */

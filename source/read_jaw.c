@@ -25,6 +25,8 @@ Copyright (C) 2024-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#if !PL_NO_STDIO
+
 pl_Mdl *plReadJAWMdl(const char *filename, pl_Mat *m) {
   FILE *jawfile;
   pl_Mdl *mdl;
@@ -68,3 +70,5 @@ pl_Mdl *plReadJAWMdl(const char *filename, pl_Mat *m) {
   plMdlCalcNormals(mdl);
   return mdl;
 }	
+
+#endif /* !PL_NO_STDIO */

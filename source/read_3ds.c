@@ -8,6 +8,8 @@ Copyright (C) 2024-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#if !PL_NO_STDIO
+
 typedef struct {
     uint16_t id;
     void (*func)(FILE *f, uint32_t p);
@@ -244,3 +246,4 @@ static void _pl3DSChunkReader(FILE *f, uint32_t p) {
   }
 }
 
+#endif /* !PL_NO_STDIO */

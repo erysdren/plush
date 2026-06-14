@@ -7,6 +7,8 @@ Copyright (C) 2025-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#if !PL_NO_STDIO
+
 #pragma pack(push, 1)
 
 typedef struct pcx_header {
@@ -99,3 +101,5 @@ bool plWritePCXTex(const char *fn, pl_Texture *tex)
 	plMemCpy(palette, tex->PaletteData, tex->NumColors > 256 ? 256 * 3 : tex->NumColors * 3);
 	return plWritePCX(fn, tex->iWidth, tex->iHeight, tex->iWidth, tex->Data, palette);
 }
+
+#endif /* !PL_NO_STDIO */

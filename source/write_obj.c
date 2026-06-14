@@ -7,6 +7,8 @@ Copyright (C) 2025-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
+#if !PL_NO_STDIO
+
 bool plWriteWavefrontMdl(const char *fn, pl_Mdl *mdl)
 {
 	uint32_t i, j;
@@ -48,3 +50,5 @@ bool plWriteWavefrontMdl(const char *fn, pl_Mdl *mdl)
 	fclose(file);
 	return true;
 }
+
+#endif /* !PL_NO_STDIO */

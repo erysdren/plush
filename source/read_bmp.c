@@ -157,6 +157,8 @@ static int _plReadBMP(pl_IO *io, void *user, uint16_t *width, uint16_t *height, 
 	return 0;
 }
 
+#if !PL_NO_STDIO
+
 pl_Texture *plReadBMPTex(const char *fn, bool rescale, bool optimize)
 {
 	uint8_t *data, *pal;
@@ -169,6 +171,8 @@ pl_Texture *plReadBMPTex(const char *fn, bool rescale, bool optimize)
 	if (r < 0) return 0;
 	return _plProcessTexture(x, y, data, pal, rescale, optimize);
 }
+
+#endif /* !PL_NO_STDIO */
 
 pl_Texture *plReadBMPTexFromMem(void *buf, size_t len, bool rescale, bool optimize)
 {

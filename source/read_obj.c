@@ -8,7 +8,7 @@ Copyright (C) 2024-2026, erysdren (it/its)
 
 #include <plush/plush.h>
 
-#include "readio.h"
+#if !PL_NO_STDIO
 
 #define FAST_OBJ_FREE plFree
 #define FAST_OBJ_REALLOC plRealloc
@@ -144,3 +144,5 @@ pl_Mdl *plReadWavefrontMdlEx(const char *filename, pl_Mat **materials, size_t ma
 	fast_obj_destroy(mesh);
 	return mdl;
 }
+
+#endif /* !PL_NO_STDIO */
