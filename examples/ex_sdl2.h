@@ -116,6 +116,9 @@ static void exSetGraphics(void)
 	SDL_Init(SDL_INIT_VIDEO);
 
 	exWindow = SDL_CreateWindow("Plush Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
+#ifdef __PS2__
+	SDL_SetHint(SDL_HINT_PS2_DYNAMIC_VSYNC, "1");
+#endif
 
 	exRenderer = SDL_CreateRenderer(exWindow, -1, SDL_RENDERER_PRESENTVSYNC);
 

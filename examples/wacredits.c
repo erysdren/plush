@@ -595,7 +595,7 @@ void render_render()
 	memcpy(exGraphMem, framebuffer, sizeof(framebuffer));
 }
 
-int main()
+int main(int args, char* argv[])
 {
 	exSetGraphics();
 	render_init(W, H, pal);
