@@ -1,0 +1,54 @@
+Namespace = "Plush";
+Name = "Test Scene";
+DefaultCamera = 0;
+
+// palette 0
+palette
+{
+	FirstColor = 0;
+	LastColor = 255;
+	File = "palette.pcx";
+}
+
+// camera 0
+camera
+{
+	Width = 640;
+	Height = 480;
+	Fov = 90;
+	zBuffer = true;
+
+	Origin = [64, 64, -384];
+	Angles = [15, 10, 0];
+
+	Palette = 0;
+}
+
+// material 0
+material
+{
+	Name = "Fallback Material";
+	Fallback = true;
+
+	Ambient = [44, 8, 8];
+	Diffuse = [156, 25, 25];
+	Specular = [185, 159, 159];
+}
+
+// mesh 0
+mesh
+{
+	Name = "Polyrobo";
+
+	File = "polyrobo.obj";
+
+	Material = 0;
+}
+
+// object 0
+object
+{
+	Name = "Polyrobo";
+
+	Mesh = 0;
+}
