@@ -109,6 +109,7 @@ if(PLUSH_BUILD_EXAMPLES)
 		metrics
 		model
 		multicam
+		multitex1
 		polyrobo
 		polyrobo2
 		q3bsp

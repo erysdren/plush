@@ -594,3 +594,77 @@ void plPF_TexG(pl_Cam *cam, pl_Face *TriFace) {
     Y0++;
   }
 }
+
+void plPF_MTexF(pl_Cam *cam, pl_Face *TriFace)
+{
+	pl_Mat dummyMaterial;
+	pl_Face dummyFace;
+
+	/* setup dummy material */
+	memcpy(&dummyMaterial, TriFace->Material, sizeof(pl_Mat));
+	dummyMaterial.Texture = dummyMaterial.Texture2;
+	dummyMaterial.TexScaling = dummyMaterial.Tex2Scaling;
+	dummyMaterial.zBufferable = false;
+
+	/* setup dummy face */
+	memcpy(&dummyFace, TriFace, sizeof(pl_Face));
+	dummyFace.Material = &dummyMaterial;
+	memcpy(dummyFace.MappingU, dummyFace.Mapping2U, sizeof(dummyFace.MappingU));
+	memcpy(dummyFace.MappingV, dummyFace.Mapping2V, sizeof(dummyFace.MappingV));
+
+	/* draw base texture */
+	plPF_TexF(cam, TriFace);
+
+	/* draw second texture */
+	plPF_TexF(cam, &dummyFace);
+}
+
+void plPF_MTexG(pl_Cam *cam, pl_Face *TriFace)
+{
+	pl_Mat dummyMaterial;
+	pl_Face dummyFace;
+
+	/* setup dummy material */
+	memcpy(&dummyMaterial, TriFace->Material, sizeof(pl_Mat));
+	dummyMaterial.Texture = dummyMaterial.Texture2;
+	dummyMaterial.TexScaling = dummyMaterial.Tex2Scaling;
+	dummyMaterial.zBufferable = false;
+	dummyMaterial._ReMapTable += TriFace->Material->Texture->NumColors;
+
+	/* setup dummy face */
+	memcpy(&dummyFace, TriFace, sizeof(pl_Face));
+	dummyFace.Material = &dummyMaterial;
+	memcpy(dummyFace.MappingU, dummyFace.Mapping2U, sizeof(dummyFace.MappingU));
+	memcpy(dummyFace.MappingV, dummyFace.Mapping2V, sizeof(dummyFace.MappingV));
+
+	/* draw base texture */
+	plPF_TexG(cam, TriFace);
+
+	/* draw second texture */
+	plPF_TexG(cam, &dummyFace);
+}
+
+void plPF_MTexEnv(pl_Cam *cam, pl_Face *TriFace)
+{
+	pl_Mat dummyMaterial;
+	pl_Face dummyFace;
+
+	/* setup dummy material */
+	memcpy(&dummyMaterial, TriFace->Material, sizeof(pl_Mat));
+	dummyMaterial.Texture = dummyMaterial.Texture2;
+	dummyMaterial.TexScaling = dummyMaterial.Tex2Scaling;
+	dummyMaterial.zBufferable = false;
+	dummyMaterial._ReMapTable += TriFace->Material->Texture->NumColors;
+
+	/* setup dummy face */
+	memcpy(&dummyFace, TriFace, sizeof(pl_Face));
+	dummyFace.Material = &dummyMaterial;
+	memcpy(dummyFace.MappingU, dummyFace.Mapping2U, sizeof(dummyFace.MappingU));
+	memcpy(dummyFace.MappingV, dummyFace.Mapping2V, sizeof(dummyFace.MappingV));
+
+	/* draw base texture */
+	plPF_TexEnv(cam, TriFace);
+
+	/* draw second texture */
+	plPF_TexEnv(cam, &dummyFace);
+}

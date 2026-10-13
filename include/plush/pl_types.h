@@ -48,8 +48,10 @@ typedef struct _pl_Mat {
                                   Note: transparencies disable textures */
   uint8_t PerspectiveCorrect; /* Correct textures every n pixels */
   pl_Texture *Texture;         /* Texture map (see pl_Texture) above */
+  pl_Texture *Texture2;         /* Texture map (see pl_Texture) above */
   pl_Texture *Environment;     /* Environment map (ditto) */
   float TexScaling;         /* Texture map scaling */
+  float Tex2Scaling;         /* Texture map scaling */
   float EnvScaling;         /* Environment map scaling */
   uint8_t TexEnvMode;         /* TexEnv combining mode (PL_TEXENV_*) */
   bool zBufferable;         /* Can this material be zbuffered? */
@@ -92,7 +94,9 @@ typedef struct _pl_Face {
   float Scrz[3];            /* Projected 1/Z coordinates */
   int32_t MappingU[3], MappingV[3]; 
                                /* 16.16 Texture mapping coordinates */ 
-  int32_t eMappingU[3], eMappingV[3]; 
+  int32_t Mapping2U[3], Mapping2V[3];
+                               /* 16.16 Texture2 mapping coordinates */
+  int32_t eMappingU[3], eMappingV[3];
                                /* 16.16 Environment map coordinates */
   float fShade;             /* Flat intensity */
   float sLighting;          /* Face static lighting. Should usually be 0.0 */
